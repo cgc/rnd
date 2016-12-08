@@ -3,6 +3,7 @@ import numpy as np
 import scipy.optimize
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import pickle
 
 C = 1
 A = np.tanh
@@ -27,6 +28,13 @@ def ravel_net(x0, layer_sizes):
 
 
 def tile_bias(bias, size):
+    '''
+    escape(size)[()] is a bit of a mess:
+    py autodiff converts `size` into a theano array with 0
+    dimensions and 1 item, the size. `escape` gives us
+    a numpy array with 0 dimensions and 1 item, and [()]
+    pulls the single item.
+    '''
     return np.tile(bias, (escape(1), escape(size)[()]))
 
 
@@ -196,10 +204,12 @@ def test_network(N, I, debug=True):
     return f
 
 
-def test_networks():
-    # consider using concurrency.futures for this
-    Ns = range(10, 200, 20)
-    Is = range(10, 200, 20)
+error_cache_file = 'error_cache'
+
+
+def compute_network_errors():
+    Ns = range(30, 400, 60)
+    Is = range(30, 400, 60)
     result = np.zeros((len(Ns), len(Is)))
 
     for N_idx, N, I_idx, I in tqdm([
@@ -209,7 +219,17 @@ def test_networks():
     ]):
         result[N_idx, I_idx] = test_network(N, I, debug=False)
 
-    plt.pcolormesh(result, cmap='gray')
+    with open(error_cache_file, 'wb') as f:
+        pickle.dump((Is, Ns, result), f)
+
+
+def test_networks():
+    # compute_network_errors()
+
+    with open(error_cache_file, 'rb') as f:
+        Is, Ns, result = pickle.load(f)
+
+    plt.pcolormesh(Is, Ns, result, cmap='gray')
     plt.xlabel('I (from {} to {})'.format(Is[0], Is[-1]))
     plt.ylabel('N (from {} to {})'.format(Ns[0], Ns[-1]))
     plt.show()
