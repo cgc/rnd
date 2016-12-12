@@ -55,29 +55,30 @@ def network_error(N, I, debug=True, C=1):
 
     if debug:
         errors = []
-    with tf.Session() as sess:
-        init = tf.global_variables_initializer()
-        sess.run(init)
-        train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
-        # XXX train on random subsets?
-        # XXX check for convergence instead of static loop count
-        for _ in range(400):
-            _, error_value = sess.run(
-                [train_step, cost], feed_dict={x: X, y_: Y})
-            if debug:
-                errors.append(error_value)
-        if debug:
-            test_x = X[30:32, :]
-            test_y = Y[30:32, :]
-            print('arg', test_x)
-            print('expected', test_y)
-            print('network output', )
-            plot_learned_fn(X, Y, y.eval(feed_dict={x: X}))
 
-            print('final', error_value)
-            plt.figure()
-            plt.plot([np.mean(errors[i-50:i]) for i in range(1, len(errors))])
-            plt.show()
+    init = tf.initialize_all_variables()
+    sess = tf.get_default_session()
+    sess.run(init)
+    train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+    # XXX train on random subsets?
+    # XXX check for convergence instead of static loop count
+    for _ in range(400):
+        _, error_value = sess.run(
+            [train_step, cost], feed_dict={x: X, y_: Y})
+        if debug:
+            errors.append(error_value)
+    if debug:
+        test_x = X[30:32, :]
+        test_y = Y[30:32, :]
+        print('arg', test_x)
+        print('expected', test_y)
+        print('network output', )
+        plot_learned_fn(X, Y, y.eval(feed_dict={x: X}))
+
+        print('final', error_value)
+        plt.figure()
+        plt.plot([np.mean(errors[i-50:i]) for i in range(1, len(errors))])
+        plt.show()
     return error_value
 
 
@@ -88,11 +89,13 @@ def compute_network_errors():
 
     for C in [0, .1, 1]:
         print('compute_network_errors', 'C={}'.format(C))
+        # reversing order to make sure we compute harder things earlier
+        # to get a sense of length of computation
         for N_idx, N, I_idx, I in tqdm([
             (N_idx, N, I_idx, I)
             for N_idx, N in enumerate(Ns)
             for I_idx, I in enumerate(Is)
-        ]):
+        ][::-1]):
             result[N_idx, I_idx] = network_error(N, I, C=C, debug=False)
 
         with open('c_{}_tf_errors'.format(C), 'wb') as f:
@@ -105,7 +108,8 @@ def compute_network_errors():
 
 
 if __name__ == '__main__':
-    compute_network_errors()
-    # network_error(300, 1000)
-    # XXX
-    # tf.test.compute_gradient_error
+    with tf.Session():
+        compute_network_errors()
+        # network_error(300, 1000)
+        # XXX
+        # tf.test.compute_gradient_error
