@@ -56,29 +56,29 @@ def network_error(N, I, debug=True, C=1):
     if debug:
         errors = []
 
-    init = tf.initialize_all_variables()
-    sess = tf.get_default_session()
-    sess.run(init)
-    train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
-    # XXX train on random subsets?
-    # XXX check for convergence instead of static loop count
-    for _ in range(400):
-        _, error_value = sess.run(
-            [train_step, cost], feed_dict={x: X, y_: Y})
+    with tf.Session() as sess:
+        init = tf.initialize_all_variables()
+        sess.run(init)
+        train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+        # XXX train on random subsets?
+        # XXX check for convergence instead of static loop count
+        for _ in range(400):
+            _, error_value = sess.run(
+                [train_step, cost], feed_dict={x: X, y_: Y})
+            if debug:
+                errors.append(error_value)
         if debug:
-            errors.append(error_value)
-    if debug:
-        test_x = X[30:32, :]
-        test_y = Y[30:32, :]
-        print('arg', test_x)
-        print('expected', test_y)
-        print('network output', )
-        plot_learned_fn(X, Y, y.eval(feed_dict={x: X}))
+            test_x = X[30:32, :]
+            test_y = Y[30:32, :]
+            print('arg', test_x)
+            print('expected', test_y)
+            print('network output', )
+            plot_learned_fn(X, Y, y.eval(feed_dict={x: X}))
 
-        print('final', error_value)
-        plt.figure()
-        plt.plot([np.mean(errors[i-50:i]) for i in range(1, len(errors))])
-        plt.show()
+            print('final', error_value)
+            plt.figure()
+            plt.plot([np.mean(errors[i-50:i]) for i in range(1, len(errors))])
+            plt.show()
     return error_value
 
 
@@ -108,8 +108,7 @@ def compute_network_errors():
 
 
 if __name__ == '__main__':
-    with tf.Session():
-        compute_network_errors()
-        # network_error(300, 1000)
-        # XXX
-        # tf.test.compute_gradient_error
+    compute_network_errors()
+    # network_error(300, 1000)
+    # XXX
+    # tf.test.compute_gradient_error
