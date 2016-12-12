@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import pickle
 
-all_h_fn = all_h_fn[:-1]
+all_h_fn = all_h_fn[:-1]  # XXX leaving out h_8 for now
 
 
 def weight_variable(shape):
@@ -93,7 +93,7 @@ def compute_network_errors():
             for N_idx, N in enumerate(Ns)
             for I_idx, I in enumerate(Is)
         ]):
-            result[N_idx, I_idx] = network_error(N, I, C, debug=False)
+            result[N_idx, I_idx] = network_error(N, I, C=C, debug=False)
 
         with open('c_{}_tf_errors'.format(C), 'wb') as f:
             pickle.dump(dict(
