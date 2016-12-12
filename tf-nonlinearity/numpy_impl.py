@@ -9,11 +9,13 @@ C = 1
 A = np.tanh
 
 
+@function
 def flatten_net(*args):
-    return np.array(np.concatenate([
-        arg.reshape((np.prod(arg.shape),), order='F')
+    return np.concatenate([
+        # transposing first keeps things in fortran order
+        arg.T.flatten()
         for arg in args
-    ]), order='F')
+    ])
 
 
 def ravel_net(x0, layer_sizes):
@@ -110,17 +112,25 @@ def h_8(x):
     return np.tan(np.pi * (x + .5))
 
 
-hs = [h_1, h_2, h_3, h_4, h_5, h_6, h_7, h_8]
-hs = [h_1, h_2, h_3, h_4, h_5, h_6, h_7] #, h_8]
+all_h_fn = [h_1, h_2, h_3, h_4, h_5, h_6, h_7, h_8]
+hs = all_h_fn[:-1]  # XXX skipping h_8 for now
+
+
+def gpu_array(arr):
+    '''
+    GPU acceleration requires fortran order.
+    '''
+    # XXX what are the issues with np.float32?
+    return np.array(arr, order='F')
 
 
 def new_layer(*shape):
-    return np.array(np.random.randn(*shape), order='F')
+    return gpu_array(np.random.randn(*shape))
 
 
 def test_helper_functions():
-    N = 30
-    I = 14
+    N = 100
+    I = 50
     O = len(hs)
 
     layer_sizes = [
@@ -143,13 +153,14 @@ def test_helper_functions():
     ):
         assert np.all(recomputed == original), 'issue with ravel or flatten'
 
-    X = np.array(np.tile(np.arange(0, 10, .1), (N, 1)), order='F')
-    Y = np.array([[
+    X = gpu_array(np.tile(np.arange(0, 10, .1), (N, 1)))
+    Y = gpu_array([[
         h(x) for x in np.arange(0, 10, .1)
-    ] for h in hs], order='F')
+    ] for h in hs])
 
     x0 = flatten_net(b0, w1, b1, w2, b2)
     x0 = x0.reshape((np.prod(x0.shape),))
+    # XXX for float32? epsilon=np.sqrt(np.finfo(np.float32).eps)
     result = scipy.optimize.check_grad(
         callCost, dCost, x0, X, Y, layer_sizes)
     print 'check_grad', result
@@ -172,10 +183,10 @@ def test_network(N, I, debug=True):
     w2 = new_layer(I, O)
     b2 = new_layer(O, 1)
 
-    X = np.array(np.tile(np.arange(0, 10, .1), (N, 1)), order='F')
-    Y = np.array([[
+    X = gpu_array(np.tile(np.arange(0, 10, .1), (N, 1)))
+    Y = gpu_array([[
         h(x) for x in np.arange(0, 10, .1)
-    ] for h in hs], order='F')
+    ] for h in hs])
 
     kwargs = {}
     if debug:
@@ -196,9 +207,9 @@ def test_network(N, I, debug=True):
     if debug:
         # Use the trained network to compute F(3)
         b0, w1, b1, w2, b2 = ravel_net(x, layer_sizes)
-        X = np.array(np.tile(np.arange(3, 3.05, .1), (N, 1)), order='F')
+        X = gpu_array(np.tile(np.arange(3, 3.05, .1), (N, 1)))
         print 'F({})'.format(X[0, :])
-        print 'expected', np.array([h(X[0, :]) for h in hs])
+        print 'expected', gpu_array([h(X[0, :]) for h in hs])
         print 'actual', feed_net(b0, w1, b1, w2, b2, X)
 
     return f
@@ -208,8 +219,8 @@ error_cache_file = 'error_cache'
 
 
 def compute_network_errors():
-    Ns = range(30, 400, 60)
-    Is = range(30, 400, 60)
+    Ns = range(30, 200, 40)
+    Is = range(10, 100, 30)
     result = np.zeros((len(Ns), len(Is)))
 
     for N_idx, N, I_idx, I in tqdm([
@@ -242,6 +253,5 @@ if __name__ == '__main__':
     theano.config.compute_test_value = 'warn'
     '''
     test_helper_functions()
-    # test_network(30, 14)
-    test_networks()
-    # XXX include h_8
+    test_network(300, 1000)
+    # test_networks()
