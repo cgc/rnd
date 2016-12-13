@@ -44,4 +44,4 @@ $ pip install https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.1
 # on mac with cpu
 $ pip install https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-0.11.0-py2-none-any.whl
 ```
-Alternatively, you can use the ansible script I used to do my final report generation: https://github.com/cgc/ansible-examples
+Alternatively, you can use this ansible script to spin up a GPU instance in ec2. I used this to do my final analysis. https://github.com/cgc/ansible-examples
