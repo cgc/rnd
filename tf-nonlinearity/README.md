@@ -6,6 +6,8 @@ $ python 2d_result_plot.py
 
 ### results
 ![plot of results](tf_c_values.png)
+
+
 there may be issues with my analysis because I take relatively large steps of 50 between values of N and I and search the space to 2000. it may be worth running this analysis with smaller steps and in smaller bounds.
 
 interestingly, regardless of value of C, we see very similar structure in cost-space. The most erratic and regularization-dependent might be small N and small I, although randomness may be enough to explain the variance we see there.
