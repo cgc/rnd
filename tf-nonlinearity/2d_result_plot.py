@@ -5,7 +5,7 @@ import numpy as np
 
 
 if __name__ == '__main__':
-    fig = plt.figure(figsize=(10, 8))
+    fig = plt.figure(figsize=(4, 9))
 
     data = []
     all_errors = []
@@ -35,7 +35,7 @@ if __name__ == '__main__':
         errors = d['errors']
         I_step = Is[1] - Is[0]
         N_step = Ns[1] - Ns[0]
-        ax = plt.subplot(2, 2, idx + 1)
+        ax = plt.subplot(3, 1, idx + 1)
         im = plt.pcolormesh(
             Is + [Is[-1] + I_step],
             Ns + [Ns[-1] + N_step],
@@ -43,7 +43,7 @@ if __name__ == '__main__':
             vmin=vmin,
             vmax=vmax,
             cmap='cool')
-        plt.axis([0, Is[-1] + I_step, 0, Ns[-1] + N_step])
+        plt.axis([0, 1300, 0, 1500])
         plt.xlabel('I (every {}, from {} to {})'.format(I_step, Is[0], Is[-1]))
         plt.ylabel('N (every {}, from {} to {})'.format(N_step, Ns[0], Ns[-1]))
         plt.title('C={}'.format(C))
@@ -54,4 +54,5 @@ if __name__ == '__main__':
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
     fig.colorbar(im, cax=cbar_ax)
 
+    plt.savefig('tf_c_values')
     plt.show()
