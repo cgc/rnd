@@ -23,7 +23,9 @@ if __name__ == '__main__':
     all_errors = np.concatenate(all_errors)
     all_errors = all_errors[~np.isnan(all_errors)]
     vmin = np.min(all_errors)
-    vmax = np.max(all_errors)
+    # a hack to try and exclude an outlier with high cost that
+    # makes colormaps hard to interpret
+    vmax = np.percentile(all_errors, 99.9) * 1.1
 
     for idx, d in enumerate(data):
         Is = d['Is']
@@ -45,6 +47,8 @@ if __name__ == '__main__':
         plt.xlabel('I (every {}, from {} to {})'.format(I_step, Is[0], Is[-1]))
         plt.ylabel('N (every {}, from {} to {})'.format(N_step, Ns[0], Ns[-1]))
         plt.title('C={}'.format(C))
+
+    plt.tight_layout()
 
     fig.subplots_adjust(right=0.8)
     cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])

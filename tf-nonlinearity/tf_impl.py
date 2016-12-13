@@ -48,6 +48,7 @@ def network_error(N, I, debug=True, C=1):
 
     norm_w2 = tf.reduce_sum(w2 ** 2) ** .5
     cost = tf.reduce_mean((y - y_) ** 2) + C * norm_w2
+    # XXX fix issue with learning rate and NaN for high I values
     train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
 
     X = np.tile(np.arange(0, 10, .1), (N, 1)).T
@@ -83,6 +84,8 @@ def network_error(N, I, debug=True, C=1):
             plt.figure()
             errors = ma.masked_invalid(errors)
             plt.plot([np.mean(errors[i-50:i]) for i in range(1, len(errors))])
+            plt.xlabel('number of iterations')
+            plt.ylabel('error')
             plt.show()
     tf.reset_default_graph()
     return error_value
@@ -116,5 +119,4 @@ def compute_network_errors():
 if __name__ == '__main__':
     compute_network_errors()
     # network_error(300, 1000)
-    # XXX
-    # tf.test.compute_gradient_error
+    # XXX try tf.test.compute_gradient_error ?
