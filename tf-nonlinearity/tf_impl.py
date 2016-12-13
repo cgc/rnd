@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import pickle
+import numpy.ma as ma
 
 all_h_fn = all_h_fn[:-1]  # XXX leaving out h_8 for now
 
@@ -63,10 +64,12 @@ def network_error(N, I, debug=True, C=1):
         sess.graph.finalize()
         # XXX train on random subsets?
         # XXX check for convergence instead of static loop count
-        for _ in range(400):
+        for idx in range(400):
             _, error_value = sess.run(
                 [train_step, cost], feed_dict={x: X, y_: Y})
             if debug:
+                if idx == 0:
+                    print('initial cost', error_value)
                 errors.append(error_value)
         if debug:
             test_x = X[30:32, :]
@@ -76,8 +79,9 @@ def network_error(N, I, debug=True, C=1):
             print('network output', )
             plot_learned_fn(X, Y, y.eval(feed_dict={x: X}))
 
-            print('final', error_value)
+            print('final cost', error_value)
             plt.figure()
+            errors = ma.masked_invalid(errors)
             plt.plot([np.mean(errors[i-50:i]) for i in range(1, len(errors))])
             plt.show()
     tf.reset_default_graph()

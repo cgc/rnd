@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pickle
+import numpy.ma as ma
 
 
 if __name__ == '__main__':
@@ -19,6 +20,7 @@ if __name__ == '__main__':
         I_step = Is[1] - Is[0]
         N_step = Ns[1] - Ns[0]
         ax = plt.subplot(2, 2, idx + 1)
+        errors = ma.masked_invalid(errors)
         plt.pcolormesh(
             Is + [Is[-1] + I_step],
             Ns + [Ns[-1] + N_step],
