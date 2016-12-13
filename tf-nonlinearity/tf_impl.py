@@ -47,6 +47,7 @@ def network_error(N, I, debug=True, C=1):
 
     norm_w2 = tf.reduce_sum(w2 ** 2) ** .5
     cost = tf.reduce_mean((y - y_) ** 2) + C * norm_w2
+    train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
 
     X = np.tile(np.arange(0, 10, .1), (N, 1)).T
     Y = np.transpose([[
@@ -59,7 +60,7 @@ def network_error(N, I, debug=True, C=1):
     with tf.Session() as sess:
         init = tf.initialize_all_variables()
         sess.run(init)
-        train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+        sess.graph.finalize()
         # XXX train on random subsets?
         # XXX check for convergence instead of static loop count
         for _ in range(400):
@@ -79,6 +80,7 @@ def network_error(N, I, debug=True, C=1):
             plt.figure()
             plt.plot([np.mean(errors[i-50:i]) for i in range(1, len(errors))])
             plt.show()
+    tf.reset_default_graph()
     return error_value
 
 
