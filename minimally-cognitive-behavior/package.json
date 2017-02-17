@@ -1,0 +1,17 @@
+{
+  "name": "minimally-cognitive-behavior",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "python -m SimpleHTTPServer 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "co": "^4.6.0",
+    "paper": "^0.10.2",
+    "synaptic": "^1.0.8"
+  }
+}
