@@ -1,3 +1,6 @@
+const paper = require('paper');
+const synaptic = require('synaptic');
+
 const dim = [400, 275];
 const agentDiam = 30;
 const agentRadius = agentDiam / 2;
@@ -59,6 +62,28 @@ function randomParam() {
   // random values uniformly distributed over the range +/- 1.
   return Math.random() * 2 - 1;
 }
+
+function findIndexForOffset(offset, weights) {
+  /*
+    offset - can vary from 0 to 1. used to index into weights.
+        usually the result of Math.random()
+    weights - list of weights for each index
+  */
+  let total = 0;
+  for (const weight of weights) {
+    total += weight;
+  }
+
+  let prev = 0;
+  for (let idx = 0; idx < weights.length; idx++) {
+    const normalized = weights[idx] / total;
+    if (offset < prev + normalized) {
+      return idx;
+    }
+    prev += normalized;
+  }
+}
+exports._findIndexForOffset = findIndexForOffset;
 
 function nnAgent() {
   const net = new synaptic.Architect.Perceptron(rayCount, 5, 2);

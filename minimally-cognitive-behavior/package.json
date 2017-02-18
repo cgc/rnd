@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "python -m SimpleHTTPServer 8000",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server --content-base .",
+    "test": "mocha --compilers js:babel-register"
   },
   "author": "",
   "license": "ISC",
@@ -13,5 +13,14 @@
     "co": "^4.6.0",
     "paper": "^0.10.2",
     "synaptic": "^1.0.8"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-env": "^1.1.8",
+    "babel-register": "^6.23.0",
+    "mocha": "^3.2.0",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
   }
 }
