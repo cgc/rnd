@@ -13,6 +13,7 @@ let canvas;
 
 function simpleAgent() {
   let ct = 0;
+  const agentV = 2;
   function step(rays) {
     return new Promise(function(resolve) {
       setTimeout(function() {
@@ -33,11 +34,11 @@ function simpleAgent() {
 
         let args;
         if (objectLeftBound === -1) {
-          args = Math.floor(ct / 10) % 2 ? [0, 2] : [2, 0];
+          args = Math.floor(ct / 10) % 2 ? [0, agentV] : [agentV, 0];
         } else {
           const objectCenter = (objectRightBound - objectLeftBound) / 2 + objectLeftBound;
-          args = objectCenter < 3 ? [2, 0] :
-            objectCenter > 3 ? [0, 2] :
+          args = objectCenter < 3 ? [agentV, 0] :
+            objectCenter > 3 ? [0, agentV] :
             [0, 0];
         }
         // console.log('simple agent', args, rays);
@@ -52,8 +53,27 @@ function simpleAgent() {
   return { step, finalize };
 }
 
+function randomParam() {
+  // Initially, a random population of vectors is generated
+  // by initializing each component of every individual to
+  // random values uniformly distributed over the range +/- 1.
+  return Math.random() * 2 - 1;
+}
+
 function nnAgent() {
   const net = new synaptic.Architect.Perceptron(rayCount, 5, 2);
+  const exp = [];
+  const memoryRate = .2;
+
+  for (const {neuron} of net.neurons()) {
+    neuron.bias = randomParam();
+    const projected = neuron.connections.projected;
+    for (const id in projected) {
+      projected[id].weight = randomParam();
+    }
+  }
+
+  const agentV = 5;
   let trials = [];
   let curr = [];
 
@@ -66,7 +86,7 @@ function nnAgent() {
       actionProbs,
       actionIndex,
     });
-    return Promise.resolve(actionIndex === 0 ? [2, 0] : [0, 2]);
+    return Promise.resolve(actionIndex === 0 ? [agentV, 0] : [0, agentV]);
   }
 
   function step(input) {
@@ -87,36 +107,43 @@ function nnAgent() {
   }
 
   function train() {
-    for (let i = 0; i < 100; i++) {
-      for (const trial of trials) {
-        for (const moment of trial.moments) {
-          let allZeros = true;
-          for (let idx = 0; idx < moment.input.length; idx++) {
-            if (moment.input[idx] !== 0) {
-              allZeros = false;
-            }
-          }
-          if (allZeros) {
-            // HACK does this make sense?
-            continue;
-          }
-          net.activate(moment.input);
-          const actionProbs = [1, 1];
-          let penalizeIndex;
-          // reduce probability of losing action
-          // XXX should this be concerned with negative probs?
-          if (trial.success) {
-            penalizeIndex = moment.actionIndex === 0 ? 1 : 0;
-          } else {
-            penalizeIndex = moment.actionIndex;
-          }
-          actionProbs[penalizeIndex] = 0
-          net.propagate(.4, actionProbs);
-          // console.log('propagate(', 1, JSON.stringify(moment), actionProbs);
+    const moments = [];
+    for (const trial of trials) {
+      for (let idx = 0; idx < trial.moments.length; idx++) {
+        const moment = trial.moments[idx];
+        // the rewardProb varies linearly through the trial, from .55 to .95
+        const rewardProb = (idx / (trial.moments.length - 1)) * .4 + .55;
+
+        const expectedOutput = [rewardProb, rewardProb];
+        // reduce probability of losing action
+        const penalizeIndex = trial.success ?
+          (moment.actionIndex === 0 ? 1 : 0) : moment.actionIndex;
+        expectedOutput[penalizeIndex] = 1 - rewardProb;
+        moment.output = expectedOutput;
+        moments.push(moment);
+      }
+    }
+    const expCopy = exp.slice();
+
+    for (const moment of moments) {
+      if (Math.random() < memoryRate) {
+        if (exp.length < 400) {
+          exp.push(moment);
+        } else {
+          exp[Math.floor(Math.random() * exp.length)] = moment;
         }
       }
     }
-    trials = [];
+
+    console.log('moments', moments.length, moments[20], 'exp', exp.length);
+    return net.trainer.trainAsync(moments.concat(expCopy), {
+      log: 200,
+      iterations: 3000,
+      rate: .2,
+    }).then(function(result) {
+      console.log('done', result);
+      trials = [];
+    });
   }
 
   const agent = {
@@ -161,9 +188,15 @@ function newGame(p, agentWrapper, objectType, objectOffset) {
   object.style = defaultStyle;
 
   function doIteration() {
-    if (object.bounds.y + object.bounds.height >= agentBody.bounds.y) {
-      const collide = agentBody.bounds.x < object.bounds.x + object.bounds.width ||
-        object.bounds.x < agentBody.bounds.x + agentBody.bounds.width;
+    const ob = object.bounds;
+    const ab = agentBody.bounds;
+    if (ob.y + ob.height >= ab.y) {
+      // negate the case where they don't collide
+      const collide = !(
+        // they don't collide when agent right comes before object left
+        ab.x + ab.width < ob.x ||
+        // or when object right comes before agent left
+        ob.x + ob.width < ab.x);
       p.project.clear();
       const result = objectType === 'circle' ? collide : !collide;
       agentWrapper.finalize(result);
@@ -178,7 +211,6 @@ function newGame(p, agentWrapper, objectType, objectOffset) {
       const intersections = ray.getIntersections(object);
       for (const i of intersections) {
         const distance = i.point.getDistance(agentBody.position);
-        // console.log('hi', object.position, agentBody.position)
         if (distance < minDistance) {
           minDistance = distance;
         }
@@ -230,9 +262,11 @@ function testNNAgent() {
 
   const runGames = (a) => {
     const p = [];
-    for (let i = 0; i <= 100; i++) {
-      p.push(() => newGame(paper, a, 'circle', i - 50));
-      p.push(() => newGame(paper, a, 'diamond', i - 50));
+    const width = 100;
+    for (let idx = 0; idx < 20; idx++) {
+      const offset = Math.floor(Math.random() * width - width / 2);
+      p.push(() => newGame(paper, a, 'circle', offset));
+      p.push(() => newGame(paper, a, 'diamond', offset));
     }
     return promiseSerial(p);
   };
@@ -242,6 +276,12 @@ function testNNAgent() {
 
   console.log(agent.net.toJSON());
   Promise.resolve().then(() =>
+    report('before training', runGames(agent.testAgent))
+  ).then(() =>
+    runGames(agent)).then(() => agent.train()
+  ).then(() =>
+    runGames(agent)).then(() => agent.train()
+  ).then(() =>
     runGames(agent)).then(() => agent.train()
   ).then(() =>
     runGames(agent)).then(() => agent.train()
