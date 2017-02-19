@@ -86,7 +86,15 @@ function findIndexForOffset(offset, weights) {
 exports._findIndexForOffset = findIndexForOffset;
 
 function nnAgent() {
-  const net = new synaptic.Architect.Perceptron(rayCount, 5, 2);
+  const actions = [
+    [6, 0],
+    [3, 0],
+    [0, 0],
+    [0, 3],
+    [0, 6],
+  ];
+
+  const net = new synaptic.Architect.Perceptron(rayCount, 5, actions.length);
   const exp = [];
   const memoryRate = .2;
 
@@ -98,20 +106,18 @@ function nnAgent() {
     }
   }
 
-  const agentV = 5;
   let trials = [];
   let curr = [];
 
   function _step(input) {
     const actionProbs = net.activate(input);
-    const leftProb = actionProbs[0] / (actionProbs[0] + actionProbs[1]);
-    const actionIndex = Math.random() < leftProb ? 0 : 1;
+    const actionIndex = findIndexForOffset(Math.random(), actionProbs);
     curr.push({
       input,
       actionProbs,
       actionIndex,
     });
-    return Promise.resolve(actionIndex === 0 ? [agentV, 0] : [0, agentV]);
+    return Promise.resolve(actions[actionIndex]);
   }
 
   function step(input) {
@@ -136,14 +142,23 @@ function nnAgent() {
     for (const trial of trials) {
       for (let idx = 0; idx < trial.moments.length; idx++) {
         const moment = trial.moments[idx];
-        // the rewardProb varies linearly through the trial, from .55 to .95
-        const rewardProb = (idx / (trial.moments.length - 1)) * .4 + .55;
+        let actionProb;
+        let otherProbs;
+        if (trial.success) {
+          // the prob for a successful action we took varies linearly
+          // through the trial, from .55 to .95
+          actionProb = (idx / (trial.moments.length - 1)) * .4 + .55;
+          otherProbs = (1 - actionProb) / (actions.length - 1);
+        } else {
+          const otherProbMultiplier = 4;
+          // we make the actions we did not take 4x more likely than the action
+          // we took when we fail.
+          actionProb = 1 / ((actions.length - 1) * otherProbMultiplier + 1);
+          otherProbs = actionProb * otherProbMultiplier;
+        }
 
-        const expectedOutput = [rewardProb, rewardProb];
-        // reduce probability of losing action
-        const penalizeIndex = trial.success ?
-          (moment.actionIndex === 0 ? 1 : 0) : moment.actionIndex;
-        expectedOutput[penalizeIndex] = 1 - rewardProb;
+        const expectedOutput = actions.map(() => otherProbs);
+        expectedOutput[moment.actionIndex] = actionProb;
         moment.output = expectedOutput;
         moments.push(moment);
       }
@@ -163,7 +178,7 @@ function nnAgent() {
     console.log('moments', moments.length, moments[20], 'exp', exp.length);
     return net.trainer.trainAsync(moments.concat(expCopy), {
       log: 200,
-      iterations: 3000,
+      iterations: 1000,
       rate: .2,
     }).then(function(result) {
       console.log('done', result);
@@ -255,6 +270,20 @@ function newGame(p, agentWrapper, objectType, objectOffset) {
   return doIteration();
 }
 
+/**
+* Shuffles array in place. From http://stackoverflow.com/a/6274381
+* @param {Array} a items The array containing the items.
+*/
+function shuffle(a) {
+  var j, x, i;
+  for (i = a.length; i; i--) {
+    j = Math.floor(Math.random() * i);
+    x = a[i - 1];
+    a[i - 1] = a[j];
+    a[j] = x;
+  }
+}
+
 function promiseSerial(promiseCreators) {
   const results = [];
   function nextPromise() {
@@ -288,11 +317,13 @@ function testNNAgent() {
   const runGames = (a) => {
     const p = [];
     const width = 100;
-    for (let idx = 0; idx < 20; idx++) {
-      const offset = Math.floor(Math.random() * width - width / 2);
+    const games = 20;
+    for (let idx = 0; idx < games; idx++) {
+      const offset = Math.floor(idx * width / games - width / 2);
       p.push(() => newGame(paper, a, 'circle', offset));
       p.push(() => newGame(paper, a, 'diamond', offset));
     }
+    shuffle(p);
     return promiseSerial(p);
   };
 
@@ -302,14 +333,18 @@ function testNNAgent() {
   console.log(agent.net.toJSON());
   Promise.resolve().then(() =>
     report('before training', runGames(agent.testAgent))
-  ).then(() =>
-    runGames(agent)).then(() => agent.train()
-  ).then(() =>
-    runGames(agent)).then(() => agent.train()
-  ).then(() =>
-    runGames(agent)).then(() => agent.train()
-  ).then(() =>
-    runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runGames(agent)).then(() => agent.train()
   ).then(() =>
     report('after training', runGames(agent.testAgent))
   ).then(() => {
