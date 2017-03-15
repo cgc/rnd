@@ -111,7 +111,13 @@ function nnAgent() {
 
   function _step(input) {
     const actionProbs = net.activate(input);
-    const actionIndex = findIndexForOffset(Math.random(), actionProbs);
+    // const actionIndex = findIndexForOffset(Math.random(), actionProbs);
+    let actionIndex = 0;
+    for (let idx = 0; idx < actionProbs.length; idx++) {
+      if (actionProbs[actionIndex] < actionProbs[idx]) {
+        actionIndex = idx;
+      }
+    }
     curr.push({
       input,
       actionProbs,
@@ -327,24 +333,24 @@ function testNNAgent() {
     return promiseSerial(p);
   };
 
+  const runEpochs = (agent, n) => {
+    const p = [];
+    for (let idx = 0; idx < n; idx++) {
+      p.push(() => {
+        console.log('epoch', idx);
+        return runGames(agent).then(() => agent.train());
+      });
+    }
+    return promiseSerial(p);
+  };
+
 	paper.setup(canvas);
   const agent = nnAgent();
 
   console.log(agent.net.toJSON());
   Promise.resolve().then(() =>
     report('before training', runGames(agent.testAgent))
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
-  ).then(() => runGames(agent)).then(() => agent.train()
+  ).then(() => runEpochs(agent, 3)
   ).then(() =>
     report('after training', runGames(agent.testAgent))
   ).then(() => {
