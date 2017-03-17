@@ -69,7 +69,7 @@ def _list_events(year, month, html):
 def mbc_to_webcal():
     events_url = 'https://web.stanford.edu/group/mbc/cgi-bin/events.php'
     now = datetime.now()
-    next_month = now + relativedelta(month=1)
+    next_month = now + relativedelta(months=1)
 
     cal = Calendar()
     cal.add('X-WR-CALNAME', 'Stanford Center for Mind, Brain and Computation Events')
