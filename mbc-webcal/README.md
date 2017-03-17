@@ -14,7 +14,7 @@ test with
 python app.py
 ```
 
-deploy with
+deploy to AWS Lambda with
 ```bash
 chalice deploy
 ```
