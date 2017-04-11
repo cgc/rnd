@@ -1,10 +1,13 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn import linear_model, datasets
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import Imputer
-import math
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+from sklearn.feature_selection import chi2, SelectKBest
+from sklearn.metrics import classification_report
+from sklearn.ensemble import RandomForestClassifier
 
 
 title_to_enum = {
@@ -32,80 +35,103 @@ title_to_enum = {
 }
 
 
-value_mappings = {}
-
-
-def map_values_to_number(ds, attr):
-    if attr not in value_mappings:
-        unique_values = ds[attr].value_counts().index.tolist()
-        # so: order values by survival rate for that value
-        survival_rates = {}
-        for val in unique_values:
-            counts = ds.Survived[ds[attr] == val].value_counts(normalize=True)
-            survival_rates[val] = counts[1] if 1 in counts else 0
-        print survival_rates
-        vals = sorted(unique_values, key=lambda val: survival_rates[val])
-        value_mappings[attr] = dict(zip(vals, range(len(vals))))
-    map_from_val_to_number = value_mappings[attr]
-    print attr, map_from_val_to_number
-    ds[attr] = np.array([
-        map_from_val_to_number[val]
-        for val in ds[attr]
-    ])
-
-
 def make_features(ds):
-    ds['sex_int'] = 0
-    ds.sex_int[ds.Sex == 'male'] = 1
+    ds['Age'].fillna(np.median(ds['Age'].dropna()), inplace=True)
 
-    nans = np.isnan(ds.Age)
-    ds.Age[nans] = np.median(ds.Age[np.logical_not(nans)])
+    # C is most common cabin
+    ds['Cabin'].fillna('C', inplace=True)
+    ds['Cabin'] = ds['Cabin'].apply(lambda c: c[0])
 
-    ds['family_size'] = ds.Parch + ds.SibSp + 1
-    map_values_to_number(ds, 'family_size')
+    # is this useful?
+    # ds['family_size'] = ds.Parch + ds.SibSp + 1
 
-    ds['cabin_section'] = np.array([
-        # C is most common cabin
-        cabin[0] if isinstance(cabin, str) else 'C'
-        for cabin in ds.Cabin
-    ])
-    map_values_to_number(ds, 'cabin_section')
-
-    ds['title_int'] = np.array([
+    ds['Title'] = np.array([
         title_to_enum[n[n.index(',') + 2:n.index('.')].lower()]
         for n in ds.Name
     ])
-    map_values_to_number(ds, 'title_int')
+    del ds['Name']
+    del ds['Ticket']
+    del ds['PassengerId']
 
-    ds.Embarked = ds.Embarked.fillna('S')
-    ds.Embarked[ds.Embarked == 'C'] = 0
-    ds.Embarked[ds.Embarked == 'Q'] = 1
-    ds.Embarked[ds.Embarked == 'S'] = 2
-    map_values_to_number(ds, 'Embarked')
+    # S is most common
+    ds.Embarked.fillna('S', inplace=True)
 
-    ds.Fare = ds.Fare.fillna(np.median(ds.Fare[~np.isnan(ds.Fare)]))
+    ds.Fare.fillna(np.median(ds.Fare.dropna()), inplace=True)
 
+    ds = pd.get_dummies(ds, columns=[
+        'Sex',
+        'Title',
+        'Cabin',
+        'Embarked',
+    ])
+
+    return ds
+
+    '''
     return ds[[
         'Age', 'sex_int', 'Pclass', 'family_size', 'Fare',
         'title_int', 'cabin_section', 'Embarked'
     ]].values
-
+    '''
 
 train = pd.read_csv('train.csv')
+target = train[['Survived']].values.reshape((len(train),))
+del train['Survived']
 test = pd.read_csv('test.csv')
-ft = make_features(train)
-test_ft = make_features(test)
+all_ft = make_features(pd.concat([train, test]))
+ft = all_ft[:len(train)]
+test_ft = all_ft[len(train):]
 
-target = train[['Survived']].values
+print 'features', ft.shape, test_ft.shape, 'target', target.shape
 
-print 'target', target.shape
+if False:
+    steps = [
+        ('scaler', StandardScaler()),
+        ('poly', PolynomialFeatures()),
+        # ('chi', SelectKBest(k=30)),
+        ('clf', LogisticRegression()),
+    ]
 
-logreg = linear_model.LogisticRegression(C=1e5)
-logreg.fit(ft, target)
-print logreg.coef_
-print logreg.score(ft, target)
+    params = {
+        'clf__C': np.linspace(1e-2, 1),
+    }
+    model = GridSearchCV(Pipeline(steps), params, cv=10)
+    model.fit(ft, target)
+else:
+    params = {
+        'n_estimators': map(int, np.linspace(20, 150, 4)),
+    }
+    # from http://scikit-learn.org/stable/auto_examples/model_selection/randomized_search.html
+    '''
+    params = {"max_depth": [3, None],
+              "max_features": np.arange(1, 11, 3),
+              "min_samples_split": np.arange(2, 11, 3),
+              "min_samples_leaf": np.arange(1, 11, 3),
+              "bootstrap": [True, False],
+              "criterion": ["gini", "entropy"]}
+    '''
+    model = GridSearchCV(RandomForestClassifier(random_state=42), params, cv=10)
+    model.fit(ft, target)
 
-predictions = logreg.predict(test_ft)
+    # snagged this feature printing code from
+    # http://scikit-learn.org/stable/auto_examples/ensemble/plot_forest_importances.html
+    forest = model.best_estimator_
+    importances = forest.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in forest.estimators_],
+                 axis=0)
+    indices = np.argsort(importances)[::-1]
+
+    # Print the feature ranking
+    print("Feature ranking:")
+
+    for f, name in enumerate(ft.columns):
+        print("%d. feature %s %d (%f)" % (f + 1, name, indices[f], importances[indices[f]]))
+
+print 'best params from search', model.best_params_, 'best score', model.best_score_
+print 'model score', model.score(ft, target)
+print classification_report(target, model.predict(ft))
+
+predictions = model.predict(test_ft)
 
 result = pd.DataFrame()
 result['PassengerId'] = test['PassengerId']
