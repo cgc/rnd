@@ -1,6 +1,6 @@
 # prog3
 
-This project is a grid world where creatures are driven by interpreted code. The original assignment is an interpreter. I've built the grid world and behaviors as well in this Python port. Referenced https://github.com/rvnair/prog3.git in some places.
+This project is based on an assignment from CS315H, one of the honors programming classes at UT. It is a grid world where creatures behave according to interpreted code. The original assignment is an interpreter. I've also built the grid world and behaviors as well in this Python port. Referenced https://github.com/rvnair/prog3.git in some places.
 
 ![prog3 demo](demo.gif)
 
