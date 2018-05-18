@@ -3,6 +3,7 @@ extern crate image as im;
 
 use piston_window::*;
 
+#[derive(Clone, Copy)]
 struct Rectangle<T> {
     x: T,
     y: T,
@@ -33,14 +34,10 @@ fn mandel(x: f64, y: f64) -> u8 {
 
 fn draw_mandel(canvas: &mut im::ImageBuffer<im::Rgba<u8>, Vec<u8>>, window_rect: &Rectangle<u32>, mandel_rect: &Rectangle<f64>) {
   /*
-  let white = im::Rgba([255, 255, 255, 255]);
-  let black = im::Rgba([0, 0, 0, 255]);
-  */
-
-  /*
   Generated in matlab with:
   >> hi = round(hsv(64) * 255);
   >> fprintf(strjoin(arrayfun(@(x) cellstr(sprintf('im::Rgba([%s, 255]),\\n', strjoin(arrayfun(@(x) cellstr(num2str(x)), hi(x, :)), ', '))), 1:size(hi, 1)), ''))
+  And edited so 255 iteration is white.
   */
   let colors: [im::Rgba<u8>; 64] = [
   im::Rgba([255, 0, 0, 255]),
@@ -106,7 +103,7 @@ fn draw_mandel(canvas: &mut im::ImageBuffer<im::Rgba<u8>, Vec<u8>>, window_rect:
   im::Rgba([255, 0, 96, 255]),
   im::Rgba([255, 0, 72, 255]),
   im::Rgba([255, 0, 48, 255]),
-  im::Rgba([255, 0, 24, 255]),
+  im::Rgba([255, 255, 255, 255]),
   ];
 
   for x in 0..window_rect.width {
@@ -115,12 +112,7 @@ fn draw_mandel(canvas: &mut im::ImageBuffer<im::Rgba<u8>, Vec<u8>>, window_rect:
     for y in 0..window_rect.height {
       let fracy: f64 = (y as f32 / window_rect.height as f32).into();
       let my: f64 = mandel_rect.y + fracy * mandel_rect.height;
-      //canvas.put_pixel(x, y, if mandel(mx, my) < 255 { black } else { white });
       let itcount = mandel(mx, my);
-      /* grayscale!
-      let color = (-(itcount as i16) + 255) as u8;
-      canvas.put_pixel(x, y, im::Rgba([color, color, color, 255]));
-      */
       // using hsv colors
       let color = colors[(itcount / 4) as usize];
       canvas.put_pixel(x, y, color);
@@ -129,11 +121,15 @@ fn draw_mandel(canvas: &mut im::ImageBuffer<im::Rgba<u8>, Vec<u8>>, window_rect:
 
 }
 
+fn set_title(window: &mut PistonWindow, mandel_rect: &Rectangle<f64>) {
+    window.set_title(format!("Mandelbrot Viewer <{} {}>", mandel_rect.x, mandel_rect.y))
+}
+
 fn main() {
     let opengl = OpenGL::V3_2;
     let (width, height) = (600, 600);
     let mut window: PistonWindow =
-        WindowSettings::new("piston: paint", (width, height))
+        WindowSettings::new("Mandelbrot Viewer", (width, height))
         .exit_on_esc(true)
         .opengl(opengl)
         .build()
@@ -162,6 +158,9 @@ fn main() {
         height: 2.0,
     };
 
+    let mut mandel_history = Vec::<Rectangle<f64>>::new();
+
+    set_title(&mut window, &mandel_rect);
     draw_mandel(&mut canvas, &window_rect, &mandel_rect);
 
     while let Some(e) = window.next() {
@@ -182,16 +181,28 @@ fn main() {
                 let newcenterx = x / window_rect.width as f64 * mandel_rect.width + mandel_rect.x;
                 let newcentery = y / window_rect.height as f64 * mandel_rect.height + mandel_rect.y;
 
+                // Add current mandel bounds to history.
+                mandel_history.push(mandel_rect);
+
                 // Zoom in by reducing window size. Let current x/y be the center.
-                // TODO record these to make it easier to zoom out?
                 mandel_rect.width /= 3.0;
                 mandel_rect.height /= 3.0;
                 mandel_rect.x = newcenterx - mandel_rect.width / 2.0;
                 mandel_rect.y = newcentery - mandel_rect.height / 2.0;
 
                 // TODO make this happen on background thread?
+                set_title(&mut window, &mandel_rect);
                 draw_mandel(&mut canvas, &window_rect, &mandel_rect);
               }
+            }
+            if button == Button::Mouse(MouseButton::Right) {
+                if let Some(previous) = mandel_history.pop() {
+                    mandel_rect = previous;
+
+                    // TODO make this happen on background thread?
+                    set_title(&mut window, &mandel_rect);
+                    draw_mandel(&mut canvas, &window_rect, &mandel_rect);
+                }
             }
         };
         if let Some(pos) = e.mouse_cursor_args() {
