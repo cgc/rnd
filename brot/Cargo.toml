@@ -1,0 +1,8 @@
+[package]
+name = "brot"
+version = "0.1.0"
+authors = ["Carlos Correa <cgc@stanford.edu>"]
+
+[dependencies]
+piston_window = "0.79.0"
+image = "0.19.0"
