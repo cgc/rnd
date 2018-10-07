@@ -2,7 +2,7 @@
 
 This random project was a slightly hair-brained idea to programmatically generate one of my favorite
 wallpapers from iOS 7. I sometimes lose track of the background file and have to dig around to find it
-and one time wondered how hard it would be to programmatically generate it.
+and one time wondered how hard it would be to programmatically generate it. (This time, I found it [here](https://www.idownloadblog.com/2013/09/11/new-ios-7-wallpapers/).)
 
 This program models the vertical change in pixel intensity in the foreground and background (which have different
 changes in intensity!) of the image
