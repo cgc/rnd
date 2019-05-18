@@ -1,0 +1,26 @@
+[
+  {
+    "date": "2014-09-27T19:57:28", 
+    "from": "Carlos", 
+    "text": "Hello!", 
+    "to": "Test"
+  }, 
+  {
+    "date": "2014-09-27T19:59:25", 
+    "from": "Test", 
+    "text": "How's it goin", 
+    "to": "Carlos"
+  }, 
+  {
+    "date": "2014-09-28T03:44:16", 
+    "from": "Carlos", 
+    "text": "Nothing much", 
+    "to": "Test"
+  }, 
+  {
+    "date": "2014-09-28T20:15:43", 
+    "from": "Test", 
+    "text": "You?", 
+    "to": "Carlos"
+  }
+]
