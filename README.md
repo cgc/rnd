@@ -19,7 +19,11 @@ this repo has the code for some random projects and investigations
 Projects in other repos:
 
 [Caltrain schedule](http://carlos.correa.me/caltrain-leave-when/)
+
 [Hodgkin-Huxley simulator](http://carlos.correa.me/hhsim/)
+
 [Backgammon](http://carlos.correa.me/gammon/)
+
 [Clue Helper](https://github.com/cgc/clue-helper) - A programmatic clue solver written in JavaScript.
+
 [Simple Pinboard Chrome Extension](https://github.com/cgc/pinboard-chrome) - A Google Chrome extension I use to save bookmarks to Pinboard.in.
