@@ -1,34 +1,21 @@
-//!
-//! A demonstration of all non-primitive widgets available in Conrod.
-//!
-//!
-//! Don't be put off by the number of method calls, they are only for demonstration and almost all
-//! of them are optional. Conrod supports `Theme`s, so if you don't give it an argument, it will
-//! check the current `Theme` within the `Ui` and retrieve defaults from there.
-//!
-
 #[macro_use] extern crate conrod_core;
 extern crate conrod_glium;
-//#[macro_use] extern crate conrod_winit;
 extern crate glium;
-
 extern crate hidapi;
+
 use hidapi::HidApi;
-
-mod support;
-
 use glium::Surface;
 use std::sync::mpsc;
+
+mod support;
 
 /// This struct holds all of the variables used to demonstrate application data being passed
 /// through the widgets. If some of these seem strange, that's because they are! Most of these
 /// simply represent the aesthetic state of different parts of the GUI to offer visual feedback
 /// during interaction with the widgets.
-struct DemoApp {
+struct App {
     /// A vector of strings for drop_down_list demonstration.
     unit_names: Vec<String>,
-    /// The currently selected DropDownList color.
-    ddl_color: conrod_core::Color,
     /// We also need an Option<idx> to indicate whether or not an
     /// item is selected.
     selected_idx: Option<usize>,
@@ -53,20 +40,19 @@ fn option_vals(option: &str) -> (f64, &'static str, i8) {
     }
 }
 
-impl DemoApp {
+impl App {
     /// Constructor for the Demonstration Application model.
-    fn new() -> DemoApp {
+    fn new() -> App {
         let defaultkey = "Grams";
 
         let val = option_vals(defaultkey);
 
-        DemoApp {
+        App {
             unit_names: vec![
                 "Grams".to_string(),
                 "Kilograms".to_string(),
                 "Ounces".to_string(),
                 "Pounds".to_string()],
-            ddl_color: conrod_core::color::PURPLE,
             selected_idx: None,
             text: "Connecting...".to_string(),
             zero: 0,
@@ -78,7 +64,6 @@ impl DemoApp {
     }
 
     fn format_value(&self, value: u16) -> String {
-        //let fmt = format!("{}{}{}", "{:.0", self.format_places, "f}{}");
         // Doing all math as f64 to avoid overflow issues when result is negative.
         let converted = (value as f64 - self.zero as f64) * self.conversion;
         if self.format_places == 0 {
@@ -126,99 +111,11 @@ impl Scale {
         let res = ((array[6] as u16) << 8) + (array[7] as u16);
         return Ok(res);
     }
-
-    /*
-        return match HidApi::new() {
-            Err(e) => Err(e)
-            Ok(api) => match api.open(8755, 25379) {
-                Err(e) => Err(e)
-                Ok(device) => match device.read(&mut array) {
-                    Err(e) => Err(e)
-                    Ok(size) => {
-                        println!("{} {:?} {} {}", size, array, array[1], array[7]);
-                        return Ok(array[0]);
-                    }
-                }
-            }
-        }
-    */
 }
-
-
-/*
-    fn device(&mut self) -> &hidapi::HidResult<hidapi::HidDevice> {
-        if let Ok(_) = self.device {
-            return &self.device;
-        }
-        return match HidApi::new() {
-            Ok(api) => {
-                let d = api.open(8755, 25379);
-                match d {
-                    Ok(_) => {
-                        self.device = d;
-                        return &self.device;
-                    }
-                    Err(e) => &Err(e)
-                }
-            }
-            Err(e) => &Err(e)
-        }
-    }
-
-    fn read(&self) -> Result<u8, hidapi::HidError> {
-        return match self.device {
-            Ok(device) => {
-                let mut array: [u8; 8] = [0 ; 8];
-                return match device.read(&mut array) {
-                    Ok(size) => {
-                        println!("{} {:?} {} {}", size, array, array[1], array[7]);
-                        return Ok(array[0]);
-                    }
-                    Err(e) => Err(e)
-                }
-            }
-            Err(e) => Err(e)
-        }
-    }
-*/
-/*
-
-    fn read() {
-    }
-    match HidApi::new() {
-        Ok(api) => {
-            match api.open(8755, 25379) {
-                Ok(device) => {
-                    //println!("{:?}", device);
-                    let mut array: [u8; 8] = [0 ; 8];
-                    match device.read(&mut array) {
-                        Ok(size) => {
-                            println!("{} {:?}", size, array);
-                        }
-                        Err(e) => {
-                            println!("{}", e);
-                        }
-                    }
-                }
-                Err(e) => {
-                    println!("{}", e);
-                }
-            }
-            /*for device in api.devices() {
-                println!("{:#?}", device);
-            }*/
-        },
-        Err(e) => {
-            eprintln!("Error: {}", e);
-        },
-    }
-}
-*/
 
 
 fn main() {
     const WIDTH: u32 = 270;
-    //const WIDTH: u32 = 300;
     const HEIGHT: u32 = 200;
 
     // Build the window.
@@ -239,7 +136,6 @@ fn main() {
     let mut ids = Ids::new(ui.widget_id_generator());
 
     // Add a `Font` to the `Ui`'s `font::Map` from file.
-    //ui.fonts.insert_from_file("/System/Library/Fonts/Helvetica.ttc").unwrap();
     ui.fonts.insert_from_file("/Library/Fonts/Arial.ttf").unwrap();
 
     // A type used for converting `conrod_core::render::Primitives` into `Command`s that can be used
@@ -250,8 +146,9 @@ fn main() {
     let image_map = conrod_core::image::Map::<glium::texture::Texture2d>::new();
 
     // Our demonstration app that we'll control with our GUI.
-    let mut app = DemoApp::new();
+    let mut app = App::new();
 
+    // Spawn the thread that polls the USB device.
     let (sender, receiver) = mpsc::channel();
     let (termination_sender, termination_receiver) = mpsc::channel();
     std::thread::spawn(move|| {
@@ -281,7 +178,7 @@ fn main() {
                 }
                 Ok(weight) => {
                     // HACK when plugging a device in, the first reading is a 1.
-                    // Literally, 0x0001 in last 2 bytes.
+                    // Literally, 0x0001 in last 2 bytes. So, we skip it to get a real reading.
                     if weight != 1 {
                         if !app.initialized {
                             println!("Zero: {}", weight);
@@ -294,23 +191,6 @@ fn main() {
                 }
             }
         };
-        /*
-        app.text = match Scale::read() {
-            Err(e) => {
-                app.initialized = false;
-                println!("{}", e);
-                format!("Error {}", e).to_string()
-            }
-            Ok(weight) => {
-                if !app.initialized {
-                    app.zero = weight;
-                    app.initialized = true;
-                }
-                println!("{}", weight);
-                app.format_value(weight)
-            }
-        };
-        */
 
         // Handle all events.
         for event in event_loop.next(&mut events_loop, false) {
@@ -368,13 +248,9 @@ fn main() {
 widget_ids! {
     struct Ids {
         canvas,
-        canvas_x_scrollbar,
-        canvas_y_scrollbar,
         title,
         button,
-        slider_height,
-        border_width,
-        color_select,
+        unit_select,
     }
 }
 
@@ -385,21 +261,15 @@ widget_ids! {
 /// the `Ui` at their given indices. Every other time this get called, the `Widget`s will avoid any
 /// allocations by updating the pre-existing cached state. A new graphical `Element` is only
 /// retrieved from a `Widget` in the case that it's `State` has changed in some way.
-fn set_widgets(ui: &mut conrod_core::UiCell, app: &mut DemoApp, ids: &mut Ids) {
-    use conrod_core::{color, widget, Colorable, Borderable, Labelable, Positionable, Sizeable, Widget};
-    let border_width = 1.0;
+fn set_widgets(ui: &mut conrod_core::UiCell, app: &mut App, ids: &mut Ids) {
+    use conrod_core::{color, widget, Colorable, Labelable, Positionable, Sizeable, Widget};
 
-    // We can use this `Canvas` as a parent Widget upon which we can place other widgets.
     widget::Canvas::new()
-        //.border(border_width)
         .pad(10.0)
         .color(color::WHITE)
         .scroll_kids()
         .set(ids.canvas, ui);
-    //widget::Scrollbar::x_axis(ids.canvas).auto_hide(true).set(ids.canvas_y_scrollbar, ui);
-    //widget::Scrollbar::y_axis(ids.canvas).auto_hide(true).set(ids.canvas_x_scrollbar, ui);
 
-    // Text example.
     widget::Text::new(&app.text)
         .top_left_with_margins_on(ids.canvas, 10.0, 10.0)
         .w(120.*2.)
@@ -414,9 +284,7 @@ fn set_widgets(ui: &mut conrod_core::UiCell, app: &mut DemoApp, ids: &mut Ids) {
         .w_h(120.0, 50.0)
         .mid_left_of(ids.canvas)
         .down_from(ids.title, 25.0)
-        //.rgb(0.4, 0.75, 0.6)
         .color(button_color)
-        //.border(border_width)
         .label("Zero")
         .set(ids.button, ui)
         .was_clicked()
@@ -425,49 +293,19 @@ fn set_widgets(ui: &mut conrod_core::UiCell, app: &mut DemoApp, ids: &mut Ids) {
         app.initialized = false;
     }
 
-    // A demonstration using a DropDownList to select its own color.
     for selected_idx in widget::DropDownList::new(&app.unit_names, app.selected_idx)
         .w_h(120.0, 50.0)
-        //.right_from(ids.slider_height, 30.0) // Position right from widget 6 by 50 pixels.
         .right_from(ids.button, 10.0)
         .max_visible_items(4)
-        //.color(app.ddl_color)
         .color(button_color)
-        //.border(border_width)
-        //.border_color(app.ddl_color.plain_contrast())
         .label(&app.unit_names[0][..])
-        //.label_color(app.ddl_color.plain_contrast())
         .scrollbar_next_to()
-        .set(ids.color_select, ui)
+        .set(ids.unit_select, ui)
     {
         app.selected_idx = Some(selected_idx);
         let optionval = option_vals(&app.unit_names[selected_idx][..]);
-        //app.ddl_color = match &app.unit_names[selected_idx][..] {
         app.conversion = optionval.0;
         app.unit_string = optionval.1;
         app.format_places = optionval.2;
-/*
-        app.ddl_color = match &app.unit_names[selected_idx][..] {
-            "Black" => color::BLACK,
-            "White" => color::WHITE,
-            "Red"   => color::RED,
-            "Green" => color::GREEN,
-            "Blue"  => color::BLUE,
-            _       => color::PURPLE,
-        }
-*/
     }
-
-/*
-    units_to_grams = 1/2.674 # Guess based on seeing what other program does
-    grams_to_ounces = 1/28.3495
-    ounces_to_pounds = 1/16
-    units = {
-        'Grams': (units_to_grams, 'g', 0),
-        'Kilograms': (units_to_grams/1000, 'kg', 3),
-        'Ounces': (units_to_grams*grams_to_ounces, 'oz', 1),
-        'Pounds': (units_to_grams*grams_to_ounces*ounces_to_pounds, 'lb', 2),
-    }
-*/
-
 }
