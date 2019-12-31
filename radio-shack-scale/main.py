@@ -27,7 +27,10 @@ def usb_scale():
         def read():
             d = h.read(8)
             if d:
-                weight = d[-1] + ((d[-2]&0x0f) << 8)
+                # realized that 0xe??? can become 0xf??? with enough weight (approx 2 kg)
+                #weight = d[-1] + ((d[-2]&0x0f) << 8)
+                weight = d[-1] + (d[-2] << 8)
+                # HACK can add on if they're much below where we start? otherwise, not sure how to handle weights about 2.5kg
                 return weight
 
         yield read
@@ -41,24 +44,26 @@ def usb_scale():
 
 with usb_scale() as read:
 
-    zero = read()
-    defval = 'Grams'
-    conv, unit_string, places = units[defval]
-    shutdown = False
-
-    def format_read():
-        return ('{:.0'+str(places)+'f}{}').format((read() - zero) * conv, unit_string)
+    def format_value(value):
+        return ('{:.0'+str(places)+'f}{}').format((value - zero) * conv, unit_string)
 
     def zero_fn():
         global zero
         zero = read()
+        print(f'Zero: {zero} (raw)')
+
+    zero = 0
+    zero_fn()
+    defval = 'Grams'
+    conv, unit_string, places = units[defval]
+    shutdown = False
 
     counter = 0 
     def counter_label(label):
       def count():
         if shutdown:
             return
-        label.config(text=format_read())
+        label.config(text=format_value(read()))
         label.after(50, count)
       count()
 

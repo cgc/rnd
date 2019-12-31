@@ -4,3 +4,18 @@ A program to use a Radio Shack USB Scale I've had for some years. The scale has 
 
 ![](ui.png)
 ![](scale.jpg)
+
+Run the Rust version:
+```
+./radio-shack-scale
+```
+
+Or
+```
+cargo run --release
+```
+
+Or run the Python version:
+```
+python main.py
+```
