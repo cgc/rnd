@@ -16,6 +16,8 @@ this repo has the code for some random projects and investigations
 
 [EZproxy Princeton Redirect Chrome Extension](ezproxy-redirect) - A handy Google Chrome extension that redirects to Princeton's ezproxy URL for the current page. Handy when you're not on eduroam.
 
+[Radio Shack Scale](radio-shack-scale) - A little program to display the weight on a Radio Shack USB Scale I found at my mom's house.
+
 Projects in other repos:
 
 [Caltrain schedule](http://carlos.correa.me/caltrain-leave-when/)
