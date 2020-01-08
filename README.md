@@ -14,7 +14,7 @@ this repo has the code for some random projects and investigations
 
 [Generating my favorite iOS wallpaper](generate-favorite-wallpaper) - One evening I decided to figure out the simplest program that could generate one of my favorite iOS wallpapers.
 
-[EZproxy Princeton Redirect Chrome Extension](ezproxy-redirect) - A handy Google Chrome extension that redirects to Princeton's ezproxy URL for the current page. Handy when you're not on eduroam.
+[EZproxy Princeton Redirect Chrome Extension](ezproxy-redirect) - A handy Google Chrome extension that redirects to Princeton's ezproxy URL for the current page. Handy when you're not on eduroam. [Update: Though on mobile I've started using a bookmarklet [from Berkeley](https://guides.lib.berkeley.edu/ezproxy/browser-bookmarklet)]
 
 [Radio Shack Scale](radio-shack-scale) - A little program to display the weight on a Radio Shack USB Scale I found at my mom's house.
 
