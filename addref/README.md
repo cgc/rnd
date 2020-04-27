@@ -1,6 +1,6 @@
 # addref
 
-A small tool to append references to a file. Queries [ZoteroBib](https://zbib.org/)'s [translation server](https://github.com/zotero/translation-server). Python 3 version is `addref`,  Bash version is `addref.sh`, and Node.js version is `node/`.
+A small tool to append bibtex references to a file from a URL. Queries [ZoteroBib](https://zbib.org/)'s [translation server](https://github.com/zotero/translation-server). Python 3 version is `addref`,  Bash version is `addref.sh`, and Node.js version is `node/`.
 
 ```bash
 $ addref references.bib https://onlinelibrary.wiley.com/doi/abs/10.1080/03640210701802071
@@ -19,4 +19,9 @@ Adding @article{Goodman2008Rational,
 	date = {2008},
 	year = {2008},
 }
+```
+
+A way to simplify use is make an alias that hardcodes the references file in, making `addref $URL` work.
+```bash
+alias addref='~/code/addref/addref ~/notes/references.bib'
 ```
