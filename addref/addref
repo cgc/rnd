@@ -13,10 +13,15 @@ if __name__ == '__main__':
 
     destination, query = sys.argv[1:]
 
+    # Search zbib
     curl = ['curl', '-s', '--fail']
     search = subprocess.check_output(curl + ['-d', query, '-H', 'Content-Type: text/plain', f'{URL}/web'])
     bibtex = subprocess.check_output(curl + ['curl', '-s', '--fail', '-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
 
+    # Make file if it doesn't exist.
+    subprocess.check_call(['touch', destination])
+
+    # Avoid adding reference if it's already there.
     with open(destination, 'rb') as f:
         if bibtex in f.read():
             print('Already in references.')
@@ -24,9 +29,10 @@ if __name__ == '__main__':
 
     print('Adding', bibtex.decode('utf-8'))
 
+    # Adding to file.
     dt = datetime.now().astimezone().replace(microsecond=0).isoformat()
-
-    with open(destination, 'wb') as f:
+    with open(destination, 'ab') as f:
+        # Add header with timestamp and query to each entry
         f.write(f'% {dt} from {query}\n'.encode("utf-8"))
-        f.write(bibtex + b'\n')
+        f.write(bibtex.strip() + b'\n\n')
 
