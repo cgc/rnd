@@ -16,7 +16,7 @@ if __name__ == '__main__':
     # Search zbib
     curl = ['curl', '-s', '--fail']
     search = subprocess.check_output(curl + ['-d', query, '-H', 'Content-Type: text/plain', f'{URL}/web'])
-    bibtex = subprocess.check_output(curl + ['curl', '-s', '--fail', '-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
+    bibtex = subprocess.check_output(curl + ['-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
 
     # Make file if it doesn't exist.
     subprocess.check_call(['touch', destination])
