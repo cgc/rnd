@@ -1,14 +1,6 @@
 # addref
 
-A small tool to append references to a file. Uses [Citation.js](https://citation.js.org/) to look up a reference by URL from [ZoteroBib](https://zbib.org/)'s [translation server](https://github.com/zotero/translation-server).
-
-Set things up by installing dependencies
-
-```bash
-$ npm install
-```
-
-Then add some references!
+A small tool to append references to a file. Queries [ZoteroBib](https://zbib.org/)'s [translation server](https://github.com/zotero/translation-server). Python 3 version is `addref`,  Bash version is `addref.sh`, and Node.js version is `addref.js`.
 
 ```bash
 $ addref references.bib https://onlinelibrary.wiley.com/doi/abs/10.1080/03640210701802071

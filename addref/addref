@@ -1,4 +1,32 @@
-#!/usr/bin/env bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-export NODE_PATH=$DIR/node_modules
-exec node $DIR/addref.js "$@"
+#!/usr/bin/env python3
+
+import sys
+import subprocess
+from datetime import datetime
+
+URL = "https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod"
+
+if __name__ == '__main__':
+    if len(sys.argv) != 3:
+        print('Usage: addref REFERENCES_FILE QUERY')
+        sys.exit(1)
+
+    destination, query = sys.argv[1:]
+
+    curl = ['curl', '-s', '--fail']
+    search = subprocess.check_output(curl + ['-d', query, '-H', 'Content-Type: text/plain', f'{URL}/web'])
+    bibtex = subprocess.check_output(curl + ['curl', '-s', '--fail', '-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
+
+    with open(destination, 'rb') as f:
+        if bibtex in f.read():
+            print('Already in references.')
+            sys.exit(1)
+
+    print('Adding', bibtex.decode('utf-8'))
+
+    dt = datetime.now().astimezone().replace(microsecond=0).isoformat()
+
+    with open(destination, 'wb') as f:
+        f.write(f'% {dt} from {query}\n'.encode("utf-8"))
+        f.write(bibtex + b'\n')
+
