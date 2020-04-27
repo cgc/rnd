@@ -1,6 +1,6 @@
 # addref
 
-A small tool to append references to a file. Queries [ZoteroBib](https://zbib.org/)'s [translation server](https://github.com/zotero/translation-server). Python 3 version is `addref`,  Bash version is `addref.sh`, and Node.js version is `addref.js`.
+A small tool to append references to a file. Queries [ZoteroBib](https://zbib.org/)'s [translation server](https://github.com/zotero/translation-server). Python 3 version is `addref`,  Bash version is `addref.sh`, and Node.js version is `addref-node`.
 
 ```bash
 $ addref references.bib https://onlinelibrary.wiley.com/doi/abs/10.1080/03640210701802071
