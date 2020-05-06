@@ -19,7 +19,8 @@ On iOS,
 
 - [New York Times Cooking](https://cooking.nytimes.com/)
 - [King Arthur Flour](https://www.kingarthurflour.com/recipes)
-- All websites with [schema.org](https://schema.org/)-compliant usage of `recipeIngredient`. Includes Smitten Kitchen, allrecipes, and epicurious.
+- [bon appétit](https://www.bonappetit.com/)
+- All websites with [schema.org](https://schema.org/)-compliant usage of `recipeIngredient`. Includes [Smitten Kitchen](https://smittenkitchen.com/), allrecipes, and [epicurious](https://www.epicurious.com/).
 
 ## Developer
 
