@@ -1,6 +1,6 @@
 # Recipe calculator bookmarklet
 
-This bookmarklet makes it easy to tweak the quantities in a recipe! Once installed, simply click and have all number tied together, making it easy to adjust based on what you've got at hand.
+This bookmarklet makes it easy to tweak the quantities in a recipe! Once installed, simply click and have all recipe ingredient quantities tied together, making it easy to adjust based on what you've got at hand.
 
 [Recipe Calculator Link]({BOOKMARKLET})
 
@@ -11,7 +11,7 @@ On a desktop computer, drag the bookmarklet link above to your bookmarks toolbar
 On iOS,
 1. Bookmark this page (tap share icon, then bookmark icon).
 2. Copy this text: `{BOOKMARKLET}`
-3. Edit the bookmark you made in step 1, changing the address to the code.
+3. Go to bookmarks and tap "edit". Change the address to the bookmark you make in step 1 to the code.
 
 ## Supported sites:
 
@@ -19,7 +19,7 @@ On iOS,
 - [King Arthur Flour](https://www.kingarthurflour.com/recipes)
 - All websites with [schema.org](https://schema.org/)-compliant usage of `recipeIngredient`. Includes Smitten Kitchen.
 
-## Contributor
+## Developer
 
 Build new version of README with
 ```

@@ -141,6 +141,8 @@ function init() {
 
     setRatio(1.);
 
+    let mostRecentFocus;
+
     document.addEventListener('focusin', function(e) {
         if (e.target.classList.contains('EditableNumber')) {
             const p = e.target;
@@ -150,12 +152,18 @@ function init() {
             r.setEnd(p, 1);
             s.removeAllRanges();
             s.addRange(r);
+
+            mostRecentFocus = el.textContent;
         }
     });
 
     document.addEventListener('focusout', function(e) {
         if (e.target.classList.contains('EditableNumber')) {
-            editNumber(e.target, setRatio);
+            if (el.textContent != mostRecentFocus) {
+              editNumber(e.target, setRatio);
+            }
+
+            mostRecentFocus = null;
         }
     });
 
