@@ -153,13 +153,13 @@ function init() {
             s.removeAllRanges();
             s.addRange(r);
 
-            mostRecentFocus = el.textContent;
+            mostRecentFocus = e.target.textContent;
         }
     });
 
     document.addEventListener('focusout', function(e) {
         if (e.target.classList.contains('EditableNumber')) {
-            if (el.textContent != mostRecentFocus) {
+            if (e.target.textContent != mostRecentFocus) {
               editNumber(e.target, setRatio);
             }
 
