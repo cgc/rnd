@@ -141,8 +141,9 @@ function renderIngredient(ingredient, ratio) {
 
 function editNumber(el, setRatio, undoEdit) {
     const value = parseFloat(el.dataset.value);
+	let newValue;
     try {
-        const newValue = parseNumber(el.textContent);
+        newValue = parseNumber(el.textContent);
     } catch(e) {
 		undoEdit(el);
         errorDialog(e.message);
