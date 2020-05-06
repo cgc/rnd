@@ -19,11 +19,17 @@ On iOS,
 
 - [New York Times Cooking](https://cooking.nytimes.com/)
 - [King Arthur Flour](https://www.kingarthurflour.com/recipes)
-- All websites with [schema.org](https://schema.org/)-compliant usage of `recipeIngredient`. Includes Smitten Kitchen.
+- All websites with [schema.org](https://schema.org/)-compliant usage of `recipeIngredient`. Includes Smitten Kitchen, allrecipes, and epicurious.
 
 ## Developer
 
 Build new version of README with
 ```
-python make.py
+make build
 ```
+
+Start development server with, visit [here](http://localhost:8002/test.html)
+```
+make dev
+```
+
