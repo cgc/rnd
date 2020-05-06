@@ -124,7 +124,7 @@ function init() {
     const defaultSelector = '[itemprop="recipeIngredient"]';
     const selector = {
         'cooking.nytimes.com': '.recipe-ingredients > li > span',
-        'www.kingarthurflour.com': '.recipe .recipe__ingredients > ul > li',
+        'www.kingarthurflour.com': '.recipe .recipe__ingredients ul li',
     }[window.location.hostname] || defaultSelector;
 
     const ingredients = Array.from(document.querySelectorAll(selector));
