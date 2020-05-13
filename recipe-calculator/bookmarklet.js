@@ -45,7 +45,11 @@ function parseIngredient(ingredient) {
     // First we remove vulgar fractions
     for (let key of Object.keys(decodeVulgar)) {
         if (ingredient.indexOf(key) !== -1) {
-            ingredient = ingredient.replace(new RegExp(key, 'g'), decodeVulgar[key]);
+            const replaceValue = ' ' + decodeVulgar[key];
+            // Replace instances preceded by a space first.
+            ingredient = ingredient.replace(new RegExp(' '+key, 'g'), replaceValue);
+            // Then replace instances with no preceding space.
+            ingredient = ingredient.replace(new RegExp(key, 'g'), replaceValue);
         }
     }
 
@@ -156,7 +160,7 @@ function editNumber(el, setRatio, undoEdit) {
 // When adding the selector for a new website, make sure to include all ingredients as well as yield.
 const defaultSelector = (
     '[itemprop="recipeIngredient"],' +
-    // Epicurious uses this tag instead.
+    // Epicurious uses `ingredients` instead.
     '[itemprop="ingredients"],' +
     '[itemprop="recipeYield"]');
 const selector = {
