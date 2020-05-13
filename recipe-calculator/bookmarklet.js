@@ -90,14 +90,28 @@ function parseIngredient(ingredient) {
         }
 
         const matchString = match[0];
+
+        // Save index of remaining text for use at start of loop
+        lastIndex = match.index + matchString.length;
+
+        // Determine the unit
+        let unit;
+        for (const conversion of CONVERSIONS_LIST) {
+            for (const u of conversion.units) {
+                const queryString = ' ' + u;
+                if (ingredient.slice(lastIndex).startsWith(queryString)) {
+                    unit = conversion.units[0];
+                    lastIndex += queryString.length;
+                }
+            }
+        }
+
         result.push({
             type: 'number',
             text: matchString,
             value: parseNumber(matchString),
+            unit,
         });
-
-        // Save index of remaining text for use at start of loop
-        lastIndex = match.index + matchString.length;
     }
 
     addText(null);
@@ -132,13 +146,60 @@ function renderNumber(n) {
     return v;
 }
 
-function renderIngredient(ingredient, ratio) {
-    return ingredient.map(i => {
-        if (i.type == 'text') {
-            return i.text;
-        } else if (i.type == 'number') {
-            let v = renderNumber(ratio*i.value);
-            return '<span contenteditable class="EditableNumber" data-value="'+i.value+'">'+v+'</span>';
+const CONVERSIONS_LIST = [];
+const CONVERSIONS = {};
+const RELATED_CONVERSIONS = {};
+
+function addConversionSet(conversions) {
+    for (const c of conversions) {
+        CONVERSIONS_LIST.push(c);
+        for (const unit of c.units) {
+            RELATED_CONVERSIONS[unit] = conversions;
+            CONVERSIONS[unit] = c;
+        }
+    }
+}
+
+addConversionSet([
+    {units: ['teaspoon', 'teaspoons', 'tsp'], scale: 1/48},
+    {units: ['tablespoon', 'tablespoons', 'tbsp'], scale: 1/16},
+    {units: ['cup', 'cups'], scale: 1},
+    {units: ['pint', 'pints'], scale: 2},
+    {units: ['quart', 'quarts'], scale: 4},
+    {units: ['gallon', 'gallons'], scale: 16},
+]);
+
+function renderUnitSelector(quantity, unit, ratio) {
+    const cs = RELATED_CONVERSIONS[quantity.unit];
+    const options = cs.map((c) => {
+        const selected = c.units.indexOf(unit) == -1 ? '' : 'selected';
+        const v = selected ? '' : renderNumber(ratio * convertQuantity(quantity, c.units[0]));
+        return `<option value="${c.units[0]}" ${selected}>${v} ${c.units[0]}</option>`;
+    });
+    return `<select class="EditableUnit">${options}</select>`;
+}
+
+function convertQuantity(quantity, unit) {
+    if (!unit) {
+        return quantity.value;
+    }
+    return quantity.value * CONVERSIONS[quantity.unit].scale / CONVERSIONS[unit].scale;
+}
+
+function renderIngredient(ingredientIdx, ingredient, ratio, units) {
+    return ingredient.map((q, quantityIdx) => {
+        if (q.type == 'text') {
+            return q.text;
+        } else if (q.type == 'number') {
+            const unit = units[quantityIdx];
+            const converted = convertQuantity(q, unit);
+            const v = renderNumber(ratio*converted);
+            const number = '<span contenteditable class="EditableNumber" data-value="'+converted+'">'+v+'</span>';
+            let editableUnit;
+            if (unit) {
+                editableUnit = renderUnitSelector(q, unit, ratio);
+            }
+            return `<span class="EditableQuantity" data-idx="${ingredientIdx},${quantityIdx}">${number}${editableUnit || ''}</span>`;
         }
     }).join('');
 }
@@ -197,16 +258,32 @@ function init() {
         return;
     }
 
-    const state = { };
+    const state = {
+        ratio: 1.,
+        units: parsed.map(i => i.map(q => q.unit)),
+    };
 
-    function setRatio(ratio) {
-        state.ratio = ratio;
+    function setState(nextState) {
+        if (nextState.hasOwnProperty('ratio')) {
+            state.ratio = nextState.ratio;
+        } else if (nextState.hasOwnProperty('units')) {
+            for (const ingredientIdx of Object.keys(nextState.units)) {
+                for (const quantityIdx of Object.keys(nextState.units[ingredientIdx])) {
+                    state.units[ingredientIdx][quantityIdx] = nextState.units[ingredientIdx][quantityIdx];
+                }
+            }
+        }
         ingredients.forEach((el, idx) => {
-            el.innerHTML = renderIngredient(parsed[idx], state.ratio);
+            el.innerHTML = renderIngredient(idx, parsed[idx], state.ratio, state.units[idx]);
         });
     }
 
-    setRatio(1.);
+    // Helper function for ratio code.
+    function setRatio(ratio) {
+        setState({ratio});
+    }
+
+    setState({});
 
     let mostRecentFocus;
 
@@ -246,6 +323,20 @@ function init() {
                 e.preventDefault();
                 editNumber(e.target, setRatio, undoEdit);
             }
+        }
+    });
+
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('EditableUnit')) {
+            const el = e.target;
+            const editableQuantity = el.parentElement;
+            const unit = el.options[el.selectedIndex].value;
+            const [ingredientIdx, quantityIdx] = editableQuantity.dataset.idx.split(',').map(i => parseInt(i, 10));
+            setState({units: {
+                [ingredientIdx]: {
+                    [quantityIdx]: unit,
+                },
+            }});
         }
     });
 }

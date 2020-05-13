@@ -11,7 +11,7 @@ with open('bookmarklet.js') as f:
         if comment in line:
             line = line[:line.index(comment)]
         line = line.strip()
-        if line and line[-1] not in '`,{};':
+        if line and line[-1] not in '`,{};[':
             print('Line {} may have bad ending: {}'.format(idx, line))
         result.append(line)
     code = ''.join(result)
