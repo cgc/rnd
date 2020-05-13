@@ -1,22 +1,22 @@
 const decodeVulgar = {
-  "\u00bd": "1/2",
-  "\u2153": "1/3",
-  "\u2154": "2/3",
-  "\u00bc": "1/4",
-  "\u00be": "3/4",
-  "\u2155": "1/5",
-  "\u2156": "2/5",
-  "\u2157": "3/5",
-  "\u2158": "4/5",
-  "\u2159": "1/6",
-  "\u215a": "5/6",
-  "\u2150": "1/7",
-  "\u215b": "1/8",
-  "\u215c": "3/8",
-  "\u215d": "5/8",
-  "\u215e": "7/8",
-  "\u2151": "1/9",
-  "\u2152": "1/10",
+    "\u00bd": "1/2",
+    "\u2153": "1/3",
+    "\u2154": "2/3",
+    "\u00bc": "1/4",
+    "\u00be": "3/4",
+    "\u2155": "1/5",
+    "\u2156": "2/5",
+    "\u2157": "3/5",
+    "\u2158": "4/5",
+    "\u2159": "1/6",
+    "\u215a": "5/6",
+    "\u2150": "1/7",
+    "\u215b": "1/8",
+    "\u215c": "3/8",
+    "\u215d": "5/8",
+    "\u215e": "7/8",
+    "\u2151": "1/9",
+    "\u2152": "1/10",
 };
 
 function parseNumber(numberString) {
@@ -145,11 +145,11 @@ function renderIngredient(ingredient, ratio) {
 
 function editNumber(el, setRatio, undoEdit) {
     const value = parseFloat(el.dataset.value);
-	let newValue;
+    let newValue;
     try {
         newValue = parseNumber(el.textContent);
     } catch(e) {
-		undoEdit(el);
+        undoEdit(el);
         errorDialog(e.message);
         return;
     }
@@ -162,7 +162,8 @@ const defaultSelector = (
     '[itemprop="recipeIngredient"],' +
     // Epicurious uses `ingredients` instead.
     '[itemprop="ingredients"],' +
-    '[itemprop="recipeYield"]');
+    '[itemprop="recipeYield"]'
+);
 const selector = {
     'cooking.nytimes.com': '.recipe-ingredients > li > span, .recipe-yield-value',
     'www.kingarthurflour.com': '.recipe .recipe__ingredients ul li, .stat__item--yield',
@@ -223,11 +224,11 @@ function init() {
         }
     });
 
-	function undoEdit(el) {
-		if (mostRecentFocus) {
-			el.textContent = mostRecentFocus;
-		}
-	}
+    function undoEdit(el) {
+        if (mostRecentFocus) {
+            el.textContent = mostRecentFocus;
+        }
+    }
 
     document.addEventListener('focusout', function(e) {
         if (e.target.classList.contains('EditableNumber')) {
@@ -243,16 +244,16 @@ function init() {
         if (e.target.classList.contains('EditableNumber')) {
             if (e.keyCode == 13) {
                 e.preventDefault();
-			    editNumber(e.target, setRatio, undoEdit);
+                editNumber(e.target, setRatio, undoEdit);
             }
         }
     });
 }
 
 function addStyle(styleString) {
-  const style = document.createElement('style');
-  style.textContent = styleString;
-  document.head.append(style);
+    const style = document.createElement('style');
+    style.textContent = styleString;
+    document.head.append(style);
 }
 
 addStyle(`
@@ -261,7 +262,7 @@ addStyle(`
     border-radius: 2px;
     padding: 0 2px;
     line-height: 1.4rem;
-}
-`);
+}`
+);
 
 init();
