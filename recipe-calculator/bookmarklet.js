@@ -96,12 +96,17 @@ function parseIngredient(ingredient) {
 
         // Determine the unit
         let unit;
+        let modifier;
+        const MODIFIERS = ['', 'heaped', 'slightly heaped'].map(s => s.trim() ? s.trim()+' ' : s.trim());
         for (const conversion of CONVERSIONS_LIST) {
             for (const u of conversion.units) {
-                const queryString = ' ' + u;
-                if (ingredient.slice(lastIndex).startsWith(queryString)) {
-                    unit = conversion.units[0];
-                    lastIndex += queryString.length;
+                for (const m of MODIFIERS) {
+                    const queryString = ' ' + m + u;
+                    if (ingredient.slice(lastIndex).startsWith(queryString)) {
+                        modifier = m;
+                        unit = conversion.units[0];
+                        lastIndex += queryString.length;
+                    }
                 }
             }
         }
@@ -111,7 +116,19 @@ function parseIngredient(ingredient) {
             text: matchString,
             value: parseNumber(matchString),
             unit,
+            modifier,
         });
+
+        // HACK Here awe see if the previous number is part of a range in a heuristic fashion.
+        if (result.length >= 3 && unit) {
+            const maybeRangeStart = result[result.length - 3];
+            const maybeRange = result[result.length - 2];
+            const maybeRangeEnd = result[result.length - 1];
+            const rangeText = ['to', '-'];
+            if (!maybeRangeStart.unit && maybeRange.type == 'text' && rangeText.indexOf(maybeRange.text.trim()) !== -1) {
+                maybeRangeStart.unit = maybeRangeEnd.unit;
+            }
+        }
     }
 
     addText(null);
@@ -152,6 +169,12 @@ const RELATED_CONVERSIONS = {};
 
 function addConversionSet(conversions) {
     for (const c of conversions) {
+        // Modifications
+        c.label = c.units[0];
+        c.units = withPlurals(c.units);
+        // This makes sure we find plurals first.
+        c.units.reverse();
+
         CONVERSIONS_LIST.push(c);
         for (const unit of c.units) {
             RELATED_CONVERSIONS[unit] = conversions;
@@ -160,21 +183,25 @@ function addConversionSet(conversions) {
     }
 }
 
+function withPlurals(strings) {
+    return strings.concat(strings.map(s => s+'s'));
+}
+
 addConversionSet([
-    {units: ['teaspoon', 'teaspoons', 'tsp'], scale: 1/48},
-    {units: ['tablespoon', 'tablespoons', 'tbsp'], scale: 1/16},
-    {units: ['cup', 'cups'], scale: 1},
-    {units: ['pint', 'pints'], scale: 2},
-    {units: ['quart', 'quarts'], scale: 4},
-    {units: ['gallon', 'gallons'], scale: 16},
+    {units: ['teaspoon', 'tsp'], scale: 1/48},
+    {units: ['tablespoon', 'tbsp'], scale: 1/16},
+    {units: ['cup'], scale: 1},
+    {units: ['pint'], scale: 2},
+    {units: ['quart'], scale: 4},
+    {units: ['gallon'], scale: 16},
 ]);
 
 function renderUnitSelector(quantity, unit, ratio) {
     const cs = RELATED_CONVERSIONS[quantity.unit];
     const options = cs.map((c) => {
         const selected = c.units.indexOf(unit) == -1 ? '' : 'selected';
-        const v = selected ? '' : renderNumber(ratio * convertQuantity(quantity, c.units[0]));
-        return `<option value="${c.units[0]}" ${selected}>${v} ${c.units[0]}</option>`;
+        const v = selected ? '' : renderNumber(ratio * convertQuantity(quantity, c.label));
+        return `<option value="${c.label}" ${selected}>${v} ${c.label}</option>`;
     });
     return `<select class="EditableUnit">${options}</select>`;
 }
@@ -199,7 +226,7 @@ function renderIngredient(ingredientIdx, ingredient, ratio, units) {
             if (unit) {
                 editableUnit = renderUnitSelector(q, unit, ratio);
             }
-            return `<span class="EditableQuantity" data-idx="${ingredientIdx},${quantityIdx}">${number}${editableUnit || ''}</span>`;
+            return `<span class="EditableQuantity" data-idx="${ingredientIdx},${quantityIdx}">${number} ${q.modifier || ''}${editableUnit || ''}</span>`;
         }
     }).join('');
 }
