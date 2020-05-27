@@ -7,16 +7,27 @@ from datetime import datetime
 URL = "https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod"
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print('Usage: addref REFERENCES_FILE QUERY')
+    if len(sys.argv) not in (3,4):
+        print('Usage: addref REFERENCES_FILE QUERY [--preview]')
         sys.exit(1)
 
-    destination, query = sys.argv[1:]
+    # Parse args
+    argv = list(sys.argv)
+    # Parse out preview
+    preview = '--preview' in argv
+    if preview:
+        argv.pop(argv.index('--preview'))
+    destination, query = argv[1:]
 
     # Search zbib
     curl = ['curl', '-s', '--fail']
     search = subprocess.check_output(curl + ['-d', query, '-H', 'Content-Type: text/plain', f'{URL}/web'])
     bibtex = subprocess.check_output(curl + ['-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
+
+    # Exit early if doing a preview.
+    if preview:
+        print('Preview', bibtex.decode('utf-8'))
+        sys.exit(0)
 
     # Make file if it doesn't exist.
     subprocess.check_call(['touch', destination])
