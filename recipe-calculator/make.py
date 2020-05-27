@@ -21,5 +21,10 @@ with open('bookmarklet.js') as f:
 with open('README.md.template') as f:
     readme = f.read()
 
-with open('README.md', 'w') as f:
-    f.write(readme.format(BOOKMARKLET=bookmarklet))
+#with open('README.md', 'w') as f:
+#    #f.write(readme.format(BOOKMARKLET=bookmarklet))
+#    f.write(readme.replace('{BOOKMARKLET}', bookmarklet))
+
+import json
+with open('../_data/recipe.json', 'w') as f:
+    json.dump(dict(BOOKMARKLET=bookmarklet), f)
