@@ -45,7 +45,14 @@ function update(e) {
         img.src = getImage(img.getAttribute('src'));
     }
     try {
-        renderMathInElement(content, { throwOnError: false });
+        renderMathInElement(content, {
+            throwOnError: false,
+            // From github.com/KaTeX/KaTeX/issues/712#issuecomment-303618254
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false},
+            ],
+        });
     } catch (e) {
         console.log('Math error', e);
     }

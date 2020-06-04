@@ -2,13 +2,15 @@
 title: Overleaf-Markdown
 ---
 
-# Overleaf-Markdown bookmarklet
+# Overleaf-Markdown bookmark
 
-This bookmarklet adds support to overleaf for a markdown-based project using real-time compilation of markdown and latex (via KaTeX).
+This bookmark adds support to Overleaf for real-time compilation of Markdown and LaTeX (via KaTeX). To use, open or create a project with Markdown files (make sure to use `.md` as a file extension) then click on this bookmark.
+
+LaTeX expressions like `$x=3$` are compiled via [KaTeX](https://katex.org/). For inline math, use one dollar sign `$x=3$`. For display mode, use two dollar signs `$$x=3$$`.
 
 ## Installation
 
-On a desktop computer, drag the bookmarklet link above to your bookmarks toolbar. To use it, go to a recipe and click on the bookmark.
+On a desktop computer, drag this bookmarklet link to your bookmarks toolbar. To use it, visit your Overleaf project with markdown files and click on the bookmark.
 
 [Overleaf-Markdown link]({{site.data.overleaf_markdown.BOOKMARKLET}})
 
