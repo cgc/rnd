@@ -1,0 +1,2 @@
+build:
+		python make.py
