@@ -28,7 +28,9 @@ Object.assign(content.style, {
     width: '100%',
     height: '100%',
     background: 'white',
-    padding: '1rem',
+    padding: '1rem 1rem 3rem 1rem',
+    overflow: 'scroll',
+    boxSizing: 'border-box',
 });
 
 function getAceEditor() {
@@ -52,13 +54,16 @@ function update(e) {
 function init() {
     const docs = angular.element(document.querySelector('#ide-body')).scope().docs;
     const isMD = docs.find(d => d.doc.selected).path.endsWith('.md');
+    const validationProblems = document.querySelector('.pdf-validation-problems');
 
     if (isMD) {
         content.style.display = 'block';
+        validationProblems.style.display = 'none';
         update();
-        getAceEditor().getSession().getDocument().on('change', update)
+        getAceEditor().getSession().getDocument().on('change', update);
     } else {
         content.style.display = 'none';
+        validationProblems.style.display = 'block';
     }
 }
 
@@ -68,7 +73,7 @@ angular.element(document.querySelector('#editor')).scope().$on('doc:opened', fun
     setTimeout(() => {
         console.log(e);
         init();
-    }, 0)
+    }, 0);
 });
 
 function get$scope() {
@@ -78,7 +83,7 @@ function get$scope() {
 function getImage(src) {
     const $scope = angular.element(document.querySelector('.ui-layout-pane-west')).scope();
     const root = $scope.rootFolder;
-    const fileToEntity = makex(root);
+    const fileToEntity = flattenFolderTree(root);
     const entity = fileToEntity[src];
     if (!entity) {
         return;
@@ -93,8 +98,7 @@ function getEntityForHref(href) {
 
     // old...
     const $scope = angular.element(document.querySelector('.ui-layout-pane-west')).scope();
-    const root = $scope.rootFolder;
-    const fileToEntity = makex(root);
+    const fileToEntity = flattenFolderTree($scope.rootFolder);
     return fileToEntity[href];
 }
 
@@ -115,20 +119,18 @@ content.addEventListener('click', function(e) {
         }
     }
     console.log(e); 
-})
+});
 
-// to switch to other files $0.querySelector('[ng-click]').click(), will need to reach into output of marked()
-
-// angular.element(document.querySelector('.ui-layout-pane-west')).scope().rootFolder
-//
-// 
-
-function makex(folder, prefix) {
+function flattenFolderTree(folder, prefix) {
+    /*
+     * Returns a flattened version of the files in the folder tree, a dictionary
+     * with full path to file as key and file object as value.
+     */
     prefix = prefix || '';
     let result = {};
     for (const f of folder.children) {
         if (f.type == 'folder') {
-            Object.assign(result, makex(f, prefix + f.name + '/'));
+            Object.assign(result, flattenFolderTree(f, prefix + f.name + '/'));
         } else {
             result[prefix+f.name] = f;
         }

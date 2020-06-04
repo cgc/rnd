@@ -8,7 +8,8 @@ with open('overleaf-markdown.js') as f:
     result = []
     for idx, line in enumerate(f.readlines()):
         comment = '//'
-        if comment in line:
+        # HACK this will skip comments on lines with URLs
+        if comment in line and 'https://' not in line:
             line = line[:line.index(comment)]
         line = line.strip()
         if line and line[-1] not in '`,{};[':
