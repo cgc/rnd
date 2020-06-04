@@ -23,7 +23,8 @@ On iOS,
 
 <script>
 function copy() {
-  const p = document.querySelector('code');
+  const p = Array.from(document.querySelectorAll('code')).find(
+    el => el.innerHTML.startsWith('javascript:'));
   const r = document.createRange();
   r.setStart(p, 0);
   r.setEnd(p, 1);
