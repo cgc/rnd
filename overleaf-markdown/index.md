@@ -15,7 +15,7 @@ On a desktop computer, drag the bookmarklet link above to your bookmarks toolbar
 On iOS,
 1. Bookmark this page (tap share icon, then bookmark icon).
 2. <a href="#" onclick="copy();return false;">Click here</a> to copy the bookmark or select and copy it below.
-<code style="display: block;overflow: hidden;white-space: nowrap;">{{site.data.recipe.BOOKMARKLET}}</code>
+<code style="display: block;overflow: hidden;white-space: nowrap;">{{site.data.overleaf_markdown.BOOKMARKLET}}</code>
 3. Go to bookmarks and tap "edit". Paste in the address you copied in the previous step.
 4. Try it out: Go to a recipe and click on the bookmark!
 
