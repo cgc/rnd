@@ -19,7 +19,7 @@ On iOS,
 2. <a href="#" onclick="copy();return false;">Click here</a> to copy the bookmark or select and copy it below.
 <code style="display: block;overflow: hidden;white-space: nowrap;">{{site.data.overleaf_markdown.BOOKMARKLET}}</code>
 3. Go to bookmarks and tap "edit". Paste in the address you copied in the previous step.
-4. Try it out: Go to a recipe and click on the bookmark!
+4. Try it out: Go to your overleaf project and click on the bookmark!
 
 <script>
 function copy() {
