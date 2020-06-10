@@ -241,6 +241,29 @@ content.addEventListener('click', function(e) {
     }
 });
 
+content.addEventListener('dblclick', function(e) {
+  let el = e.target;
+  if (el == content) {
+    return;
+  }
+  // Find top-level div that this element is in.
+  while (el.parentElement !== content) {
+    el = el.parentElement;
+  }
+  // What's the index of the top-level div?
+  const idx = Array.from(content.children).indexOf(el);
+  // Figure out how many non-empty lines came before it.
+  const linesBefore = prevInputs.slice(0, idx).reduce((acc, val) => {
+    return acc + val.split('\n').length;
+  }, 0);
+  const editor = getAceEditor();
+  const lines = editor.getSession().getDocument().getAllLines();
+  // Now, filter out empty lines & find the line for the target.
+  const line = lines.map((l, i) => [l, i]).filter(([l, i]) => l != '')[linesBefore][1];
+  // Go to the line! Editor seems to use 1-based indexing.
+  editor.gotoLine(line+1);
+});
+
 function flattenFolderTree(folder, prefix) {
     /*
      * Returns a flattened version of the files in the folder tree, a dictionary
