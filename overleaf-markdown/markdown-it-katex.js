@@ -169,11 +169,11 @@ function math_plugin(md, options) {
             if(options.throwOnError){ console.log(error); }
             return latex;
         }
-    }
+    };
 
     var blockRenderer = function(tokens, idx){
         return  katexBlock(tokens[idx].content) + '\n';
-    }
+    };
 
     md.inline.ruler.after('escape', 'math_inline', math_inline);
     md.block.ruler.after('blockquote', 'math_block', math_block, {
