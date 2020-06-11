@@ -1,10 +1,8 @@
 this repo has the code for some random projects and investigations
 
-[tf-nonlinearity](tf-nonlinearity) - A project to explore artifical neural network approximations to various non-linear functions.
+[Recipe Calculator](recipe-calculator) - A bookmarklet that makes it easy to scale a recipe up or down based on the ingredients you have. Install [here](http://carlos.correa.me/rnd/recipe-calculator/).
 
-
-[mbc-webcal](mbc-webcal) - A dynamically generated webcal for the Stanford Center for Mind, Brain and Computation parsed from the HTML of the events page.
-
+[Overleaf-Markdown plugin](overleaf-markdown) - A bookmarklet that adds live-preview for Markdown documents, with support for math via KaTeX. Install [here](http://carlos.correa.me/rnd/overleaf-markdown/).
 
 [CS315H's prog3](cs315h-prog3) - Assignment from a class at UT. It's a grid world where creatures behave based on an interpreter behavior file. I've rewritten the grid world and interpreter in Python.
 
@@ -18,7 +16,15 @@ this repo has the code for some random projects and investigations
 
 [Radio Shack Scale](radio-shack-scale) - A little program to display the weight on a Radio Shack USB Scale I found at my mom's house.
 
+[tf-nonlinearity](tf-nonlinearity) - A project to explore artifical neural network approximations to various non-linear functions.
+
+[mbc-webcal](mbc-webcal) - A dynamically generated webcal for the Stanford Center for Mind, Brain and Computation parsed from the HTML of the events page.
+
 Projects in other repos:
+
+[Pitchify2](https://github.com/cgc/pitchify2) - Simple listing of Pitchfork reviews with links to Spotify & Pitchfork review. Visit [here](http://carlos.correa.me/pitchify2/reviews/).
+
+[Take Note](https://github.com/cgc/take-note) - A browser-based note-taking application with sync to GitHub. Designed to work offline & sync when possible.
 
 [Caltrain schedule](http://carlos.correa.me/caltrain-leave-when/)
 
