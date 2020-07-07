@@ -139,7 +139,9 @@ function getAceEditor() {
 
 let prevInputs = [];
 function update(e) {
-    const md = markdownit();
+    const md = markdownit({
+      html: true,
+    });
     math_plugin(md);
 
     const editor = getAceEditor();
