@@ -254,7 +254,7 @@ const defaultSelector = (
 );
 const selector = {
     'cooking.nytimes.com': '.recipe-ingredients > li > span, .recipe-yield-value',
-    'www.kingarthurflour.com': '.recipe .recipe__ingredients ul li, .stat__item--yield',
+    'www.kingarthurbaking.com': '.recipe .recipe__ingredients ul li, .stat__item--yield',
     'www.bonappetit.com': '.ingredients .ingredients__text',
 }[window.location.hostname] || defaultSelector;
 
