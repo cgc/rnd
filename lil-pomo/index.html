@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Little Pomo</title>
+  <title>little pomo</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
   <style>
     .tomato {
@@ -54,7 +54,7 @@
       <button onclick="start()">be a pomo</button>
       <button id="notifButton" onclick="requestNotify()">enable notifications</button>
       <p>
-        <img src="favicon.png" style="margin-bottom:-11px" /> is from <a href="https://openmoji.org/library/#group=food-drink&emoji=1F345">OpenMoji</a> 
+        <img src="favicon.png" style="margin-bottom:-11px" /> is from <a href="https://openmoji.org/library/#group=food-drink&emoji=1F345">OpenMoji</a>
         </p>
     </div>
   <div id=cover>
@@ -93,9 +93,7 @@ async function completionSound() {
 function hi(lim) {
   stop.disabled = false;
   let cancel = false;
-  let resolve;
 	const start = Date.now();
-  const p = new Promise((res, rej) => {resolve = res;});
 
   cover.classList.add('active');
 
@@ -105,7 +103,6 @@ function hi(lim) {
   	if (cancel || frac > 1) {
       cover.classList.remove('active');
       cover.style.transform = `translate(0, 0)`;
-      resolve(cancel);
       return;
     }
     window.requestAnimationFrame(anim);
@@ -117,7 +114,9 @@ function hi(lim) {
     stop.disabled = true;
   };
 
-  return p;
+  return setTimeoutPromise(lim).then(() => {
+    return cancel;
+  });
 }
 
 function requestNotify() {
@@ -126,6 +125,7 @@ function requestNotify() {
       // If the user accepts, let's create a notification
       if (permission === "granted") {
         var notification = new Notification("This is a test notification, little pomo!");
+        notifButton.remove();
       }
     });
   }
