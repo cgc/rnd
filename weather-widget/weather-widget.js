@@ -28,7 +28,9 @@ function text(w, s, font) {
 
 async function json(url) {
     var req = await new Request(url);
-    return await req.loadJSON();		
+    const rv = await req.loadJSON();		
+    console.log(`json ${url} ${req.response.statusCode}`);
+    return rv;
 }
 function getvalid(values) {
     return values.filter(v => now < parseRange(v.validTime).end);
@@ -92,63 +94,11 @@ function plotted(series) {
     return ctx.getImage();
 }
 
-/* main code */
-let widget = new ListWidget();
-
-// Location
-let res = await Location.current();
-let {latitude, longitude} = res;
-
-// Render Location
-const point = await json(`https://api.weather.gov/points/${latitude},${longitude}`);
-const rel = point.properties.relativeLocation;
-text(widget, rel.properties.city + ', ' + rel.properties.state);
-
-/*
-const cols = widget.addStack();
-const names = cols.addStack();
-names.layoutVertically();
-const hilos = cols.addStack();
-hilos.layoutVertically();
-const plots = cols.addStack();
-plots.layoutVertically();
-*/
-
-// Render forecast data
-function datarow(name, series) {
-    let w = widget.addStack();
-    text(w, name);
-
-    /*
-    let hilo = hilos.addStack();
-    hilo.layoutVertically();
-    text(hilo, ''+Math.round(Math.max.apply(null, series)), fontFamily(6));
-    text(hilo, ''+Math.round(Math.min.apply(null, series)), fontFamily(6));
-    */
-    let min = Math.round(Math.min.apply(null, series));
-    let max = Math.round(Math.max.apply(null, series));
-    text(w, min+'/'+max, fontFamily(6));
-
-    w.addSpacer();
-
-    let i = w.addImage(plotted(series));
-    i.resizable = false;
-}
-
-const grid = await json(point.properties.forecastGridData);
-datarow('°', propertyToSeries(grid.properties.temperature));
-datarow('°W', propertyToSeries(grid.properties.windChill));
-datarow('°A', propertyToSeries(grid.properties.apparentTemperature));
-datarow('🎏', propertyToSeries(grid.properties.windSpeed));
-datarow('Hum', propertyToSeries(grid.properties.relativeHumidity));
-datarow('☁️', propertyToSeries(grid.properties.skyCover));
-datarow('Pre%', propertyToSeries(grid.properties.probabilityOfPrecipitation));
-datarow('Pre', propertyToSeries(grid.properties.quantitativePrecipitation));
-
 function hourRender(ts) {
     return new Date(ts).toLocaleString('en-US', { hour: 'numeric', hour12: true }).replace(' AM', 'a').replace(' PM', 'p');
 }
-function hi(labels) {
+
+function hi(widget, labels) {
     const widgetSize = computeWidgetSize();
     const ctx = new DrawContext();
     ctx.size = new Size(widgetSize.width * 0.5, 12);
@@ -173,7 +123,91 @@ function hi(labels) {
     i.resizable = false;
 }
 
-hi(hours.map(hourRender));
+async function cache(file, load) {
+    const fs = FileManager.local();
+    file = fs.joinPath(fs.libraryDirectory(), file);
 
-Script.setWidget(widget);
+    try {
+        const value = await load();
+        fs.writeString(file, JSON.stringify(value));
+        return value;
+    } catch (e) {
+        console.log(e.message);
+        console.log(e.stack);
+        return JSON.parse(fs.readString(file));
+    }
+}
+
+async function main() {
+    /* main code */
+    let widget = new ListWidget();
+
+    // Location
+    let res = await Location.current();
+    let {latitude, longitude} = res;
+
+    const [point, grid] = await cache('cgc-weather-widget.json', async function() {
+        // Load data
+        const point = await json(`https://api.weather.gov/points/${latitude},${longitude}`);
+        const grid = await json(point.properties.forecastGridData);
+        // Test data
+        propertyToSeries(grid.properties.temperature);
+        return [point, grid];
+    });
+
+    // Render Location
+    const rel = point.properties.relativeLocation;
+    text(widget, rel.properties.city + ', ' + rel.properties.state);
+
+    /*
+    const cols = widget.addStack();
+    const names = cols.addStack();
+    names.layoutVertically();
+    const hilos = cols.addStack();
+    hilos.layoutVertically();
+    const plots = cols.addStack();
+    plots.layoutVertically();
+    */
+
+    // Render forecast data
+    function datarow(name, series) {
+        let w = widget.addStack();
+        text(w, name);
+
+        /*
+        let hilo = hilos.addStack();
+        hilo.layoutVertically();
+        text(hilo, ''+Math.round(Math.max.apply(null, series)), fontFamily(6));
+        text(hilo, ''+Math.round(Math.min.apply(null, series)), fontFamily(6));
+        */
+        let min = Math.round(Math.min.apply(null, series));
+        let max = Math.round(Math.max.apply(null, series));
+        text(w, min+'/'+max, fontFamily(6));
+
+        w.addSpacer();
+
+        let i = w.addImage(plotted(series));
+        i.resizable = false;
+    }
+
+    datarow('°', propertyToSeries(grid.properties.temperature));
+    datarow('°W', propertyToSeries(grid.properties.windChill));
+    datarow('°A', propertyToSeries(grid.properties.apparentTemperature));
+    datarow('🌬', propertyToSeries(grid.properties.windSpeed));
+    datarow('🥵', propertyToSeries(grid.properties.relativeHumidity));
+    datarow('☁️', propertyToSeries(grid.properties.skyCover));
+    datarow('🌧%', propertyToSeries(grid.properties.probabilityOfPrecipitation));
+    datarow('🌧', propertyToSeries(grid.properties.quantitativePrecipitation));
+
+    hi(widget, hours.map(hourRender));
+
+    return widget;
+}
+
+try {
+    Script.setWidget(await main());
+} catch(e) {
+   console.log(e.stack);
+    throw e;
+}
 
