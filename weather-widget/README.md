@@ -2,6 +2,17 @@ This is the code for an iOS widget showing weather information for your current 
 
 ![Screenshot of the iOS widget](widget.jpeg)
 
+- ° - Temperature (F)
+- °W - Wind Chill (F)
+- °A - Apparent Temperature (a "feels like" temperature, will supersede the wind chill) (F)
+- 🌬 - Wind Speed (km/h)
+- 🥵 - Relative Humidity (%)
+- ☁️  - Cloud Cover (%)
+- 🌧% - Probability of precipitation (%)
+- 🌧 - Amount of precipitation (mm)
+
+For more info, see the [API documentation](https://weather-gov.github.io/api/gridpoints).
+
 ## Install to Home Screen (for iOS 14)
 - Install Scriptable from the App Store.
 - Copy `weather-widget.js` to the directory for your Scriptable.
