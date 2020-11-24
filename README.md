@@ -22,6 +22,10 @@ this repo has the code for some random projects and investigations
 
 [mbc-webcal](mbc-webcal) - A dynamically generated webcal for the Stanford Center for Mind, Brain and Computation parsed from the HTML of the events page.
 
+[generating noisey sound](sound) - Tiny notebook to generate, white, brown, and slowed brown noise.
+
+[autostereogram](autostereogram) - Tiny notebook that generates an autostereogram of an ellipsoid.
+
 Projects in other repos:
 
 [Pitchify2](https://github.com/cgc/pitchify2) - Simple listing of Pitchfork reviews with links to Spotify & Pitchfork review. Visit [here](http://carlos.correa.me/pitchify2/reviews/).
