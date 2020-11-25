@@ -18,9 +18,14 @@ let defaultFont = fontFamily(10);
 
 const now = Date.now(); // running once here.
 function range(n) { return [...Array(n).keys()]; }
-const hours = range(8).map(i => now + i * 60 * 60 * 1000);
+const hours = range(28).map(i => now + i * 60 * 60 * 1000);
 
-function ctof (c) { return c * 9/5 + 32; }
+const converters = {
+    'wmoUnit:degC': c => c * 9/5 + 32, // to F
+    'wmoUnit:km_h-1': km => km / 1.609, // to m/h
+    'wmoUnit:mm': mm => mm/25.4, // to inches
+};
+
 function text(w, s, font) {
     let f = w.addText(s);
     f.font = font || defaultFont;
@@ -41,7 +46,7 @@ function propertyToSeries(property) {
         let r = parseRange(v.validTime);
         return r.start <= h && h < r.end;
     }));
-    const conv = property.uom == 'wmoUnit:degC' ? ctof : (x) => x;
+    const conv = converters[property.uom] || (x => x);
     return values.map(v => conv(v.value));
 }
 const durationRx = new RegExp('^/P(?:(?<day>\\d+)D)?T(?:(?<hour>\\d+)H)?$');
@@ -65,11 +70,12 @@ function normalizedCoord(coord, min, max) {
     return (coord - min) / (max - min);
 }
 const margin = 2;
+const leftpad = 10;
 function plotted(series) {
 
     const widgetSize = computeWidgetSize();
     const ctx = new DrawContext();
-    ctx.size = new Size(widgetSize.width * 0.5, 12);
+    ctx.size = new Size(widgetSize.width * 0.7, 14);
     ctx.respectScreenScale = true;
     ctx.opaque = false;
 
@@ -82,14 +88,28 @@ function plotted(series) {
 
     let p = new Path();
     p.addLines(series.map((val, idx) => {
-        let x = normalizedCoord(idx, -0.5, series.length - 0.5)*(ctx.size.width-2*margin)+margin;
+        let x = normalizedCoord(idx, -0.5, series.length - 0.5)*(ctx.size.width-2*margin-leftpad)+margin+leftpad;
         let y = (1-normalizedCoord(val, min, max))*(ctx.size.height-2*margin)+margin;
         let dx = 0.15 * ctx.size.height;
-        ctx.fillEllipse(new Rect(x-dx, y-dx, dx*2, dx*2));
+        //ctx.fillEllipse(new Rect(x-dx, y-dx, dx*2, dx*2));
         return new Point(x, y);
     }));
     ctx.addPath(p);
     ctx.strokePath();
+
+    // border between lines
+    ctx.setFillColor(Color.gray());
+    p = new Path();
+    //p.addLines([new Point(leftpad+margin, 0), new Point(ctx.size.width-margin, 0)]);
+    p.addLines([new Point(leftpad+margin, ctx.size.height-1), new Point(ctx.size.width-margin, ctx.size.height-1)]);
+    ctx.addPath(p);
+    ctx.setLineWidth(0.5);
+    ctx.strokePath();
+
+    ctx.setTextColor(Color.white());
+    ctx.setFont(fontFamily(6));
+    ctx.drawText(''+Math.round(max*10)/10, new Point(0, 0));
+    ctx.drawText(''+Math.round(min*10)/10, new Point(0, ctx.size.height/2-1));
 
     return ctx.getImage();
 }
@@ -99,19 +119,25 @@ function hourRender(ts) {
 }
 
 function hi(widget, labels) {
+    // HACK
+    // This is largely copy/pasted from `datarow`. Need to find a way to make this
+    // less of a hack?
     const widgetSize = computeWidgetSize();
     const ctx = new DrawContext();
-    ctx.size = new Size(widgetSize.width * 0.5, 12);
+    ctx.size = new Size(widgetSize.width * 0.7, 14);
     ctx.respectScreenScale = true;
     ctx.opaque = false;
 
     ctx.setTextColor(Color.white());
-    ctx.setFont(fontFamily(5));
+    ctx.setFont(fontFamily(8));
 
     labels.forEach((label, idx) => {
-        let x = normalizedCoord(idx, -0.5, labels.length - 0.5)*(ctx.size.width-2*margin)+margin;
-        let y = 0.5*(ctx.size.height-2*margin)+margin;
-        let dx = 0.15 * ctx.size.height;
+        if (idx % 4 != 0) {
+            return;
+        }
+        let x = normalizedCoord(idx, -0.5, labels.length - 0.5)*(ctx.size.width-2*margin-leftpad)+margin+leftpad;
+        let y = 0;
+        //let dx = 0.15 * ctx.size.height;
         //ctx.fillEllipse(new Rect(x-dx, y-dx, dx*2, dx*2));
 
         ctx.drawText(label, new Point(x, y));
@@ -143,7 +169,7 @@ async function main() {
     let widget = new ListWidget();
 
     // Location
-    let res = await Location.current();
+    let res = await cache('cgc-weather-widget-location.json', async () => await Location.current());
     let {latitude, longitude} = res;
 
     const [point, grid] = await cache('cgc-weather-widget.json', async function() {
@@ -157,7 +183,7 @@ async function main() {
 
     // Render Location
     const rel = point.properties.relativeLocation;
-    text(widget, rel.properties.city + ', ' + rel.properties.state);
+    text(widget, rel.properties.city + ', ' + rel.properties.state, fontFamily(10));
 
     /*
     const cols = widget.addStack();
@@ -180,9 +206,9 @@ async function main() {
         text(hilo, ''+Math.round(Math.max.apply(null, series)), fontFamily(6));
         text(hilo, ''+Math.round(Math.min.apply(null, series)), fontFamily(6));
         */
-        let min = Math.round(Math.min.apply(null, series));
-        let max = Math.round(Math.max.apply(null, series));
-        text(w, min+'/'+max, fontFamily(6));
+        //let min = Math.round(Math.min.apply(null, series));
+        //let max = Math.round(Math.max.apply(null, series));
+        //text(w, min+'/'+max, fontFamily(6));
 
         w.addSpacer();
 
@@ -191,13 +217,12 @@ async function main() {
     }
 
     datarow('°', propertyToSeries(grid.properties.temperature));
-    datarow('°W', propertyToSeries(grid.properties.windChill));
     datarow('°A', propertyToSeries(grid.properties.apparentTemperature));
     datarow('🌬', propertyToSeries(grid.properties.windSpeed));
     datarow('🥵', propertyToSeries(grid.properties.relativeHumidity));
     datarow('☁️', propertyToSeries(grid.properties.skyCover));
-    datarow('🌧%', propertyToSeries(grid.properties.probabilityOfPrecipitation));
     datarow('🌧', propertyToSeries(grid.properties.quantitativePrecipitation));
+    datarow('%', propertyToSeries(grid.properties.probabilityOfPrecipitation));
 
     hi(widget, hours.map(hourRender));
 

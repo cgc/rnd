@@ -2,14 +2,15 @@ This is the code for an iOS widget showing weather information for your current 
 
 ![Screenshot of the iOS widget](widget.jpeg)
 
+The widget shows the name the National Weather Service assigns to your current location. Below this location name are plots of various weather measures. The next 28 hours of data are visualized. To the left of the plot are the max and min values the plot takes. Here's a legend for the symbols used:
+
 - ° - Temperature (F)
-- °W - Wind Chill (F)
-- °A - Apparent Temperature (a "feels like" temperature, will supersede the wind chill) (F)
-- 🌬 - Wind Speed (km/h)
+- °A - Apparent Temperature (a "feels like" temperature) (F)
+- 🌬 - Wind Speed (mph)
 - 🥵 - Relative Humidity (%)
 - ☁️  - Cloud Cover (%)
-- 🌧% - Probability of precipitation (%)
-- 🌧 - Amount of precipitation (mm)
+- 🌧 - Amount of precipitation (in)
+- % - Probability of precipitation (%)
 
 For more info, see the [API documentation](https://weather-gov.github.io/api/gridpoints).
 
