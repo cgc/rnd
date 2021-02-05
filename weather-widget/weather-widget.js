@@ -49,8 +49,46 @@ function propertyToSeries(property) {
     const conv = converters[property.uom] || (x => x);
     return values.map(v => conv(v.value));
 }
-const durationRx = new RegExp('^/P(?:(?<day>\\d+)D)?T(?:(?<hour>\\d+)H)?$');
+
+function endFromISO8601Duration(start, dur) {
+    const end = new Date(start);
+    const dateMap = {
+        Y: (v) => end.setFullYear(end.getFullYear() + v),
+        M: (v) => end.setMonth(end.getMonth() + v),
+        W: (v) => end.setDate(end.getDate() + v * 7),
+        D: (v) => end.setDate(end.getDate() + v),
+    };
+    const timeMap = {
+        H: (v) => end.setHours(end.getHours() + v),
+        M: (v) => end.setMinutes(end.getMinutes() + v),
+        S: (v) => end.setSeconds(end.getSeconds() + v),
+    };
+    function timeNumToDict(tn) {
+        if (!tn) { return []; }
+        const m = tn.match(/\d+(\.\d+)?[A-Z]/g);
+        return m.map(val =>
+            [val[val.length-1], parseFloat(val.slice(0, val.length-1))]);
+    }
+    if (!dur.includes('T')) {
+        dur += 'T';
+    }
+    const date = timeNumToDict(dur.slice(1, dur.indexOf('T')));
+    for (const [key, val] of date) {
+        dateMap[key](val);
+    }
+    const time = timeNumToDict(dur.slice(dur.indexOf('T')+1));
+    for (const [key, val] of time) {
+        timeMap[key](val);
+    }
+    return end.getTime();
+}
+
 function parseRange(range) {
+    const start = Date.parse(range.slice(0, 25));
+    return {start, end: endFromISO8601Duration(start, range.slice(26))};
+}
+function parseRangeOLD(range) {
+    const durationRx = new RegExp('^/P(?:(?<day>\\d+)D)?T?(?:(?<hour>\\d+)H)?$');
     const start = Date.parse(range.slice(0, 25));
     const match = durationRx.exec(range.slice(25));
     const durationHours = parseInt(match.groups.hour || 0, 10) + parseInt(match.groups.day || 0, 10) * 24;
