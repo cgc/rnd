@@ -2,9 +2,82 @@
 
 import sys
 import subprocess
+import re
 from datetime import datetime
 
 URL = "https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod"
+
+def zbib_lookup(query):
+    curl = ['curl', '-s', '--fail']
+    search = subprocess.check_output(curl + ['-d', query, '-H', 'Content-Type: text/plain', f'{URL}/web'])
+    bibtex = subprocess.check_output(curl + ['-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
+    return bibtex
+
+def pdf_parse(query):
+    '''
+    Error philosophy: fail when this function has an issue that code could fix.
+    So, when a file doesn't parse as a PDF or can't be downloaded, we return None.
+    But when there's an error with data format parsing, we let an error propagate for bugs to get fixed.
+
+    test cases:
+    https://arxiv.org/pdf/1808.00240.pdf
+    https://papers.nips.cc/paper/2016/file/10907813b97e249163587e6246612e21-Paper.pdf
+    http://www.cs.yale.edu/homes/spielman/sgta/SpectTut.pdf
+    '''
+    import urllib.request, io, string
+    try:
+        import PyPDF2
+    except ImportError:
+        return
+
+    def parse_date(dt):
+        if not dt:
+            return ''
+        print(dt)
+        # https://stackoverflow.com/questions/16503075/convert-creationtime-of-pdf-to-a-readable-format-in-python
+        import time
+        datestring = dt[2:2+14]
+        ts = time.strptime(datestring, "%Y%m%d%H%M%S")
+        return datetime.fromtimestamp(time.mktime(ts))
+
+    try:
+        with urllib.request.urlopen(query) as f:
+            pdf = PyPDF2.PdfFileReader(io.BytesIO(f.read()))
+    except:
+        return
+
+    info = pdf.documentInfo
+    print('pdf info', info)
+    date = parse_date(info.get('/ModDate', ''))
+    return string.Template('''
+    @misc{$ref,
+     author = {$author},
+     title = {$title},
+     url = {$url},
+     keywords={$keywords},
+     lastchecked = {$lastchecked},
+     originalyear = {$originalyear},
+     abstract={$abstract}
+    }
+    ''').substitute(
+        ref=''.join(info.get('/Author', '').split()[0:1]+info.get('/Title', '').split()[0:1])+str(date.year),
+        author=info.get('/Author', ''),
+        title=info.get('/Title', ''),
+        url=query,
+        lastchecked=datetime.now().isoformat(),
+        originalyear=date and date.isoformat(),
+        keywords=info.get('/Keywords', ''),
+        abstract=info.get('/Description-Abstract', pdf.getPage(0).extractText()[:300]),
+    ).encode('utf-8')
+
+
+def arxiv_pdf_to_abs(query):
+    m = re.match('https://arxiv\.org/pdf/(.*)\.pdf', query)
+    if m:
+        return 'https://arxiv.org/abs/{}'.format(m.groups()[0])
+    else:
+        return query
+
 
 if __name__ == '__main__':
     if len(sys.argv) not in (3,4):
@@ -19,10 +92,19 @@ if __name__ == '__main__':
         argv.pop(argv.index('--preview'))
     destination, query = argv[1:]
 
-    # Search zbib
-    curl = ['curl', '-s', '--fail']
-    search = subprocess.check_output(curl + ['-d', query, '-H', 'Content-Type: text/plain', f'{URL}/web'])
-    bibtex = subprocess.check_output(curl + ['-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
+    # bibtex pipeline
+    # handle arxiv
+    query = arxiv_pdf_to_abs(query)
+
+    bibtex = None
+    try:
+        # Search zbib
+        bibtex = zbib_lookup(query)
+    except:
+        # if that fails, try to parse PDF
+        bibtex = pdf_parse(query)
+        if bibtex is None:
+            raise
 
     # Exit early if doing a preview.
     if preview:
