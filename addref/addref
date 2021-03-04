@@ -4,6 +4,7 @@ import sys
 import subprocess
 import re
 from datetime import datetime
+import urllib.parse
 
 URL = "https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod"
 
@@ -72,11 +73,22 @@ def pdf_parse(query):
 
 
 def arxiv_pdf_to_abs(query):
-    m = re.match('https://arxiv\.org/pdf/(.*)\.pdf', query)
+    m = re.match('https://arxiv\.org/pdf/(.*)(?:\.pdf)?', query)
     if m:
         return 'https://arxiv.org/abs/{}'.format(m.groups()[0])
     else:
         return query
+
+def parse_scholar_redirect(query):
+    '''
+    Extract the URL from a google scholar redirect, handy for saving directly from a scholar notification.
+    '''
+    url = urllib.parse.urlparse(query)
+    if url.hostname == 'scholar.google.com' and url.path == '/scholar_url':
+        q = urllib.parse.parse_qs(url.query)
+        if 'url' in q:
+            return q['url'][0]
+    return query
 
 
 if __name__ == '__main__':
@@ -93,6 +105,7 @@ if __name__ == '__main__':
     destination, query = argv[1:]
 
     # bibtex pipeline
+    query = parse_scholar_redirect(query)
     # handle arxiv
     query = arxiv_pdf_to_abs(query)
 
