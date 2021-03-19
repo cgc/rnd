@@ -1,5 +1,7 @@
 this repo has the code for some random projects and investigations
 
+[dpt-rp1-chrome-sync](dpt-rp1-chrome-sync) - A Chrome extension to easily sync an opened PDF to your Sony DPT-RP1.
+
 [Recipe Calculator](recipe-calculator) - A bookmarklet that makes it easy to scale a recipe up or down based on the ingredients you have. Install [here](http://carlos.correa.me/rnd/recipe-calculator/).
 
 [Overleaf-Markdown plugin](overleaf-markdown) - A bookmarklet that adds live-preview for Markdown documents, with support for math via KaTeX. Install [here](http://carlos.correa.me/rnd/overleaf-markdown/).
@@ -25,6 +27,7 @@ this repo has the code for some random projects and investigations
 [generating noisey sound](sound) - Tiny notebook to generate, white, brown, and slowed brown noise.
 
 [autostereogram](autostereogram) - Tiny notebook that generates an autostereogram of an ellipsoid.
+
 
 Projects in other repos:
 
