@@ -11,7 +11,7 @@ class API {
 
   /* High-level API */
 
-  async downloadUploadShow(url) {
+  async downloadUploadShow(url, progressCallback) {
     function determineName(url, response) {
       // variant of https://stackoverflow.com/questions/23054475/javascript-regex-for-extracting-filename-from-content-disposition-header
       const rx = /filename[^;=\n]*=(?:(['"])(.*?)\1|([^;\n]*))/;
@@ -60,7 +60,7 @@ class API {
     }
 
     // Upload it
-    const id = await this.uploadBlob(dir, name, blob);
+    const id = await this.uploadBlob(dir, name, blob, progressCallback);
 
     // Show it!
     await this.displayDocument(id);
@@ -101,7 +101,7 @@ class API {
     }
   }
 
-  async uploadBlob(directory, name, blob) {
+  async uploadBlob(directory, name, blob, progressCallback) {
     if (blob.type !== 'application/pdf') {
       throw new Error(`Blob with invalid content type: ${blob.type}`);
     }
@@ -114,7 +114,7 @@ class API {
     // Upload the file content.
     const body = new FormData();
     body.append('file', blob);
-    await this.request(`/documents/${doc['document_id']}/file`, {method: 'PUT', body});
+    await this.xhrProgressRequest(`/documents/${doc['document_id']}/file`, {method: 'PUT', body, progressCallback});
 
     // Return the file's ID.
     return doc.document_id;
@@ -174,6 +174,33 @@ class API {
     return response;
   }
 
+  async xhrProgressRequest(path, options={}) {
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+
+      request.open(options.method, this.url + path);
+
+      request.withCredentials = true;
+
+      request.upload.addEventListener('progress', function(e) {
+        const fraction = (e.loaded / e.total);
+        options.progressCallback && options.progressCallback(fraction, e);
+      });
+
+      request.addEventListener('load', function(response) {
+        if (response.status >= 300) {
+          const e = new Error('Error: Request returned status code: ' + response.status);
+          e.response = response;
+          reject(e);
+        } else {
+          resolve(response);
+        }
+      });
+
+      request.send(options.body);
+    });
+  }
+
   async signNonce(nonce, keyStr) {
     const options = {name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256'};
     const key = await crypto.subtle.importKey('pkcs8', b64.decode(keyStr), options, false, ['sign']);
@@ -225,7 +252,9 @@ async function main() {
   await api.authenticate();
 
   statusText.textContent = `Authenticated. Uploading...`;
-  await api.downloadUploadShow(url);
+  await api.downloadUploadShow(url, (fraction) => {
+    statusText.textContent = `Authenticated. ${Math.round(fraction*100)}% Uploaded...`;
+  });
 
   statusText.textContent = `Uploaded.`;
 
