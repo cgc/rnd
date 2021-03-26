@@ -221,10 +221,10 @@ async function main() {
   const url = tabs[0].url;
 
   const api = new API();
-  statusText.textContent = `Connection check...`;
-  await api.ping();
+  statusText.textContent = `Authenticating...`;
+  await api.authenticate();
 
-  statusText.textContent = `Connected. Uploading...`;
+  statusText.textContent = `Authenticated. Uploading...`;
   await api.downloadUploadShow(url);
 
   statusText.textContent = `Uploaded.`;
@@ -286,6 +286,9 @@ async function creds() {
 
 async function resetCreds() {
   try {
+    // HACK Since we authenticate before every upload, the section in this try{} will
+    // almost certainly fail every time. Should get deleted.
+
     // If we have good stored credentials, but just need to reauthorize, we do this flow:
     const api = new API();
     await api.authenticate();
