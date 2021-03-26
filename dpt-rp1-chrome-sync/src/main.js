@@ -43,7 +43,7 @@ class API {
 
     // Name the file and directory.
     const dir = 'Document/Received/';
-    const name = determineName(url, response);
+    const name = determineName(url, response).slice(0, 200); // Truncate name to be valid.
     const fullpath = dir+name;
 
     // Check out any existing file.
