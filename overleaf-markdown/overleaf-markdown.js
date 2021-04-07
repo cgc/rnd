@@ -172,8 +172,8 @@ function update(e) {
 }
 
 function init() {
-    const docs = angular.element(document.querySelector('#ide-body')).scope().docs;
-    const isMD = docs.find(d => d.doc.selected).path.endsWith('.md');
+    const appState = angular.element(document.querySelector('#ide-body')).scope();
+    const isMD = appState.docs.find(d => d.doc.id == appState.editor.open_doc_id).path.endsWith('.md');
     const validationProblems = document.querySelector('.pdf-validation-problems');
 
     if (isMD) {
