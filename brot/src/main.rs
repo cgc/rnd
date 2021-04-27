@@ -131,13 +131,14 @@ fn main() {
     let mut window: PistonWindow =
         WindowSettings::new("Mandelbrot Viewer", (width, height))
         .exit_on_esc(true)
-        .opengl(opengl)
+        .graphics_api(opengl)
         .build()
         .unwrap();
 
+    let mut texture_context = window.create_texture_context();
     let mut canvas = im::ImageBuffer::new(width, height);
     let mut texture: G2dTexture = Texture::from_image(
-            &mut window.factory,
+            &mut texture_context,
             &canvas,
             &TextureSettings::new()
         ).unwrap();
@@ -165,8 +166,9 @@ fn main() {
 
     while let Some(e) = window.next() {
         if let Some(_) = e.render_args() {
-            texture.update(&mut window.encoder, &canvas).unwrap();
-            window.draw_2d(&e, |c, g| {
+            texture.update(&mut texture_context, &canvas).unwrap();
+            window.draw_2d(&e, |c, g, device| {
+                texture_context.encoder.flush(device);
                 clear([1.0; 4], g);
                 image(&texture, c.transform, g);
             });
