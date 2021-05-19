@@ -27,6 +27,10 @@ fn main() {
     for p in canvas.pixels_mut() {
         *p = OFF;
     }
+    let mut canvas_interp = im::ImageBuffer::new(WIDTH.into(), HEIGHT.into());
+    for p in canvas_interp.pixels_mut() {
+        *p = OFF;
+    }
     let mut ts = TextureSettings::new();
     ts.set_filter(Filter::Nearest);
     let mut texture: G2dTexture = Texture::from_image(
@@ -45,13 +49,31 @@ fn main() {
 
     while let Some(e) = window.next() {
         if let Some(_) = e.render_args() {
-            for _ in 0..12 {
-                step(&mut chip8, &mut canvas);
+            // Decrementing here since this should decrease at 60Hz
+            if chip8.delay_timer > 0 {
+                chip8.delay_timer -= 1;
             }
+            // TODO should actually play sound here.
+            if chip8.sound_timer > 0 {
+                chip8.sound_timer -= 1;
+            }
+            // We run the interpreter 12 times per frame.
+            // 12 * 60Hz = 720Hz
+            for _ in 0..12 {
+                step(&mut chip8, &mut canvas_interp);
+            }
+            // Blending in changes to canvas.
+            for (pmut, p) in canvas.pixels_mut().zip(canvas_interp.pixels()) {
+                let coef: u8 = 2;
+                for i in 0..4 {
+                    pmut[i] = (pmut[i] as u16*(coef as u16-1)/coef as u16) as u8 + p[i]/coef;
+                }
+            }
+            // Drawing after running the interpreter.
             texture.update(&mut texture_context, &canvas).unwrap();
             window.draw_2d(&e, |c, g, device| {
                 texture_context.encoder.flush(device);
-                clear([0.0; 4], g);
+                clear([0.0; 4], g); // HACK does this do anything?
                 image(&texture, c.transform.zoom(ZOOM as f64), g);
             });
         }
@@ -97,13 +119,6 @@ fn key_to_input(key: Key) -> Option<u8> {
 }
 
 fn step(chip8: &mut Chip8, canvas: &mut im::ImageBuffer<im::Rgba<u8>, Vec<u8>>) {
-    if chip8.delay_timer > 0 {
-        chip8.delay_timer -= 1;
-    }
-    if chip8.sound_timer > 0 {
-        chip8.sound_timer -= 1;
-    }
-
     let instruction = decode(chip8.ram[chip8.pc], chip8.ram[chip8.pc+1]);
     //println!("{:?} pc {} i {} reg {:?}", instruction, chip8.pc, chip8.i, chip8.var);
     match instruction {
@@ -361,7 +376,6 @@ fn decode(upper: u8, lower: u8) -> Instruction {
 
 struct Chip8 {
     ram: [u8; 4096],
-    // registers
     pc: usize,
     i: u16,
     var: [u8; 16],
@@ -369,6 +383,8 @@ struct Chip8 {
     sound_timer: u8,
     stack: Vec<usize>,
     key: Option<u8>,
+    // TODO should this be a member variable? Still not clear on whether the state is thread-local,
+    // or in this object.
     rng: rand::rngs::ThreadRng,
 }
 

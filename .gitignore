@@ -4,3 +4,7 @@ node_modules
 *.pyc
 __pycache__
 *.swp
+Cargo.lock
+target
+.ipynb_checkpoints
+package-lock.json
