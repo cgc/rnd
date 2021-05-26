@@ -25,3 +25,11 @@ A way to simplify use is make an alias that hardcodes the references file in, ma
 ```bash
 alias addref='~/code/addref/addref ~/notes/references.bib'
 ```
+
+The latest version of this script can optionally make use of GROBID, excellent software for extracting citation information from PDFs.
+
+## a few other utilities
+
+I've written a few other small utilities
+- `annotatepdf FILE.pdf` which runs GROBID on the file and augments the file metadata with the extracted metadata.
+- `batch_annotate_rp1` scans PDF files on a Sony DPT-RP1, annotating them using `annotatepdf`.

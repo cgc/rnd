@@ -1,20 +1,118 @@
-#!/usr/bin/env python3
+#!/Users/carlos/pu/env/bin/python
 
-import sys
-import subprocess
+import os
 import re
+import sys
+import tempfile
+import subprocess
 from datetime import datetime
 import urllib.parse
+import urllib.request, io, string
 
 URL = "https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod"
 
 def zbib_lookup(query):
+    print('Trying zbib')
     curl = ['curl', '-s', '--fail']
     search = subprocess.check_output(curl + ['-d', query, '-H', 'Content-Type: text/plain', f'{URL}/web'])
     bibtex = subprocess.check_output(curl + ['-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
     return bibtex
 
+# https://grobid.readthedocs.io/en/latest/Install-Grobid/
+GROBID_ROOT = os.getenv('HOME')+'/pu/grobid/grobid-0.6.2'
+GROBID_JAR = GROBID_ROOT+'/grobid-core/build/libs/grobid-core-0.6.2-onejar.jar'
+
+from dataclasses import dataclass
+
+# from https://komax.github.io/blog/text/python/xml/parsing_tei_xml_python/
+@dataclass
+class Person:
+    firstname: str
+    middlename: str
+    surname: str
+def elem_to_text(elem, default=''):
+    if elem:
+        return elem.getText()
+    else:
+        return default
+class TEIFile(object):
+    def __init__(self, filename):
+        from bs4 import BeautifulSoup
+        with open(filename, 'r') as tei:
+            self.soup = BeautifulSoup(tei, 'lxml')
+            self.title = self.soup.title.getText()
+            self.abstract = self.soup.abstract.getText(separator=' ', strip=True)
+
+    @property
+    def doi(self):
+        return elem_to_text(self.soup.find('idno', type='DOI'))
+
+    @property
+    def authors(self):
+        authors_in_header = self.soup.analytic.find_all('author')
+
+        result = []
+        for author in authors_in_header:
+            persname = author.persname
+            if not persname:
+                continue
+            firstname = elem_to_text(persname.find("forename", type="first"))
+            middlename = elem_to_text(persname.find("forename", type="middle"))
+            surname = elem_to_text(persname.surname)
+            person = Person(firstname, middlename, surname)
+            result.append(person)
+        return result
+
+
+def grobid_parse(query):
+    print('Trying GROBID')
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError:
+        return
+
+    try:
+        with urllib.request.urlopen(query) as f:
+            data = f.read()
+    except:
+        import traceback;traceback.print_exc()
+        return
+
+    if not os.path.exists(GROBID_JAR):
+        return
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        with open(tmpdir + '/doc.pdf', 'wb') as f:
+            f.write(data)
+        out = subprocess.check_output([
+            'java', '-jar', GROBID_JAR,
+            '-gH', GROBID_ROOT+'/grobid-home',
+            '-dIn', tmpdir,
+            '-dOut', tmpdir,
+            '-r', '-exe', 'processHeader',
+        ], stderr=subprocess.STDOUT)
+        tei = TEIFile(tmpdir + '/doc.tei.xml')
+        authors = tei.authors
+        ref = '{}{}'.format(authors[0].surname if authors else '', next(iter(tei.title.split()), None))
+        return string.Template('''
+        @misc{$ref,
+         author = {$author},
+         title = {$title},
+         url = {$url},
+         abstract={$abstract}
+        }
+        ''').substitute(
+            lastchecked=datetime.now().isoformat(),
+            url=query,
+            title=tei.title,
+            abstract=tei.abstract,
+            author=' and '.join(f'{a.surname}, {a.firstname} {a.middlename}' for a in authors),
+            ref=ref,
+        ).encode('utf-8')
+
+
 def pdf_parse(query):
+    print('Trying my PDF parser.')
     '''
     Error philosophy: fail when this function has an issue that code could fix.
     So, when a file doesn't parse as a PDF or can't be downloaded, we return None.
@@ -25,7 +123,6 @@ def pdf_parse(query):
     https://papers.nips.cc/paper/2016/file/10907813b97e249163587e6246612e21-Paper.pdf
     http://www.cs.yale.edu/homes/spielman/sgta/SpectTut.pdf
     '''
-    import urllib.request, io, string
     try:
         import PyPDF2
     except ImportError:
@@ -114,9 +211,13 @@ if __name__ == '__main__':
         # Search zbib
         bibtex = zbib_lookup(query)
     except:
-        # if that fails, try to parse PDF
-        bibtex = pdf_parse(query)
+        # first try grobid
+        bibtex = grobid_parse(query)
         if bibtex is None:
+            # if that fails, try to parse PDF
+            bibtex = pdf_parse(query)
+        if bibtex is None:
+            # if that fails, then throw the original error.
             raise
 
     # Exit early if doing a preview.
@@ -141,4 +242,3 @@ if __name__ == '__main__':
         # Add header with timestamp and query to each entry
         f.write(f'% {dt} from {query}\n'.encode("utf-8"))
         f.write(bibtex.strip() + b'\n\n')
-

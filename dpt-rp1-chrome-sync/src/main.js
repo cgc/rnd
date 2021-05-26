@@ -21,14 +21,23 @@ class API {
         return m[2] || m[3];
       }
 
-      const urlbits = url.split('/');
-      let name = url.replace(/\//g, '-');
+      // When the pathname ends with .pdf, we discard query parameters and assume
+      // they are access credentials (like to S3).
+      const parsed = new URL(url);
+      if (parsed.pathname.endsWith('.pdf')) {
+        url = url.split('?')[0];
+      }
+
+      // We sanitize the URL by removing everything that's not simple.
+      let name = url.replace(/[^\w\-\. ]/g, '-');
+      // Make sure our name ends with .pdf
       if (!name.endsWith('.pdf')) {
         name += '.pdf';
       }
       return name;
 
       // old sanitization routine
+      //const urlbits = url.split('/');
       //let name = urlbits[urlbits.length - 1];
       // sanitize! intended to help with URLs like this: https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.422.9049&rep=rep1&type=pdf
       // both period (.) and equals (=) seem to not be valid in the name
