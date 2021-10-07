@@ -178,12 +178,12 @@ function init() {
 
     if (isMD) {
         content.style.display = 'block';
-        validationProblems.style.display = 'none';
+        if(validationProblems) validationProblems.style.display = 'none';
         update();
         getAceEditor().getSession().getDocument().on('change', update);
     } else {
         content.style.display = 'none';
-        validationProblems.style.display = 'block';
+        if(validationProblems) validationProblems.style.display = 'block';
     }
 }
 
