@@ -172,6 +172,8 @@ class API {
     } catch (e) {
       if (e.message == 'The user aborted a request.') {
         throw new Error('Request timed out.');
+      } else if (e.message == 'Failed to fetch') {
+        e.maybeCertIssue = true;
       }
       throw e;
     }
@@ -395,5 +397,19 @@ function errorHandler(e) {
       authErrorText.textContent = '';
       resetCreds().catch(errorHandler);
     });
+  }
+
+  if (e.maybeCertIssue) {
+    const url = new API().url;
+    authErrorText.innerHTML = `
+    <br />
+    Might be having a certificate issue. To fix you'll have to take a few steps to let Chrome know the DPT-RP1 is safe to upload to.
+    <ol>
+      <li>Visit <a target="blank" href="${url}">this page</a></li>
+      <li>Click <b>Advanced</b></li>
+      <li>Click <b>Proceed to digitalpaper.local (unsafe)</b></li>
+      <li>If you now see <code>{"error_code":"...","message":"..."}</code>, then the issue should be fixed!</li>
+    </ol>
+    `;
   }
 }
