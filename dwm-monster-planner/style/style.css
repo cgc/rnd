@@ -1,0 +1,60 @@
+:root {
+  --col-padding: 5px;
+  --col-margin: 3px;
+}
+
+#intro {
+  margin: 1rem;
+}
+
+#container {
+  width: 500px;
+}
+
+.react-autosuggest__container {
+  margin: 1rem;
+  display: inline-block;
+}
+
+.Selector {
+  margin: 1rem;
+  text-align: center;
+  display: inline-block;
+  padding: var(--col-padding);
+  border: 1px solid #aaa;
+}
+
+.selectable:hover {
+  cursor: pointer;
+  background: #ddd;
+}
+
+.row {
+  display: flex;
+}
+.col {
+  padding: var(--col-padding);
+  margin: var(--col-margin);
+  border: 1px solid #aaa;
+}
+
+.Pairing .col:not(:first-child) {
+  margin-left: 0;
+  border-left: 0;
+}
+.Pairing .col:not(:last-child) {
+  margin-right: 0;
+}
+
+.divider {
+    width: 100%;
+    border-top: 1px solid #aaa;
+    margin-left: calc(-1 * var(--col-padding));
+    padding-left: var(--col-padding);
+    padding-right: var(--col-padding);
+}
+
+.small-caret {
+  color: #777;
+  font-size: 10px;
+}

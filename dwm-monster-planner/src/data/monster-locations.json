@@ -1,0 +1,793 @@
+{
+    "Dracky": {
+        "Beginner": "1-4",
+        "Mastermind": "1-5"
+    },
+    "Slime": {
+        "Beginner": "1-4",
+        "Control": "1-5"
+    },
+    "Anteater": {
+        "Beginner": "1-4",
+        "Villager": "1-2"
+    },
+    "StubSuck": {
+        "Villager": "1-4",
+        "Demolition": "1-5"
+    },
+    "GoHopper": {
+        "Villager": "1-4",
+        "Ambition": "1-5"
+    },
+    "Picky": {
+        "Villager": "1-2",
+        "Talisman": "3-5",
+        "Memories": "3-4",
+        "Mastermind": "1-5"
+    },
+    "Gremlin": {
+        "Villager": "3-4",
+        "Extinction": "1-5"
+    },
+    "PillowRat": {
+        "Villager": "3-4",
+        "Memories": "1-2",
+        "Goopi #3": "1-5"
+    },
+    "Spooky": {
+        "Talisman": "1-5",
+        "Sleep": "1-5"
+    },
+    "ArmyAnt": {
+        "Talisman": "1-5",
+        "Ambition": "1-5"
+    },
+    "AntEater": {
+        "Talisman": "1-2"
+    },
+    "MiniDrak": {
+        "Talisman": "1-2",
+        "Bewilder": "1-2",
+        "Old Man": "1-5"
+    },
+    "Goopi": {
+        "Talisman": "3-5",
+        "Memories": "1-2",
+        "Bazaar #2": "1-5"
+    },
+    "DragonKid": {
+        "Memories": "1-2",
+        "Bewilder": "1-2",
+        "Bazaar #1": "3-5",
+        "Peace": "4-5",
+        "Old Man": "1-5"
+    },
+    "Catapila": {
+        "Memories": "1-4",
+        "Bazaar #1": "3-8",
+        "Ambition": "1-5"
+    },
+    "FairyRat": {
+        "Memories": "3-4",
+        "Bazaar #1": "1-2",
+        "Goopi #3": "1-5"
+    },
+    "SpotSlime": {
+        "Memories": "3-4",
+        "Bewilder": "1-5",
+        "Bazaar #1": "1-2",
+        "Peace": "1-3",
+        "Control": "1-5"
+    },
+    "BigRoost": {
+        "Bewilder": "1-2",
+        "Bazaar #1": "1-5",
+        "Peace": "1-3",
+        "Mastermind": "1-5"
+    },
+    "EvilSeed": {
+        "Bewilder": "3-5",
+        "Demolition": "1-5"
+    },
+    "Demonite": {
+        "Bewilder": "3-5",
+        "Bazaar #1": "6-8",
+        "Bravery": "1-3",
+        "Extinction": "1-5"
+    },
+    "Crestpent": {
+        "Bewilder": "3-5",
+        "Bazaar #1": "1-2",
+        "Peace": "1-7",
+        "Old Man": "1-5"
+    },
+    "BeanMan": {
+        "Bazaar #1": "3-5",
+        "Bravery": "1-8",
+        "Demolition": "1-5"
+    },
+    "Hork": {
+        "Bazaar #1": "6-8",
+        "Peace": "6-7",
+        "Sleep": "1-5"
+    },
+    "1EyeClown": {
+        "Bazaar #1": "6-8",
+        "Bravery": "1-3",
+        "Extinction": "1-5"
+    },
+    "CoilBird": {
+        "Peace": "1-3",
+        "Bazaar #2": "1-5"
+    },
+    "BoneSlave": {
+        "Peace": "4-5",
+        "Well": "1-3",
+        "Sleep": "1-5"
+    },
+    "Almiraj": {
+        "Peace": "4-7",
+        "Well": "1-5",
+        "Goopi #3": "1-5"
+    },
+    "BullBird": {
+        "Peace": "6-7",
+        "Bravery": "6-8",
+        "Well": "6-11",
+        "Mastermind": "1-5"
+    },
+    "FloraMan": {
+        "Bravery": "1-8",
+        "Well": "1-11",
+        "Demolition": "1-5"
+    },
+    "SaberMan": {
+        "Bravery": "4-5",
+        "Well": "9-11",
+        "Bazaar #2": "1-5"
+    },
+    "GiantWorm": {
+        "Bravery": "4-8",
+        "Well": "6-8",
+        "Anger": "1-3",
+        "Ambition": "1-5"
+    },
+    "GiantSlug": {
+        "Well": "1-5",
+        "Anger": "1-5",
+        "Ambition": "6-10"
+    },
+    "TreeSlime": {
+        "Well": "4-5",
+        "Strength": "1-3, 6-10",
+        "Control": "1-5"
+    },
+    "MudDoll": {
+        "Well": "6-11",
+        "Strength": "1-5",
+        "Bazaar #2": "1-5"
+    },
+    "Metaly": {
+        "Well": "9-11",
+        "Control": "1-5",
+        "Foreign Masters": "39-58, 79-98"
+    },
+    "SkulRider": {
+        "Strength": "1-8",
+        "Extinction": "1-5"
+    },
+    "FairyDrak": {
+        "Strength": "1-5, 9-10",
+        "Monster Farm": "1-5",
+        "Old Man": "6-10"
+    },
+    "WingTree": {
+        "Strength": "4-10",
+        "Demolition": "6-10"
+    },
+    "DrakSlime": {
+        "Strength": "6-10",
+        "Anger": "9-10",
+        "Monster Farm": "6-11",
+        "Control": "6-10"
+    },
+    "Poisongon": {
+        "Anger": "1-8",
+        "Old Man": "1-5"
+    },
+    "Catfly": {
+        "Anger": "1-10",
+        "Goopi #3": "1-5"
+    },
+    "Eyeder": {
+        "Anger": "4-10",
+        "Ambition": "6-10"
+    },
+    "Putrepup": {
+        "Anger": "6-10",
+        "Sleep": "1-5"
+    },
+    "Butterfly": {
+        "Monster Farm": "1-3",
+        "Ambition": "6-10"
+    },
+    "MadRaven": {
+        "Monster Farm": "1-8",
+        "Mastermind": "6-10"
+    },
+    "Skullroo": {
+        "Monster Farm": "1-11",
+        "Goopi #3": "1-5"
+    },
+    "Mudron": {
+        "Monster Farm": "4-5, 9-11",
+        "Sleep": "6-10"
+    },
+    "Facer": {
+        "Monster Farm": "6-11",
+        "Wisdom": "1-5",
+        "Bazaar #2": "6-10"
+    },
+    "Snaily": {
+        "Joy": "1-5",
+        "Control": "6-10"
+    },
+    "Saccer": {
+        "Joy": "1-12",
+        "Goopi #3": "6-10"
+    },
+    "Gulpple": {
+        "Joy": "1-8",
+        "Demolition": "6-10"
+    },
+    "MadPecker": {
+        "Joy": "1-8, 13",
+        "Mastermind": "6-10",
+        "Foreign Masters": "99-118"
+    },
+    "EyeBall": {
+        "Joy": "6-13",
+        "Extinction": "6-10"
+    },
+    "Babble": {
+        "Joy": "9-13",
+        "Control": "6-10"
+    },
+    "Mummy": {
+        "Joy": "9-13",
+        "Sleep": "6-10"
+    },
+    "Tonguella": {
+        "Wisdom": "1-14",
+        "Goopi #3": "6-10"
+    },
+    "FloraJay": {
+        "Wisdom": "1-14",
+        "Mastermind": "6-10"
+    },
+    "Pteranod": {
+        "Wisdom": "1-14",
+        "Old Man": "6-10"
+    },
+    "Armorpede": {
+        "Wisdom": "6-14",
+        "Ambition": "6-10"
+    },
+    "WingSlime": {
+        "Goopi #2": "1-5",
+        "Control": "6-10"
+    },
+    "MadCandle": {
+        "Goopi #2": "1-12",
+        "Bazaar #2": "6-10"
+    },
+    "MedusaEye": {
+        "Goopi #2": "1-8",
+        "Extinction": "6-10"
+    },
+    "MadGopher": {
+        "Goopi #2": "1-15",
+        "Goopi #3": "6-10"
+    },
+    "Slabbit": {
+        "Goopi #2": "6-15",
+        "Control": "11-20"
+    },
+    "WindBeast": {
+        "Goopi #2": "9-15",
+        "Goopi #3": "6-10"
+    },
+    "Gasgon": {
+        "Goopi #2": "13-15",
+        "Happiness": "1-4",
+        "Old Man": "6-10",
+        "Foreign Masters": "1-18, 79-98"
+    },
+    "Oniono": {
+        "Happiness": "1-12",
+        "Demolition": "6-10"
+    },
+    "Gophecada": {
+        "Happiness": "1-17",
+        "Ambition": "11-20"
+    },
+    "Pixy": {
+        "Happiness": "1-16",
+        "Extinction": "6-10"
+    },
+    "DeadNite": {
+        "Happiness": "5-17",
+        "Sleep": "6-10",
+        "Foreign Masters": "39-58"
+    },
+    "StubBird": {
+        "Happiness": "13-17",
+        "Mastermind": "6-10"
+    },
+    "SpikyBoy": {
+        "Happiness": "17",
+        "Temptation": "1-8",
+        "Bazaar #2": "6-10"
+    },
+    "KingCobra": {
+        "Temptation": "1-16",
+        "Old Man": "6-10",
+        "Foreign Masters": "39-58"
+    },
+    "Mommonja": {
+        "Temptation": "1-12",
+        "Goopi #3": "6-10"
+    },
+    "SlimeNite": {
+        "Temptation": "1-19",
+        "Control": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "StagBug": {
+        "Temptation": "9-19",
+        "Ambition": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "MistyWing": {
+        "Temptation": "13-19",
+        "Mastermind": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "DarkEye": {
+        "Temptation": "17-19",
+        "Extinction": "6-10",
+        "Foreign Masters": "1-18"
+    },
+    "NiteWhip": {
+        "Medal Man": "1-5",
+        "Sleep": "6-10"
+    },
+    "BoxSlime": {
+        "Medal Man": "1-18",
+        "Control": "11-20"
+    },
+    "Gismo": {
+        "Medal Man": "1-8",
+        "Labyrinth": "1-22",
+        "Bazaar #2": "11-20",
+        "Foreign Masters": "39-58"
+    },
+    "Orc": {
+        "Medal Man": "1-18",
+        "Extinction": "11-20",
+        "Foreign Masters": "19-38"
+    },
+    "RogueNite": {
+        "Medal Man": "6-18",
+        "Bazaar #2": "6-10",
+        "Foreign Masters": "39-58"
+    },
+    "Reaper": {
+        "Medal Man": "9-18",
+        "Sleep": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "RockSlime": {
+        "Labyrinth": "1-22",
+        "Control": "11-29"
+    },
+    "Chamelgon": {
+        "Labyrinth": "1-5",
+        "Old Man": "6-10"
+    },
+    "Cactiball": {
+        "Labyrinth": "1-15",
+        "Demolition": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "TailEater": {
+        "Labyrinth": "1-10, 16-20",
+        "Ambition": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "DuckKite": {
+        "Labyrinth": "6-22",
+        "Mastermind": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "AgDevil": {
+        "Labyrinth": "11-22",
+        "Extinction": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "WindMerge": {
+        "Labyrinth": "21-22",
+        "Sleep": "11-20",
+        "Foreign Masters": "19-38"
+    },
+    "WeedBug": {
+        "Judgement": "1-5",
+        "Ambition": "11-20"
+    },
+    "HammerMan": {
+        "Judgement": "1-24",
+        "Goopi #3": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "MadGoose": {
+        "Judgement": "1-10, 21-24",
+        "Mastermind": "11-20"
+    },
+    "TreeBoy": {
+        "Judgement": "1-20",
+        "Demolition": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "SpotKing": {
+        "Judgement": "1-24",
+        "Control": "21-29",
+        "Foreign Masters": "1-18"
+    },
+    "Droll": {
+        "Judgement": "6-15",
+        "Ambition": "21-29",
+        "Foreign Masters": "19-38"
+    },
+    "LizardFly": {
+        "Judgement": "11-24",
+        "Old Man": "11-20",
+        "Foreign Masters": "1-18"
+    },
+    "GiantMoth": {
+        "Judgement": "16-24",
+        "Ambition": "21-29",
+        "Foreign Masters": "19-38"
+    },
+    "ArcDemon": {
+        "Library": "1-24",
+        "Extinction": "11-20",
+        "Foreign Masters": "19-38"
+    },
+    "CurseLamp": {
+        "Library": "1-15",
+        "Bazaar #2": "11-20",
+        "Foreign Masters": "39-58"
+    },
+    "AmberWeed": {
+        "Library": "1-5",
+        "Demolition": "11-20",
+        "Foreign Masters": "19-38"
+    },
+    "ArmyCrab": {
+        "Library": "1-20",
+        "Ambition": "21-29",
+        "Foreign Masters": "19-38"
+    },
+    "MadSpirit": {
+        "Library": "1-10, 16-24",
+        "Sleep": "11-20",
+        "Foreign Masters": "39-58"
+    },
+    "WildApe": {
+        "Library": "6-24",
+        "Goopi #3": "11-20",
+        "Foreign Masters": "39-58"
+    },
+    "Tortragon": {
+        "Library": "11-24",
+        "Old Man": "11-20"
+    },
+    "LandOwl": {
+        "Library": "21-24",
+        "Mastermind": "11-20",
+        "Foreign Masters": "39-58"
+    },
+    "EvilBeast": {
+        "Reflection": "1-10",
+        "Extinction": "11-20",
+        "Foreign Masters": "39-58"
+    },
+    "Shadow": {
+        "Reflection": "1-10",
+        "Sleep": "11-20",
+        "Foreign Masters": "19-38"
+    },
+    "EvilWand": {
+        "Reflection": "1-5",
+        "Bazaar #2": "11-20",
+        "Foreign Masters": "39-58"
+    },
+    "Slimeborg": {
+        "Reflection": "1-15",
+        "Control": "21-29",
+        "Foreign Masters": "19-38"
+    },
+    "LizardMan": {
+        "Reflection": "1-20",
+        "Old Man": "11-20",
+        "Foreign Masters": "19-38"
+    },
+    "Grizzly": {
+        "Reflection": "6-28",
+        "Goopi #3": "11-20",
+        "Foreign Masters": "19-38"
+    },
+    "Wyvern": {
+        "Reflection": "11-25",
+        "Mastermind": "21-26",
+        "Foreign Masters": "19-38"
+    },
+    "FireWeed": {
+        "Reflection": "11-15",
+        "Demolition": "11-28",
+        "Foreign Masters": "19-38"
+    },
+    "MadHornet": {
+        "Reflection": "16-28",
+        "Ambition": "21-29",
+        "Foreign Masters": "19-38"
+    },
+    "Lionex": {
+        "Reflection": "16-28",
+        "Extinction": "21-29",
+        "Foreign Masters": "59-78"
+    },
+    "RotRaven": {
+        "Reflection": "21-28",
+        "Sleep": "21-29",
+        "Foreign Masters": "59-78"
+    },
+    "JewelBag": {
+        "Reflection": "26-28",
+        "Bazaar #2": "11-20",
+        "Foreign Masters": "59-78"
+    },
+    "MadPlant": {
+        "Demolition": "6-10"
+    },
+    "ManEater": {
+        "Demolition": "21-28",
+        "Foreign Masters": "59-78"
+    },
+    "DanceVegi": {
+        "Demolition": "21-28",
+        "Foreign Masters": "59-78"
+    },
+    "Snapper": {
+        "Demolition": "21-28",
+        "Foreign Masters": "1-18, 99-138"
+    },
+    "MadCondor": {
+        "Mastermind": "21-26"
+    },
+    "ZapBird": {
+        "Mastermind": "21-26",
+        "Foreign Masters": "99-138"
+    },
+    "WhipBird": {
+        "Mastermind": "21-26",
+        "Foreign Masters": "119-138, 119-138"
+    },
+    "Metabble": {
+        "Control": "21-29",
+        "Foreign Masters": "119-138"
+    },
+    "Grendel": {
+        "Extinction": "21-29"
+    },
+    "Ogre": {
+        "Extinction": "21-29",
+        "Foreign Masters": "59-78"
+    },
+    "GoatHorn": {
+        "Extinction": "21-29",
+        "Foreign Masters": "119-138"
+    },
+    "DarkCrab": {
+        "Sleep": "21-29",
+        "Foreign Masters": "59-78"
+    },
+    "Skullgon": {
+        "Sleep": "21-29",
+        "Foreign Masters": "79-98"
+    },
+    "Skeletor": {
+        "Sleep": "21-29",
+        "Foreign Masters": "99-118"
+    },
+    "DeadNoble": {
+        "Sleep": "21-29",
+        "Foreign Masters": "119-138, 119-138"
+    },
+    "MadMirror": {
+        "Bazaar #2": "11-20",
+        "Foreign Masters": "79-98"
+    },
+    "Voodoll": {
+        "Bazaar #2": "21-29",
+        "Foreign Masters": "79-98"
+    },
+    "Balzak": {
+        "Bazaar #2": "21-29",
+        "Foreign Masters": "119-138, 119-138"
+    },
+    "MetalDrak": {
+        "Bazaar #2": "21-29",
+        "Foreign Masters": "119-138, 119-138"
+    },
+    "Roboster": {
+        "Bazaar #2": "21-29",
+        "Foreign Masters": "119-138, 119-138"
+    },
+    "BombCrag": {
+        "Bazaar #2": "21-29",
+        "Foreign Masters": "99-118, 99-138"
+    },
+    "Goategon": {
+        "Goopi #3": "11-20",
+        "Foreign Masters": "1-18, 59-78"
+    },
+    "SuperTen": {
+        "Goopi #3": "11-20",
+        "Foreign Masters": "79-98"
+    },
+    "Yeti": {
+        "Goopi #3": "21-26",
+        "Foreign Masters": "79-98"
+    },
+    "IronTurt": {
+        "Goopi #3": "21-26",
+        "Foreign Masters": "59-78"
+    },
+    "GulpBeast": {
+        "Goopi #3": "21-26",
+        "Foreign Masters": "119-138"
+    },
+    "Trumpeter": {
+        "Goopi #3": "21-26",
+        "Foreign Masters": "119-138, 119-138"
+    },
+    "Unicorn": {
+        "Goopi #3": "21-26",
+        "Foreign Masters": "119-138"
+    },
+    "Swordgon": {
+        "Old Man": "11-20",
+        "Foreign Masters": "59-78"
+    },
+    "WingSnake": {
+        "Old Man": "11-20",
+        "Foreign Masters": "59-78"
+    },
+    "Rayburn": {
+        "Old Man": "21-29",
+        "Foreign Masters": "59-78"
+    },
+    "Spikerous": {
+        "Old Man": "21-29",
+        "Foreign Masters": "99-118"
+    },
+    "MadDragon": {
+        "Old Man": "21-29",
+        "Foreign Masters": "119-138"
+    },
+    "Andreal": {
+        "Old Man": "21-29",
+        "Foreign Masters": "119-138"
+    },
+    "GreatDrak": {
+        "Old Man": "21-29",
+        "Foreign Masters": "119-138, 119-138"
+    },
+    "IceMan": {
+        "Foreign Masters": "19-38"
+    },
+    "Phoenix": {
+        "Foreign Masters": "19-78, 99-118"
+    },
+    "Blizzardy": {
+        "Foreign Masters": "39-58"
+    },
+    "LavaMan": {
+        "Foreign Masters": "39-58, 79-118"
+    },
+    "Dragon": {
+        "Foreign Masters": "39-58"
+    },
+    "Lipsy": {
+        "Foreign Masters": "39-58"
+    },
+    "Copycat": {
+        "Foreign Masters": "59-78, 119-138"
+    },
+    "Grendal": {
+        "Foreign Masters": "59-78"
+    },
+    "FaceTree": {
+        "Foreign Masters": "59-78"
+    },
+    "Centasaur": {
+        "Foreign Masters": "79-118"
+    },
+    "EvilArmor": {
+        "Foreign Masters": "79-98"
+    },
+    "Golem": {
+        "Foreign Masters": "79-98"
+    },
+    "Blizzard": {
+        "Foreign Masters": "79-98"
+    },
+    "MadCat": {
+        "Foreign Masters": "79-98"
+    },
+    "StoneMan": {
+        "Foreign Masters": "79-138"
+    },
+    "BigEye": {
+        "Foreign Masters": "79-98"
+    },
+    "Gigantes": {
+        "Foreign Masters": "79-98"
+    },
+    "KingSlime": {
+        "Foreign Masters": "99-118"
+    },
+    "FangSlime": {
+        "Foreign Masters": "99-118"
+    },
+    "SkyDragon": {
+        "Foreign Masters": "99-118"
+    },
+    "BattleRex": {
+        "Foreign Masters": "99-118"
+    },
+    "FunkyBird": {
+        "Foreign Masters": "99-118"
+    },
+    "Digster": {
+        "Foreign Masters": "119-138"
+    },
+    "Team": {
+        "Foreign Masters": "119-138"
+    },
+    "Levels": {
+        "Foreign Masters": "119-138"
+    },
+    "139+": {
+        "Foreign Masters": "119-138"
+    },
+    "GateGuard": {
+        "Foreign Masters": "119-138"
+    },
+    "ChopClown": {
+        "Foreign Masters": "119-138"
+    },
+    "MetalKing": {
+        "Foreign Masters": "119-138"
+    },
+    "Orochi": {
+        "Foreign Masters": "119-138"
+    },
+    "HornBeet": {
+        "Foreign Masters": "119-138"
+    },
+    "Servant": {
+        "Foreign Masters": "119-138"
+    }
+}

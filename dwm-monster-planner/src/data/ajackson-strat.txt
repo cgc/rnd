@@ -1,0 +1,2274 @@
+-------------------------------------------------
+   D R A G O N  W A R R I O R  M O N S T E R S
+-------------------------------------------------
+ M O N S T E R  M A S T E R ' S  H A N D B O O K
+-------------------------------------------------
+
+By Alex W. Jackson (awjackso@csclub.uwaterloo.ca)
+
+ C H A N G E S
+---------------
+
+This is the second release of this document.
+
+The following sections have been added:
+
+--List of monsters in each Traveller's Gate
+--Information on NPC Monster Masters
+--Information on ability growth
+
+The following corrections have been made to the
+initial release:
+
+--MadCondor learns "MultiCut" not "MetalCut"
+--Monster family names are now consistent
+--Explained "personal actions" a bit better
+
+
+ C O P Y R I G H T
+-------------------
+
+As quite a few people already know, the author
+of this document is philosophically opposed to
+the law of copyright (at least as it exists
+today in the Western world).  If the reader is
+interested, he is directed here:
+
+http://www.ram.org/ramblings/philosophy/fmp/copying_primer.html
+
+Mr. Samudrala's views on the issue are more or less
+coincidental with the author's, and Mr. Samudrala
+is much more articulate than the author could ever
+be on the subject.
+
+At any rate, the bulk of this document consists of
+tables of numeric, factual data which could be
+reproduced in a few hours with a DWM cartridge,
+a GB Exchanger and a decent hex editor.  To claim
+any sort of proprietary rights on such material
+strikes the author as particularly silly.
+
+In short, do what you will with this document:
+Email it to your friends, post it on your website,
+print out hardcopies and hand them out on the street
+corner.  The author only requests that you refrain
+from such blatant plagiarism as deleting the author's
+name and replacing it with your own.  The author will
+probably not bother suing you for doing so, but the
+author and the author's friends will most certainly
+sneer at you.
+
+
+ T R A V E L L E R ' S  G A T E S
+----------------------------------
+
+The depth listed includes the boss chamber at the bottom.
+The maximum size applies to levels with narrow passages
+between screens.  "Big Room" levels, which can appear in
+any Gate, are always 4x4 screens, and special levels
+(lost woods, ice, etc.) are also of fixed sizes.
+
+The monster encounters for each level range are listed
+in descending order of frequency--that is, the first
+monster listed is the most likely to appear.  Monsters
+marked with a * will only appear alone, and never with
+other monsters, whether of the same or another species.
+
+Two of the Gates (the Medal Man's Gate and Wisdom) seem to
+have encounter tables which are never actually used.
+This is probably a bug, but it's possible that Enix changed
+their minds during development as to which monsters should
+be encountered in these Gates.
+
+The final Gate listed is apparently one which Enix intended
+to add to the game, but ran out of development time and/or
+cartridge space.  It can only be entered with the aid of a
+GameShark code.  If you reach the bottom, the boss chamber
+is unoccupied, but it looks similar to the location where
+you fought DarkDrium in the SFC game Dragon Quest 6.
+
+Beginner (Depth 5; Max Size 3x3; Boss: Healer)
+   1-4 : *Dracky    *Slime     *Anteater
+
+Villager (Depth 5; Max Size 3x3; Boss: Dragon)
+   1-2 :  StubSuck   GoHopper   Anteater  *Picky
+   3-4 :  StubSuck   GoHopper   Gremlin    PillowRat
+
+Talisman (Depth 6; Max Size 3x3; Boss: Golem)
+   1-2 :  Spooky     ArmyAnt    AntEater  *MiniDrak
+   3-5 :  Spooky     Goopi      ArmyAnt    Picky
+
+Memories (Depth 5; Max Size 3x3; Boss: MadCat)
+   1-2 :  Goopi      PillowRat  DragonKid  Catapila
+   3-4 :  Picky      FairyRat   Catapila   SpotSlime
+
+Bewilder (Depth 6; Max Size 3x3; Boss: FaceTree)
+   1-2 :  MiniDrak   BigRoost   DragonKid  SpotSlime
+   3-5 :  EvilSeed   Demonite   SpotSlime  Crestpent
+
+Bazaar #1 (Depth 9; Max Size 2x2; Boss: MadKnight)
+   1-2 :  FairyRat   BigRoost   SpotSlime  Crestpent
+   3-5 :  BigRoost   DragonKid  Catapila   BeanMan
+   6-8 :  Demonite   Catapila   Hork       1EyeClown
+
+Peace (Depth 8; Max Size 4x4; Boss: FangSlime)
+   1-3 :  BigRoost   SpotSlime  CoilBird   Crestpent
+   4-5 :  DragonKid  Crestpent  BoneSlave  Almiraj
+   6-7 :  Hork       Crestpent  Almiraj    BullBird
+
+Bravery (Depth 9; Max Size 4x4; Boss: BigEye)
+   1-3 :  Demonite   BeanMan    1EyeClown  FloraMan
+   4-5 :  BeanMan    FloraMan   SaberMan   GiantWorm
+   6-8 :  BeanMan    FloraMan   GiantWorm  BullBird
+
+Well (Depth 12; Max Size 2x2; Boss: Gigantes)
+   1-3 :  BoneSlave  Almiraj    FloraMan   GiantSlug
+   4-5 :  Almiraj    TreeSlime  FloraMan   GiantSlug
+   6-8 :  GiantWorm  BullBird   FloraMan   MudDoll
+   9-11:  BullBird   SaberMan   FloraMan   MudDoll    Metaly
+
+Strength (Depth 11; Max Size 4x4; Boss: StoneMan)
+   1-3 :  MudDoll    TreeSlime  SkulRider  FairyDrak
+   4-5 :  MudDoll    SkulRider  FairyDrak  WingTree
+   6-8 :  TreeSlime  SkulRider  WingTree   DrakSlime
+   9-10:  TreeSlime  WingTree   FairyDrak  DrakSlime
+
+Anger (Depth 11; Max Size 4x4; Boss: BattleRex)
+   1-3 :  GiantWorm  GiantSlug  Poisongon  Catfly
+   4-5 :  GiantSlug  Poisongon  Catfly     Eyeder
+   6-8 :  Catfly     Poisongon  Eyeder     Putrepup
+   9-10:  Catfly     Eyeder     Putrepup   DrakSlime
+
+Monster Farm (Depth 12; Max Size 2x2; Boss: Copycat)
+   1-3 :  FairyDrak  Butterfly  MadRaven   Skullroo
+   4-5 :  FairyDrak  MadRaven   Skullroo   Mudron
+   6-8 :  DrakSlime  MadRaven   Skullroo   Facer
+   9-11:  DrakSlime  Skullroo   Mudron     Facer
+
+Joy (Depth 14; Max Size 4x4; Boss: FunkyBird)
+   1-3 :  Snaily     Saccer     Gulpple   *MadPecker
+   4-5 :  Snaily     Saccer     Gulpple    MadPecker
+   6-8 :  Saccer     Gulpple    EyeBall    MadPecker
+   9-12:  Saccer     EyeBall    Babble     Mummy
+    13 :  Babble     EyeBall    MadPecker  Mummy
+
+Wisdom (Depth 15; Max Size 4x4; Boss: SkyDragon)
+   1-2 :  Facer      Tonguella  FloraJay  *Pteranod
+   3-5 :  Facer      Tonguella  FloraJay   Pteranod
+   6-14:  Tonguella  FloraJay   Pteranod   Armorpede
+   ????:  Tonguella  Pteranod   MadPlant   Armorpede
+   ????:  Pteranod   MadPlant   MedusaEye  Armorpede
+
+Goopi #2 (Depth 16; Max Size 2x2; Boss: Digster)
+   1-3 :  WingSlime  MadCandle  MedusaEye *MadGopher
+   4-5 :  WingSlime  MadCandle  MedusaEye  MadGopher
+   6-8 :  MadCandle  MedusaEye  MadGopher  Slabbit
+   9-12:  MadCandle  MadGopher  WindBeast  Slabbit
+  13-15:  MadGopher  WindBeast  Slabbit    Gasgon
+
+Happiness (Depth 18; Max Size 4x4; Boss: Jamirus)
+   1-4 :  Oniono     Gophecada  Pixy       Gasgon
+   5-8 :  Oniono     Gophecada  Pixy       DeadNite
+   9-12:  Oniono     Gophecada  Pixy       DeadNite
+  13-16:  Gophecada  Pixy       DeadNite   StubBird
+    17 :  Gophecada  DeadNite   SpikyBoy   StubBird
+
+Temptation (Depth 20; Max Size 4x4; Boss: Servant)
+   1-4 :  SpikyBoy   KingCobra  Mommonja   SlimeNite
+   5-8 :  SpikyBoy   KingCobra  Mommonja   SlimeNite
+   9-12:  KingCobra  Mommonja   SlimeNite  StagBug
+  13-16:  KingCobra  SlimeNite  MistyWing  StagBug
+  17-19:  SlimeNite  MistyWing  DarkEye    StagBug
+
+Medal Man (Depth 19; Max Size 2x2; Boss: KingSlime)
+   1-3 :  NiteWhip   BoxSlime   Gismo     *Orc
+   4-5 :  NiteWhip   BoxSlime   Gismo      Orc
+   6-8 :  BoxSlime   Gismo      Orc        RogueNite
+   9-18:  BoxSlime   Orc        Reaper     RogueNite
+   ????:  Orc        Reaper     Gismo      RogueNite
+
+Labyrinth (Depth 23; Max Size 4x4; Boss: DarkHorn)
+   1-5 :  RockSlime  Chamelgon  Cactiball  TailEater  Gismo
+   6-10:  RockSlime  DuckKite   Cactiball  TailEater  Gismo
+  11-15:  RockSlime  DuckKite   Cactiball  Gismo      AgDevil
+  16-20:  RockSlime  DuckKite   TailEater  Gismo      AgDevil
+  21-22:  RockSlime  DuckKite   Gismo      AgDevil    WindMerge
+
+Judgement (Depth 25; Max Size 4x4; Boss: Akubar)
+   1-5 :  WeedBug    HammerMan  MadGoose   TreeBoy    SpotKing
+   6-10:  HammerMan  MadGoose   TreeBoy    Droll      SpotKing
+  11-15:  HammerMan  TreeBoy    Droll      SpotKing   LizardFly
+  16-20:  HammerMan  TreeBoy    GiantMoth  SpotKing   LizardFly
+  21-24:  HammerMan  MadGoose   GiantMoth  SpotKing   LizardFly
+
+Library (Depth 25; Max Size 2x2; Boss: Orochi)
+   1-5 :  ArcDemon   CurseLamp  AmberWeed  ArmyCrab   MadSpirit
+   6-10:  ArcDemon   CurseLamp  WildApe    ArmyCrab   MadSpirit
+  11-15:  ArcDemon   CurseLamp  WildApe    ArmyCrab   Tortragon
+  16-20:  ArcDemon   MadSpirit  WildApe    ArmyCrab   Tortragon
+  21-24:  ArcDemon   MadSpirit  Tortragon  WildApe    LandOwl
+
+Reflection (Depth 29; Max Size 4x4; Boss: Durran)
+   1-5 :  EvilBeast  Shadow     EvilWand   Slimeborg  LizardMan
+   6-10:  EvilBeast  Shadow     Slimeborg  LizardMan  Grizzly
+  11-15:  LizardMan  Slimeborg  Wyvern     FireWeed   Grizzly
+  16-20:  LizardMan  Wyvern     MadHornet  Lionex     Grizzly
+  21-25:  Wyvern     MadHornet  Lionex     RotRaven   Grizzly
+  26-28:  Grizzly    MadHornet  Lionex     RotRaven   JewelBag
+
+Ambition (Depth 30; Max Size 4x4; Boss: DracoLord)
+   1-5 :  GoHopper   ArmyAnt    Catapila   GiantWorm
+   6-10:  GiantSlug  Eyeder     Butterfly  Armorpede
+  11-20:  Gophecada  StagBug    TailEater  WeedBug
+  21-29:  Droll      GiantMoth  ArmyCrab   MadHornet
+
+Demolition (Depth 29; Max Size 4x4; Boss: Hargon/Sidoh)
+   1-5 :  StubSuck   EvilSeed   BeanMan    FloraMan
+   6-10:  WingTree   Gulpple    MadPlant   Oniono
+  11-20:  Cactiball  TreeBoy    AmberWeed  FireWeed
+  21-28:  FireWeed   ManEater   DanceVegi  Snapper
+
+Mastermind (Depth 27; Max Size 4x4; Boss: Baramos)
+   1-5 :  Dracky     Picky      BigRoost   BullBird
+   6-10:  MadRaven   MadPecker  FloraJay   StubBird
+  11-20:  MistyWing  DuckKite   MadGoose   LandOwl
+  21-26:  Wyvern     MadCondor  ZapBird    WhipBird
+
+Control (Depth 30; Max Size 4x4; Boss: Zoma)
+   1-5 :  Slime      SpotSlime  Metaly     TreeSlime
+   6-10:  DrakSlime  Snaily     Babble     WingSlime
+  11-20:  Slabbit    SlimeNite  BoxSlime   RockSlime
+  21-29:  RockSlime  SpotKing   Slimeborg  Metabble
+
+Extinction (Depth 30; Max Size 4x4; Boss: Pizzaro)
+   1-5 :  Gremlin    Demonite   1EyeClown  SkulRider
+   6-10:  EyeBall    MedusaEye  Pixy       DarkEye
+  11-20:  Orc        AgDevil    ArcDemon   EvilBeast
+  21-29:  Lionex     Grendel    Ogre       GoatHorn
+
+Sleep (Depth 30; Max Size 4x4; Boss: Esterk)
+   1-5 :  Spooky     Hork       BoneSlave  Putrepup
+   6-10:  Mudron     Mummy      DeadNite   NiteWhip
+  11-20:  Reaper     WindMerge  MadSpirit  Shadow
+  21-29:  RotRaven   DarkCrab   Skullgon   Skeletor   DeadNoble
+
+Bazaar #2 (Depth 30; Max Size 4x4; Boss: Mirudraas)
+   1-5 :  Goopi      SaberMan   CoilBird   MudDoll
+   6-10:  Facer      MadCandle  SpikyBoy   RogueNite
+  11-20:  Gismo      CurseLamp  EvilWand   JewelBag   MadMirror
+  21-29:  Voodoll    Balzak     MetalDrak  Roboster   BombCrag
+
+Goopi #3 (Depth 27; Max Size 4x4; Boss: Mudou)
+   1-5 :  PillowRat  FairyRat   Almiraj    Catfly     Skullroo
+   6-10:  Saccer     Tonguella  MadGopher  WindBeast  Mommonja
+  11-20:  Goategon   HammerMan  WildApe    Grizzly    SuperTen
+  21-26:  Yeti       IronTurt   GulpBeast  Trumpeter  Unicorn
+
+Old Man (Depth 30; Max Size 4x4; Boss: DeathMore)
+   1-5 :  MiniDrak   DragonKid  Crestpent  Poisongon
+   6-10:  FairyDrak  Pteranod   Gasgon     KingCobra  Chamelgon
+  11-20:  LizardFly  Tortragon  LizardMan  Swordgon   WingSnake
+  21-29:  Rayburn    Spikerous  MadDragon  Andreal    GreatDrak
+
+???????? (Depth 99; Max Size 4x4; Boss: UNKNOWN (DarkDrium?))
+   1-5 :  Skeletor   Trumpeter  MetalDrak  MadDragon
+   6-10:  MetalDrak  MadDragon  Snapper    GoatHorn
+  11-20:  Snapper    GoatHorn   DeadNoble  Roboster
+  21-40:  DeadNoble  Roboster   BombCrag   Andreal
+  41-60:  BombCrag   Andreal    Unicorn    GreatDrak
+  61-80:  Unicorn    GreatDrak  ZapBird    WhipBird
+  81-98:  ZapBird    WhipBird   Metaly     Metabble
+
+
+ N P C  M O N S T E R  M A S T E R S
+-------------------------------------
+
+The monster team used by an NPC Monster Master
+encountered in a Gate depends on the sum of the levels
+of your team.
+
+Unlike normal wild monsters, the monsters on NPC Monster
+Masters' teams possess skills other than the three
+intrinsic skills of their species.  If you befriend one,
+it will learn any intrinsic skills it may be "missing"
+once it gains a level.
+
+Team Levels 1-18
+  HammerMan  Goategon   StagBug    SpotKing
+  LizardFly  DuckKite   DarkEye    Cactiball
+  Snapper    Reaper     MistyWing  Gasgon
+  SlimeNite  TailEater  TreeBoy    AgDevil
+
+Team Levels 19-38
+  Wyvern     AmberWeed  ArcDemon   IceMan
+  Slimeborg  ArmyCrab   Shadow     LizardMan
+  MadHornet  FireWeed   WindMerge  Orc
+  Droll      Phoenix    GiantMoth  Grizzly
+
+Team Levels 39-58
+  WildApe    Blizzardy  EvilWand   LavaMan
+  CurseLamp  MadSpirit  Gismo      DeadNite
+  RogueNite  KingCobra  Phoenix    Dragon
+  Metaly     LandOwl    EvilBeast  Lipsy
+
+Team Levels 59-78
+  Lionex     Rayburn    ManEater   RotRaven
+  Ogre       IronTurt   Copycat    DarkCrab
+  WingSnake  DanceVegi  Grendal    JewelBag
+  Phoenix    Goategon   FaceTree   Swordgon
+
+Team Levels 79-98
+  SuperTen   MadMirror  Yeti       Skullgon
+  Centasaur  EvilArmor  Voodoll    Golem
+  LavaMan    Blizzard   MadCat     StoneMan
+  BigEye     Metaly     Gasgon     Gigantes
+
+Team Levels 99-118
+  Skeletor   Snapper    LavaMan    Phoenix
+  KingSlime  MadPecker  BombCrag   FangSlime
+  ZapBird    Spikerous  Centasaur  BombCrag
+  SkyDragon  BattleRex  FunkyBird  StoneMan
+
+Team Levels 119-138
+  GulpBeast  GreatDrak  Trumpeter  MetalDrak
+  ZapBird    WhipBird   Metabble   Balzak
+  MadDragon  GoatHorn   DeadNoble  Roboster
+  Andreal    Unicorn    Digster    Copycat
+
+Team Levels 139+
+  GreatDrak  Roboster   Balzak     WhipBird
+  MetalDrak  GateGuard  ChopClown  MetalKing
+  Orochi     Trumpeter  Snapper    HornBeet
+  DeadNoble  Servant    StoneMan   BombCrag
+
+
+ M O N S T E R  D A T A
+------------------------
+
+FA: Family
+0 - Slime  1 - Dragon 2 - Beast  3 - Bird   4 - Plant
+5 - Bug    6 - Devil  7 - Zombie 8 - Mater. 9 - Boss
+
+ML: Max Level
+The Max Level of a wild-caught monster is this value +/- 2 (random)
+The Max Level of a bred monster is this value + Plus * 2
+
+XP: XP/Level table
+This is a pointer to one of 32 different XP tables.
+In general, the higher the number, the more XP the
+monster needs per level:
+00-07 = Fast      (2 XP for level 2)
+08-15 = Normal    (5 XP for level 2)
+16-23 = Slow      (10 XP for level 2)
+24-31 = Very slow (100 XP for level 2)
+
+SX: Sex probability
+This determines the sex of a monster hatched from an egg.
+The sex of a wild-caught monster may depend on where it is caught
+(for example, all the catchable Gate bosses are of predetermined sex)
+Note that any egg's sex can be changed by having it BLESSed.
+0 = Always male
+1 = 9/10 male
+2 = Even chance
+3 = 5/6 female
+
+FL: Flying monster?
+If this is 1, the monster locomotes exclusively by flying.
+Flying monsters are immune to "LegSweep" and "BigTrip".
+
+ME: Metal Slime family?
+If this is 1, the monster is a member of the Metal Slime family.
+Metal Slimes are susceptible to "MetalCut", and non-player ones
+are more likely to run away than normal monsters.  The AI seems
+to use slightly different criteria than normal when choosing
+a target for an attack or recovery skill when one of the
+monsters in question is a Metal Slime.
+
+Note that the GoldSlime is not considered to be a member of the
+Metal Slime family.
+
+HP: HP Growth rating
+MP: MP Growth rating
+AT: ATK Growth rating
+DF: DEF Growth rating
+AG: AGL Growth rating
+IN: INT Growth rating
+See the "Growth" section for an explanation of these ratings.
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+DrakSlime  0 45 13  2  0  0 16 10 13 08 20 16 SuckAir   FireAir   BeDragon
+SpotSlime  0 35 10  2  0  0 17 01 17 04 17 08 CallHelp  LushLicks Imitate
+WingSlime  0 35 10  2  1  0 13 02 11 11 24 08 SquallHit WindBeast TailWind
+TreeSlime  0 50 11  2  0  0 13 11 08 14 17 17 Sap       Paralyze  SleepAir
+Snaily     0 30 08  2  0  0 11 10 17 20 20 08 IceBolt   NumbOff   CallHelp
+SlimeNite  0 40 15  2  0  0 14 01 15 14 20 14 Upper     Heal      BeastCut
+Babble     0 45 12  2  0  0 17 07 17 08 14 13 Surround  PoisonHit EerieLite
+BoxSlime   0 50 11  2  0  0 11 10 14 19 14 13 Blaze     Upper     Ramming
+Slime      0 40 16  2  0  0 22 11 14 17 11 13 Firebal   MegaMagic Radiant
+Healer     0 50 11  2  0  0 11 15 11 11 20 18 Upper     Heal      HealUs
+FangSlime  0 35 10  2  0  0 25 01 18 13 20 13 ChargeUP  CallHelp  WarCry
+RockSlime  0 50 11  2  0  0 13 10 14 23 16 14 HighJump  RockThrow StrongD
+SlimeBorg  0 50 11  2  0  0 18 11 20 15 14 13 RainSlash Lightning BladeD
+Slabbit    0 35 10  2  0  0 15 07 14 08 21 15 SideStep  LegSweep  Whistle
+SpotKing   0 40 09  2  0  0 18 11 18 11 20 15 CleanCut  NapAttack MouthShut
+KingSlime  0 40 12  2  0  0 18 14 15 14 20 15 Barrier   Heal      Vivify
+Metaly     0 20 25  2  0  1 00 30 11 30 31 13 Blaze     Icebolt   Beat
+Metabble   0 40 27  2  0  1 00 30 14 31 31 15 Firebal   Bang      Sacrifice
+MetalKing  0 60 29  2  0  1 00 31 15 31 31 18 Bolt      Ironize   Hellblast
+GoldSlime  0 80 31  2  0  0 00 31 19 31 31 18 Chance    BigBang   Surge
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+DragonKid  1 25 07  2  0  0 10 03 17 02 05 05 FireAir   SleepAir  Dodge
+Tortragon  1 35 17  2  0  0 15 11 18 06 07 13 MagicBack Ironize   Lightning
+Pteranod   1 35 16  2  1  0 14 11 18 02 20 04 Firebal   WindBeast TailWind
+Gasgon     1 50 18  2  1  0 17 15 13 11 07 18 Sacrifice Farewell  Beserker
+FairyDrak  1 30 15  2  1  0 09 13 17 16 14 04 Surround  SleepAir  LushLicks
+LizardMan  1 40 20  2  0  0 17 10 19 13 05 16 EvilSlash BeastCut  GigaSlash
+Poisongon  1 45 19  2  0  0 21 16 15 13 07 01 PoisonHit PoisonGas LushLicks
+Swordgon   1 50 20  2  0  0 09 03 23 06 01 05 CleanCut  RainSlash BladeD
+Dragon     1 40 20  2  0  0 17 01 20 16 07 04 FireSlash FireAir   SuckAll
+Minidrak   1 35 16  2  0  0 14 08 17 14 18 10 Ramming   CallHelp  SandStorm
+MadDragon  1 35 19  2  0  0 19 00 21 05 08 00 Massacre  EvilSlash LureDance
+Rayburn    1 35 17  2  1  0 14 02 17 16 15 05 VacuSlash DevilCut  PoisonHit
+Chamelgon  1 50 19  2  0  0 17 18 11 06 08 13 PanicAll  Paralyze  PalsyAir
+LizardFly  1 30 16  2  1  0 11 11 17 17 13 05 Firebal   WindBeast FireAir
+Andreal    1 50 22  2  0  0 21 15 19 17 19 12 Infernos  Surround  PoisonGas
+KingCobra  1 40 20  2  0  0 18 08 16 13 19 11 PoisonHit Curse     K.O.Dance
+Spikerous  1 30 19  2  0  0 20 08 19 24 01 02 Beserker  Kamikaze  RockThrow
+GreatDrak  1 60 23  2  0  0 21 05 23 14 16 11 IceSlash  FrigidAir SuckAll
+Crestpent  1 35 18  2  0  0 14 04 15 05 19 08 StopSpell PoisonHit BeDragon
+WingSnake  1 45 20  1  0  0 15 08 20 17 14 11 HighJump  SquallHit PoisonGas
+Coatol     1 60 23  2  0  0 25 14 20 22 18 14 Bang      EvilSlash BoltSlash
+Orochi     1 60 22  2  0  0 24 13 24 21 11 08 FireSlash BiAttack  FireAir
+BattleRex  1 60 22  2  0  0 23 16 26 20 17 16 EvilSlash MetalCut  FireAir
+SkyDragon  1 35 18  3  1  0 15 11 20 14 18 08 SuckAir   MultiCut  FireAir
+Divinegon  1 80 28  3  1  0 26 25 28 24 20 23 FrigidAir BigBang   Meditate
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+Tonguella  2 40 12  2  0  0 14 05 15 12 11 16 NapAttack SleepAir  LushLicks
+Almiraj    2 45 13  2  0  0 18 05 14 09 15 04 Sleep     Beserker  ChargeUP
+Catfly     2 35 10  2  1  0 11 10 13 08 18 14 StopSpell Slow      OddDance
+PillowRat  2 50 11  2  0  0 14 17 08 08 19 13 Ramming   CallHelp  SideStep
+Saccer     2 40 09  2  0  0 16 05 09 17 00 13 Upper     PsycheUp  PalsyAir
+GulpBeast  2 45 13  2  0  0 24 01 26 13 07 01 Ramming   Massacre  WarCry
+Skullroo   2 45 12  2  0  0 14 10 11 08 16 02 ChargeUP  DrakSlash PaniDance
+WindBeast  2 50 12  2  0  0 13 20 13 15 15 13 Infernos  IceBolt   VacuSlash
+Anteater   2 40 08  2  0  0 14 07 17 11 09 11 MetalCut  SquallHit LushLicks
+SuperTen   2 45 09  2  0  0 18 07 13 12 11 07 K.O.Dance Imitate   Hustle
+IronTurt   2 45 10  2  0  0 18 05 17 23 02 11 MagicBack Cover     StrongD
+Mommonja   2 35 11  2  0  0 14 11 16 14 20 08 IceBolt   LureDance MouthShut
+HammerMan  2 50 11  2  0  0 17 19 17 11 17 10 Kamikaze  EvilSlash ChargeUP
+Grizzly    2 40 14  2  0  0 20 00 27 07 09 01 TwinSlash SquallHit LegSweep
+Yeti       2 40 13  2  0  0 18 11 15 09 10 08 IceBolt   IceSlash  WarCry
+MadGopher  2 50 12  2  0  0 14 13 17 09 08 11 ChargeUP  BirdBlow  ZombieCut
+FairyRat   2 45 11  2  1  0 12 05 13 14 17 07 Surround  Slow      Smashlime
+Unicorn    2 50 14  2  0  0 19 21 14 13 12 25 Heal      Vivify    Antidote
+Goategon   2 40 11  2  0  0 19 09 17 13 17 03 Firebal   Slow      SleepAir
+WildApe    2 35 13  2  0  0 13 01 20 10 08 04 TwinSlash CallHelp  LegSweep
+Trumpeter  2 50 14  2  0  0 17 08 21 17 14 13 Beserker  SandStorm WarCry
+KingLeo    2 70 15  2  0  0 20 14 24 23 17 14 Firebal   BiAttack  FrigidAir
+DarkHorn   2 50 13  2  0  0 17 04 19 18 10 12 Sleep     StopSpell PsycheUp
+MadCat     2 40 12  2  0  0 15 07 18 14 17 11 VacuSlash SquallHit LegSweep
+BigEye     2 40 11  2  0  0 14 08 14 11 07 09 IceBolt   Heal      FrigidAir
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+Picky      3 40 04  2  0  0 11 12 14 08 18 13 Surround  Sap       Sheldodge
+Wyvern     3 45 06  2  1  0 17 13 19 11 16 20 Sleep     Heal      FrigidAir
+BullBird   3 35 05  2  0  0 14 08 17 09 06 04 Ramming   ChargeUP  Branching
+FloraJay   3 50 05  2  1  0 06 18 12 03 21 19 Speed     BeastCut  LifeSong
+DuckKite   3 30 03  2  1  0 11 11 09 12 18 07 Sleep     PanicAll  Curse
+MadPecker  3 40 04  2  0  0 09 07 20 14 23 13 Infernos  Sap       VacuSlash
+MadRaven   3 45 05  2  1  0 06 14 17 12 18 05 HighJump  DrakSlash TailWind
+MistyWing  3 50 05  2  1  0 12 17 08 15 22 13 Surround  Barrier   EerieLite
+Dracky     3 40 02  2  1  0 11 04 08 13 17 11 Sleep     RobMagic  Antidote
+BigRoost   3 40 03  2  1  0 08 05 14 12 17 08 VacuSlash SandStorm Dodge
+StubBird   3 40 06  2  0  0 16 12 20 20 14 11 TwinHits  RainSlash Sheldodge
+LandOwl    3 35 07  2  0  0 15 10 21 13 11 18 Infernos  BoltSlash SideStep
+MadGoose   3 30 05  2  1  0 17 06 17 15 20 08 PanicAll  OddDance  LureDance
+MadCondor  3 50 06  2  1  0 14 11 18 12 17 13 Firebal   HealUs    MultiCut
+Blizzardy  3 50 07  3  1  0 20 07 11 17 19 11 Beat      IceSlash  FrigidAir
+Phoenix    3 50 07  1  1  0 16 13 19 08 19 12 SquallHit FireAir   TailWind
+ZapBird    3 50 07  2  1  0 20 07 19 17 22 12 BoltSlash Lightning Hellblast
+WhipBird   3 60 15  2  1  0 27 19 12 20 23 23 Ironize   ThickFog  TatsuCall
+FunkyBird  3 50 05  2  0  0 14 20 08 09 16 20 PaniDance Hustle    LifeDance
+RainHawk   3 70 24  1  0  0 25 27 15 24 18 24 MegaMagic Surge     StrongD
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+MadPlant   4 40 10  2  0  0 15 24 11 13 06 18 Sap       Slow      NumbOff
+FireWeed   4 45 15  2  0  0 14 26 10 12 05 17 Blaze     DeChaos   PalsyAir
+FloraMan   4 35 07  2  0  0 17 20 06 09 02 19 Firebal   Antidote  CurseOff
+WingTree   4 35 07  2  1  0 12 20 06 11 14 07 Farewell  StepGuard ZombieCut
+CactiBall  4 30 06  2  0  0 18 18 12 15 09 05 HighJump  Paralyze  OddDance
+Gulpple    4 40 11  2  0  0 16 17 09 06 02 14 Infernos  Sleep     NapAttack
+Toadstool  4 45 09  2  0  0 14 18 08 09 13 13 NapAttack SleepAir  MouthShut
+AmberWeed  4 50 12  2  0  0 12 24 08 17 12 10 Barrier   TwinHits  MagicWall
+Stubsuck   4 40 08  2  0  0 17 11 04 02 09 14 Sleep     StepGuard ZombieCut
+Oniono     4 35 09  2  0  0 13 20 14 11 03 16 RobMagic  ChargeUP  SleepAir
+DanceVegi  4 50 12  2  0  0 11 21 07 06 20 11 K.O.Dance Sidestep  LureDance
+TreeBoy    4 40 11  2  0  0 15 18 08 03 12 15 IceBolt   Heal      CurseOff
+FaceTree   4 45 09  2  0  0 12 20 11 08 10 17 StopSpell Curse     OddDance
+HerbMan    4 40 13  2  0  0 19 17 07 10 15 23 Focus     Curse     DanceShut
+BeanMan    4 35 10  2  0  0 14 15 12 14 15 09 RobMagic  TwinHits  MapMagic
+EvilSeed   4 30 06  2  0  0 08 11 08 05 01 03 CleanCut  Paralyze  Radiant
+ManEater   4 50 09  2  0  0 14 12 19 07 10 06 DrakSlash PsycheUp  SleepAir
+Snapper    4 60 11  2  0  0 17 14 20 13 10 16 StopSpell CallHelp  RainSlash
+Rosevine   4 80 24  3  0  0 24 30 23 21 18 18 BiAttack  UltraDown BladeD
+Watabou    4 80 00  2  0  0 10 27 11 14 24 30 Chance    Whistle   Imitate
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+GiantSlug  5 35 02  2  0  0 11 08 14 09 11 07 LushLicks Whistle   Dodge
+Catapila   5 40 04  2  0  0 13 05 11 14 11 09 Upper     PoisonGas ThickFog
+Gophecada  5 30 01  2  0  0 06 11 14 18 08 07 Beat      MagicBack CallHelp
+Butterfly  5 30 00  2  1  0 11 02 13 07 12 08 Surround  CallHelp  Curse
+WeedBug    5 45 04  2  0  0 17 13 10 12 05 19 RobMagic  Barrier   MagicWall
+GiantWorm  5 35 06  2  0  0 13 08 16 08 13 14 StepGuard BeastCut  OddDance
+Lipsy      5 40 04  2  0  0 12 08 09 09 04 01 NapAttack Ahhh      LushLicks
+StagBug    5 45 03  2  0  0 13 07 16 20 09 07 Sleep     FireAir   LegSweep
+ArmyAnt    5 35 02  2  0  0 08 04 11 17 13 01 Kamikaze  CallHelp  NapAttack
+GoHopper   5 35 00  2  0  0 11 04 08 14 14 04 RobMagic  ChargeUP  CallHelp
+TailEater  5 45 05  2  0  0 12 10 16 11 14 05 IceSlash  PoisonGas Radiant
+ArmorPede  5 30 06  2  0  0 15 10 17 20 11 02 Upper     TwinHits  TwinSlash
+Eyeder     5 45 04  2  1  0 09 11 06 03 10 09 Firebal   Heal      MapMagic
+GiantMoth  5 30 02  2  1  0 14 09 16 12 20 12 WindBeast Paralyze  Radiant
+Droll      5 40 05  2  0  0 17 10 15 16 07 14 Slow      StepGuard Branching
+ArmyCrab   5 40 06  2  0  0 16 08 14 19 05 01 Upper     MetalCut  CallHelp
+MadHornet  5 40 07  2  1  0 20 05 19 13 20 04 PoisonHit Paralyze  TailWind
+HornBeet   5 50 07  2  0  0 21 19 23 20 12 14 BoltSlash DevilCut  RockThrow
+Armorpion  5 60 24  2  0  0 22 20 24 23 15 18 EvilSlash ZombieCut RainSlash
+Digster    5 50 11  2  0  0 24 10 19 26 01 15 Farewell  StrongD   SuckAll
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+Pixy       6 40 19  2  0  0 11 07 15 08 15 04 Speed     TwinHits  Antidote
+ArcDemon   6 45 20  2  0  0 14 13 17 12 07 21 Bang      BoltSlash BirdBlow
+AgDevil    6 35 16  2  0  0 16 11 18 12 16 19 Firebal   Sacrifice SleepAir
+Demonite   6 25 13  2  0  0 13 01 05 04 09 20 Blaze     FireSlash FrigidAir
+DarkEye    6 50 18  2  1  0 11 18 10 16 09 12 MetalCut  PalsyAir  Radiant
+EyeBall    6 35 16  2  0  0 16 17 14 14 13 08 MagicBack Ironize   WarCry
+SkulRider  6 45 18  2  0  0 17 11 17 13 15 12 FireSlash RainSlash LegSweep
+EvilBeast  6 50 20  2  0  0 16 10 20 22 04 12 Firebal   Ironize   FrigidAir
+1EyeClown  6 25 13  2  1  0 10 01 05 09 09 17 Blaze     Firebal   IceBolt
+Gremlin    6 25 13  2  1  0 13 07 08 04 02 18 Firebal   StopSpell Heal
+MedusaEye  6 35 19  2  1  0 11 13 14 15 08 11 Surround  Sap       Branching
+Lionex     6 45 21  2  0  0 15 11 14 15 12 19 Infernos  HealUs    VacuSlash
+GoatHorn   6 35 22  2  0  0 20 11 17 13 11 20 Bang      Infernos  IceBolt
+Orc        6 50 17  2  0  0 19 07 19 13 13 18 Sap       Vivify    BirdBlow
+Ogre       6 35 19  2  0  0 15 08 20 12 10 12 Massacre  MetalCut  RainSlash
+GateGuard  6 50 23  2  0  0 18 12 18 14 10 14 Blaze     CleanCut  ThickFog
+ChopClown  6 50 22  2  0  0 17 12 20 11 20 15 TwinHits  VacuSlash SquallHit
+Grendal    6 60 20  2  0  0 23 01 18 24 12 12 FireSlash DrakSlash Cover
+Akubar     6 80 30  2  0  0 24 30 23 21 18 21 Bang      Focus     FrigidAir
+MadKnight  6 50 23  2  0  0 17 09 18 20 10 12 Massacre  BeastCut  GigaSlash
+Gigantes   6 35 22  2  0  0 27 00 27 07 00 00 EvilSlash ChargeUP  ZombieCut
+Centasaur  6 45 23  2  0  0 20 01 24 21 18 19 StopSpell FireSlash RainSlash
+EvilArmor  6 30 22  2  0  0 16 01 17 29 05 13 FireSlash BoltSlash DrakSlash
+Jamirus    6 60 21  2  0  0 24 09 21 24 23 18 Blaze     BiAttack  TailWind
+Durran     6 70 28  2  0  0 25 24 23 15 17 20 DrakSlash BirdBlow  WindBeast
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+Spooky     7 40 11  2  1  0 11 12 13 08 18 15 Radiant   LushLicks MouthShut
+Skullgon   7 45 13  2  0  0 06 01 23 15 04 06 TwinSlash IceSlash  FrigidAir
+Putrepup   7 35 06  2  0  0 17 13 17 08 11 04 Sap       Slow      MagicBack
+RotRaven   7 35 05  2  0  0 14 08 12 11 18 09 Kamikaze  BoltSlash Lightning
+Mummy      7 50 10  2  0  0 15 17 12 09 04 08 EvilSlash CallHelp  Paralyze
+DarkCrab   7 30 08  2  0  0 12 08 15 20 01 11 MagicWall Ironize   StepGuard
+DeadNite   7 45 13  2  0  0 17 07 19 09 12 08 Heal      DeChaos   CurseOff
+Shadow     7 50 12  2  1  0 09 06 06 20 08 12 FrigidAir K.O.Dance ThickFog
+Hork       7 40 08  2  0  0 17 13 16 08 11 10 PoisonGas EerieLite LushLicks
+Mudron     7 30 10  2  0  0 06 10 11 17 07 14 Beat      Heal      Vivify
+NiteWhip   7 35 12  2  1  0 17 04 10 03 15 09 WindBeast Lightning FireAir
+MadSpirit  7 50 13  2  1  0 14 12 15 12 16 10 SleepAir  Radiant   ThickFog
+WindMerge  7 35 09  2  1  0 16 19 19 12 13 06 Infernos  Barrier   CurseOff
+Reaper     7 50 10  2  1  0 19 03 21 17 19 06 DevilCut  Curse     EerieLite
+DeadNoble  7 50 16  2  0  0 21 02 26 19 15 13 Beat      HealUs    TatsuCall
+WhiteKing  7 70 25  2  0  0 20 24 14 20 15 27 Infernos  Bolt      Chance
+BoneSlave  7 40 10  2  0  0 14 13 17 12 07 01 Bang      BoltSlash BirdBlow
+Skeletor   7 60 12  2  0  0 16 11 18 12 16 19 Sap       BirdBlow  BiAttack
+Servant    7 80 20  2  0  0 23 21 25 18 15 20 Blaze     IceBolt   Focus
+Copycat    7 40 01  2  1  0 11 20 01 02 21 05 Transform OddDance  Imitate
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+JewelBag   8 40 12  2  0  0 13 11 09 18 17 15 Firebal   StopSpell PanicAll
+EvilWand   8 50 14  2  1  0 14 15 17 12 09 13 DeChaos   MapMagic  FrigidAir
+MadCandle  8 35 10  2  0  0 12 10 14 06 17 12 Blaze     PsycheUp  Whistle
+CoilBird   8 35 08  2  0  0 16 13 05 14 14 07 NumbOff   DeChaos   SuckAll
+Facer      8 50 12  2  0  0 08 23 11 12 03 19 Infernos  Sacrifice LifeSong
+SpikyBoy   8 30 08  2  0  0 09 13 14 17 07 11 Sacrifice HighJump  Smashlime
+MadMirror  8 45 14  2  0  0 15 11 08 06 11 19 MagicBack Transform MapMagic
+RogueNite  8 45 12  2  0  0 14 04 20 21 10 13 Heal      EvilSlash MetalCut
+Goopi      8 40 08  2  0  0 08 13 11 14 07 04 CallHelp  LegSweep  Dodge
+Voodoll    8 35 11  2  0  0 14 17 12 12 08 14 Surround  PanicAll  Sap
+MetalDrak  8 45 15  2  0  0 18 13 20 23 09 10 Massacre  RockThrow SandStorm
+Balzak     8 35 13  2  0  0 21 11 23 21 18 19 Bang      Bolt      MultiCut
+SabreMan   8 30 11  2  1  0 08 03 09 11 12 06 RobMagic  DevilCut  Paralyze
+CurseLamp  8 50 09  2  1  0 12 18 09 19 13 15 Upper     Speed     TwinHits
+Roboster   8 40 13  2  0  0 12 05 21 22 24 17 BiAttack  SquallHit RainSlash
+EvilPot    8 40 11  2  1  0 18 19 15 18 09 19 Beat      Sleep     Massacre
+Gismo      8 40 09  2  1  0 13 15 11 14 20 18 SuckAir   FireAir   FrigidAir
+LavaMan    8 40 13  2  0  0 18 12 17 24 04 07 Blaze     FireAir   Cover
+IceMan     8 40 13  2  0  0 16 06 18 24 04 07 IceBolt   FrigidAir StrongD
+Mimic      8 40 11  2  1  0 25 10 20 12 01 20 Blaze     Beat      StepGuard
+MudDoll    8 40 08  2  0  0 12 03 13 14 01 15 OddDance  SideStep  Hustle
+Golem      8 40 18  2  0  0 17 04 12 21 04 06 ChargeUP  PsycheUp  StrongD
+StoneMan   8 50 15  2  0  0 24 10 23 24 01 14 Cover     SuckAll   Meditate
+BombCrag   8 50 14  2  0  0 15 11 17 20 00 13 Sacrifice Farewell  Meditate
+GoldGolem  8 80 18  1  0  0 24 21 24 27 17 23 BigBang   Surge     TatsuCall
+
+Name      FA ML XP SX FL ME HP MP AT DF AG IN          S K I L L S
+----------------------------------------------------------------------------
+DracoLord  9 50 24  0  0  0 20 30 21 20 23 23 Firebal   Meditate  BeDragon
+DracoLord  9 80 25  0  0  0 21 30 24 21 23 21 Massacre  FireAir   Surge
+Hargon     9 70 24  0  0  0 19 30 20 21 23 23 Firebal   Bang      TatsuCall
+Sidoh      9 80 25  0  1  0 24 30 24 21 23 23 FireAir   FrigidAir Hellblast
+Baramos    9 70 24  0  0  0 20 30 20 20 22 21 Bang      RockThrow Hellblast
+Zoma       9 80 25  0  0  0 24 30 26 21 23 23 FrigidAir BigBang   DeMagic
+Pizzaro    9 70 24  0  0  0 21 30 26 21 23 23 BiAttack  FireAir   Hellblast
+Esterk     9 80 31  0  0  0 29 30 26 24 23 23 RainSlash DeMagic   GigaSlash
+Mirudraas  9 70 30  0  0  0 21 30 26 21 23 23 Blaze     Bang      Bolt
+Mirudraas  9 80 31  0  0  0 29 30 26 21 23 23 SuckAir   FireAir   DeMagic
+Mudou      9 70 28  0  0  0 21 30 26 24 23 23 FireAir   FrigidAir PoisonGas
+DeathMore  9 60 27  0  1  0 21 30 26 21 23 23 Hellblast BigBang   TatsuCall
+DeathMore  9 70 29  0  0  0 24 30 26 21 23 23 Ramming   FireAir   UltraDown
+DeathMore  9 80 31  0  1  0 29 30 30 24 23 23 Focus     BigBang   DeMagic
+DarkDrium  9 80 30  0  0  0 31 30 31 24 23 23 Bolt      FireAir   FrigidAir
+
+
+ R E S I S T A N C E
+---------------------
+
+The following 26 classes of special attack exist in DWM:
+
+A: Blaze (etc.), FireSlash, BigBang, FireStaff
+B: Firebal (etc.), LavaStaff
+C: Bang (etc.)
+D: Infernos (etc.), VacuSlash, MultiCut, WindBeast, Vacuum, WindStaff
+E: Bolt (etc.), BoltSlash, Lightning, Hellblast, BoltStaff
+F: IceBolt (etc.), IceSlash, SnowStaff
+G: Surround, SandStorm, Radiant
+H: Sleep, NapAttack, SleepAir
+I: Beat (etc.), K.O.Dance, EerieLite, UltraDown
+J: RobMagic (etc.), OddDance, RobDance
+K: StopSpell, MistStaff
+L: PanicAll, PaniDance
+M: Sap, SickLick (DEF down)
+N: Slow (AGL down)
+O: Sacrifice, Ramming, Kamikaze
+P: MegaMagic
+Q: FireAir (etc.)
+R: IceAir (etc.)
+S: PoisonHit, PoisonGas, PoisonAir, BadMeat
+T: Paralyze, PalsyAir
+U: Curse
+V: Ahhh, LureDance, LushLicks, LegSweep, BigTrip, WarCry (Miss-a-Turn)
+W: DanceShut
+X: MouthShut
+Y: CallHelp, YellHelp, RockThrow
+Z: GigaSlash
+
+Resistance to these attacks is a species characteristic and
+ranges from 0 to 3, 0 being completely non-resistant and 3
+being (almost) completely immune.
+
+When a monster is bred, it has a chance to inherit resistances
+from its parents that are higher than the norm for its species.
+The chance of inheriting an exceptional resistance is related
+to the new monster's "plus" value.  You can EVALuate an egg to
+find out whether the monster inherited an exceptional
+resistance or not, but not what exceptional resistance was
+inherited.
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+DrakSlime  1 1 1 0 0 0 2 2 2 2 2 2 2 2 3 2 2 1 0 1 0 0 0 0 0 0
+SpotSlime  0 0 0 0 0 0 2 2 2 2 2 2 3 3 2 2 0 0 0 0 0 1 1 1 1 1
+WingSlime  0 0 0 1 1 0 2 2 2 2 2 2 2 2 2 2 0 0 0 0 0 1 1 1 1 1
+TreeSlime  0 0 0 1 1 0 2 2 2 3 3 2 2 2 2 2 0 0 0 0 0 1 1 1 0 0
+Snaily     0 0 0 0 0 0 2 3 2 2 3 2 2 2 2 2 0 0 1 1 1 0 0 0 1 1
+SlimeNite  1 1 1 1 1 1 2 2 3 2 2 2 2 2 3 2 1 0 0 1 0 0 0 0 0 0
+Babble     0 0 0 0 0 0 3 3 3 2 2 3 2 2 2 2 0 0 3 1 1 0 0 0 0 0
+BoxSlime   0 0 1 0 0 1 2 2 3 2 2 2 2 2 3 2 0 1 0 0 0 0 0 0 0 0
+Slime      0 0 0 0 0 0 2 2 2 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0 0 0
+Healer     0 0 0 1 1 0 2 2 2 3 3 2 2 2 2 2 0 0 0 0 0 1 2 2 0 0
+FangSlime  0 0 0 0 0 0 2 2 3 2 2 2 3 3 3 2 0 0 0 1 0 1 1 1 1 1
+RockSlime  0 0 1 0 0 2 2 2 3 2 2 2 2 2 3 2 0 2 0 0 0 0 0 0 0 0
+SlimeBorg  1 1 0 1 2 1 2 2 3 2 2 3 2 2 3 2 1 1 0 1 0 0 0 0 0 0
+Slabbit    0 0 0 0 0 0 2 2 2 2 2 2 3 3 2 2 0 0 0 0 0 2 1 1 2 1
+SpotKing   1 1 1 0 0 1 3 2 3 2 2 3 3 3 3 2 1 1 0 1 0 2 2 2 2 2
+KingSlime  1 1 1 1 1 1 3 2 3 2 2 3 3 3 3 2 1 1 1 1 1 1 1 1 1 1
+Metaly     3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 3 3 3 3 3 0 0 0 3 0
+Metabble   3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 0 0 0 3 0
+MetalKing  3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 0 0 0 3 1
+GoldSlime  3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 2 3 3 3 3 3 1 1 1 3 2
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+DragonKid  1 2 2 0 0 0 1 1 1 1 1 1 1 1 3 1 2 0 0 0 0 0 0 0 0 0
+Tortragon  2 2 2 0 0 0 0 0 0 0 0 0 1 1 2 0 2 1 0 0 0 1 1 1 1 1
+Pteranod   2 2 2 1 1 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 1 1 1 1 1
+Gasgon     2 2 2 1 1 0 0 0 0 1 1 0 0 0 2 0 2 0 0 0 0 1 1 1 0 0
+FairyDrak  2 2 2 0 0 0 0 1 0 0 0 1 0 0 2 0 2 0 1 1 1 0 0 0 1 1
+LizardMan  2 2 2 1 1 0 0 0 1 0 0 0 0 0 3 0 2 0 0 0 0 0 0 0 0 0
+Poisongon  2 2 2 0 0 0 1 1 1 0 0 1 0 0 2 0 2 0 2 1 1 0 0 0 0 0
+Swordgon   2 2 3 0 0 1 0 0 1 0 0 0 0 0 3 0 2 1 0 0 0 0 0 0 0 0
+Dragon     2 2 2 0 0 0 0 2 0 0 0 1 0 0 2 0 2 0 0 0 0 0 0 0 0 0
+MiniDrak   2 2 2 1 1 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 2 1 2 1 1
+MadDragon  2 2 2 0 0 0 0 1 0 0 0 0 1 1 2 0 2 0 0 0 0 2 2 1 2 2
+Rayburn    2 2 2 2 2 0 0 2 0 0 0 1 0 0 2 0 2 1 0 0 0 0 2 1 2 1
+Chamelgon  1 2 2 0 0 0 0 0 2 1 0 3 0 0 3 0 3 0 0 0 0 0 0 0 0 0
+LizardFly  1 2 2 0 0 0 0 1 0 0 0 1 0 0 2 0 3 0 1 1 1 0 0 0 1 1
+Andreal    2 2 2 0 0 0 0 2 2 2 0 2 0 0 2 0 2 2 0 0 0 1 1 1 0 0
+KingCobra  1 2 2 0 0 0 1 1 1 1 1 1 1 1 3 1 2 0 2 0 2 0 0 0 0 0
+Spikerous  2 2 2 0 0 0 0 1 1 0 0 1 0 0 3 0 2 0 1 1 1 0 0 0 1 1
+GreatDrak  2 3 2 1 1 1 1 2 3 1 1 2 1 1 3 0 3 1 1 3 1 1 1 1 1 1
+Crestpent  2 2 2 1 1 0 0 0 0 0 0 0 0 0 2 0 2 0 0 0 0 2 2 1 1 1
+WingSnake  3 3 2 1 1 0 0 0 2 0 1 0 0 0 3 0 3 0 0 0 0 2 2 1 1 1
+Coatol     2 2 2 1 1 1 1 2 2 1 1 1 1 1 3 1 3 1 1 1 1 2 2 1 1 1
+Orochi     2 2 2 1 1 1 2 2 2 1 1 3 1 1 3 0 3 1 2 2 2 1 1 1 1 1
+BattleRex  2 2 2 2 2 1 1 2 2 1 1 1 1 1 3 0 3 1 1 2 1 1 1 1 1 1
+SkyDragon  1 2 2 2 2 1 1 2 2 1 1 1 1 1 3 0 3 1 1 2 1 2 2 2 2 2
+Divinegon  2 3 3 2 2 2 2 2 3 2 2 3 2 2 3 1 3 2 2 3 2 2 2 2 2 2
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+Tonguella  0 0 0 0 0 0 1 1 1 1 1 1 3 3 1 1 0 0 0 0 0 2 2 2 2 2
+Almiraj    1 1 1 0 0 0 0 0 0 0 0 0 2 2 1 0 1 0 0 0 0 2 2 2 2 2
+Catfly     0 0 0 1 1 0 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 3 3 3 3 3
+PillowRat  0 0 0 1 1 0 0 0 0 1 1 0 2 2 0 0 0 0 0 0 0 3 3 3 2 2
+Saccer     0 0 0 0 0 0 0 1 0 0 0 1 2 2 0 0 0 0 1 1 1 2 2 2 3 3
+GulpBeast  1 1 1 1 1 1 0 0 1 0 0 0 2 2 1 0 0 0 0 0 0 2 2 2 2 2
+Skullroo   0 0 0 0 0 0 1 1 1 0 0 1 2 2 1 0 0 0 1 1 1 2 2 2 2 2
+WindBeast  0 0 0 2 0 1 0 0 1 0 0 0 2 2 1 0 0 1 0 0 0 2 2 2 2 2
+Anteater   0 0 0 0 0 0 0 0 0 0 0 0 2 2 0 0 0 0 0 0 0 2 2 2 2 2
+SuperTen   0 0 0 0 0 0 1 2 1 0 0 2 2 2 0 0 0 0 1 1 1 2 2 2 2 2
+IronTurt   1 1 1 0 0 1 0 0 0 0 0 0 2 2 1 0 2 2 0 0 0 2 2 2 2 2
+Mommonja   0 0 0 1 1 0 0 0 1 0 0 1 2 2 0 0 0 0 0 0 0 3 3 3 3 3
+HammerMan  0 0 0 1 1 0 0 0 0 2 2 0 2 2 0 0 0 0 0 0 0 3 3 3 2 2
+Grizzly    1 1 1 1 1 1 0 0 1 0 0 0 2 2 1 0 0 0 0 0 0 3 2 2 3 2
+Yeti       1 1 1 1 1 2 0 0 1 0 0 0 2 2 1 0 0 3 0 0 0 2 2 2 2 2
+MadGopher  1 1 0 0 0 1 0 0 2 0 0 0 2 2 2 0 1 1 0 0 0 2 2 2 2 2
+FairyRat   1 1 1 0 0 1 0 1 0 0 0 1 2 2 1 0 1 1 0 0 0 2 2 2 2 2
+Unicorn    0 0 0 0 0 0 1 2 2 1 1 2 3 3 1 1 0 2 0 1 1 3 2 2 3 2
+Goategon   0 1 1 0 0 2 1 1 1 1 1 1 3 3 1 1 1 2 0 0 0 2 2 2 2 2
+WildApe    0 0 0 1 1 0 0 0 1 0 0 0 2 2 1 0 0 0 0 0 0 3 3 3 3 3
+Trumpeter  0 1 1 1 1 1 0 0 2 0 0 1 2 3 1 0 0 1 0 0 0 3 3 3 3 3
+KingLeo    1 1 1 2 2 1 1 1 3 1 1 2 3 3 3 1 1 2 1 2 1 3 3 3 3 3
+DarkHorn   1 1 0 0 0 1 1 2 3 1 3 1 3 3 3 1 1 1 0 2 1 3 3 3 3 3
+MadCat     1 1 1 0 0 1 0 1 3 0 0 0 2 2 3 0 1 1 0 1 0 3 2 2 2 2
+BigEye     1 1 1 1 1 1 0 1 3 0 2 0 2 2 3 0 0 0 0 1 0 2 2 2 2 2
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+Picky      0 0 0 2 2 0 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 2 2 2 2 2
+Wyvern     1 1 1 2 2 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 2 2 2 2 2
+BullBird   0 0 0 2 2 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 3 3 3 3 3
+FloraJay   0 0 0 3 3 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 3 3 3 2 2
+DuckKite   0 0 0 2 2 0 0 1 0 0 0 1 0 0 0 0 0 0 1 1 1 2 2 2 3 3
+MadPecker  1 1 1 3 3 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 2 2 2 2 2
+MadRaven   0 0 0 2 2 0 1 1 1 0 0 1 0 0 0 0 0 0 1 1 1 2 2 2 2 2
+MistyWing  0 0 0 2 2 1 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 2 2 2 2 2
+Dracky     0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2
+BigRoost   0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2 2
+StubBird   0 0 0 2 2 2 1 1 1 1 1 1 1 1 1 1 0 2 0 0 0 2 2 2 2 2
+LandOwl    0 0 0 2 2 0 0 1 1 0 0 1 2 2 1 0 0 0 0 0 0 3 3 3 3 3
+MadGoose   0 0 0 2 2 0 0 2 1 0 0 2 0 0 0 0 0 0 2 1 1 2 2 2 3 3
+MadCondor  1 1 0 2 2 1 0 0 2 0 1 1 0 0 2 0 1 2 0 0 0 2 2 2 2 2
+Blizzardy  1 1 0 2 2 3 0 0 2 0 0 1 0 0 1 0 1 3 0 1 0 2 2 2 2 2
+Phoenix    2 2 2 1 1 0 0 0 0 1 1 1 0 0 0 0 3 0 0 1 0 3 3 3 2 2
+ZapBird    1 1 1 3 3 1 0 0 1 2 0 2 0 0 1 0 1 1 0 1 0 2 2 2 2 2
+WhipBird   1 1 1 2 2 1 1 1 2 0 0 1 0 0 2 0 1 1 0 2 0 2 2 2 2 2
+FunkyBird  0 0 0 3 3 0 1 0 2 1 1 1 0 0 3 0 0 0 0 2 0 3 3 3 2 2
+RainHawk   2 2 2 3 2 2 1 1 2 1 1 3 1 1 3 1 2 3 1 2 1 3 3 3 3 3
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+MadPlant   0 0 0 2 2 0 1 1 1 3 3 1 1 1 1 1 0 0 0 0 0 2 2 2 0 0
+FireWeed   1 1 1 2 2 0 0 0 0 2 2 0 0 0 1 0 2 0 0 0 0 2 2 2 0 0
+FloraMan   0 0 0 2 2 0 0 0 0 2 2 0 1 1 0 0 0 0 0 0 0 3 3 3 2 2
+WingTree   0 0 0 3 3 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 3 3 3 2 2
+CactiBall  0 0 0 2 2 0 0 1 0 2 2 1 0 0 0 0 0 0 1 1 1 2 2 2 1 1
+Gulpple    1 1 1 2 2 1 0 0 1 2 2 0 0 0 1 0 0 0 0 0 0 2 2 2 0 0
+Toadstool  0 0 0 2 2 0 1 1 1 2 2 1 0 0 1 0 0 0 1 1 1 2 2 2 0 0
+AmberWeed  0 0 0 2 2 1 0 0 1 2 2 0 0 0 1 0 0 1 0 0 0 2 2 2 0 0
+StubSuck   0 0 0 2 2 0 0 0 0 2 2 0 0 0 0 0 0 0 0 0 0 2 2 2 0 0
+Oniono     0 0 0 2 2 0 0 1 0 2 2 1 0 0 0 0 0 0 1 1 1 2 2 2 1 1
+DanceVegi  1 1 0 2 2 1 0 0 2 3 2 0 0 0 1 0 1 1 0 0 0 2 3 3 0 0
+TreeBoy    1 1 1 3 3 1 0 1 2 2 2 1 0 0 2 0 0 0 0 0 0 2 2 2 0 0
+FaceTree   0 0 0 2 2 0 1 2 2 2 2 1 0 0 3 0 0 0 1 2 2 2 2 2 0 0
+HerbMan    0 0 0 3 3 0 0 0 2 2 2 0 0 0 3 0 0 0 0 2 0 3 3 3 1 1
+BeanMan    0 0 0 2 2 0 0 0 1 2 2 0 1 1 1 0 0 0 0 0 0 3 3 3 2 2
+EvilSeed   1 1 1 3 3 1 0 0 1 2 2 1 0 0 2 0 0 0 0 0 0 2 2 2 0 0
+ManEater   1 1 1 2 2 1 0 0 1 3 3 1 0 0 2 0 0 0 0 0 0 3 3 3 0 0
+Snapper    1 1 1 2 2 1 0 0 2 3 3 1 0 0 3 0 0 0 0 0 0 3 3 3 0 0
+Rosevine   1 1 1 3 3 1 1 1 2 3 3 1 1 1 3 1 1 1 1 2 1 3 3 3 1 1
+Watabou    2 2 2 3 3 3 1 3 3 3 3 3 1 1 3 1 2 3 3 3 3 3 3 3 1 1
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+GiantSlug  0 0 0 0 0 0 1 3 1 1 1 3 1 1 1 1 0 0 2 2 2 0 0 0 2 2
+Catapila   1 1 1 0 0 1 0 2 0 0 0 2 0 0 1 0 1 1 2 2 2 0 0 0 2 2
+Gophecada  0 0 0 0 0 0 0 2 0 0 0 2 1 1 0 0 0 0 2 2 2 2 2 2 3 3
+Butterfly  0 0 0 1 1 0 0 2 0 0 0 2 0 0 0 0 0 0 2 2 2 1 1 1 3 3
+WeedBug    0 0 0 1 1 0 0 2 0 1 1 2 0 0 0 0 0 0 2 2 2 1 1 1 2 2
+GiantWorm  1 1 1 1 1 1 0 2 1 0 0 2 0 0 1 0 0 0 2 2 2 0 0 0 2 2
+Lipsy      0 0 0 0 0 0 1 3 1 0 0 3 0 0 1 0 0 0 3 3 3 0 0 0 2 2
+StagBug    1 1 0 0 0 1 0 2 1 0 0 2 0 0 1 0 1 1 2 2 2 0 0 0 2 2
+ArmyAnt    0 0 0 0 0 0 0 2 0 0 0 2 0 0 0 0 0 0 2 2 2 0 0 0 2 2
+GoHopper   0 0 0 0 0 0 0 2 0 0 0 2 0 0 0 0 0 0 2 2 2 0 0 0 2 2
+TailEater  0 0 0 1 1 0 0 2 0 1 1 2 0 0 0 0 0 0 2 2 2 1 2 2 2 2
+ArmorPede  1 1 1 1 1 1 0 2 0 0 0 2 0 0 0 0 1 1 2 2 2 1 1 1 3 3
+Eyeder     0 0 0 1 1 0 0 2 1 1 1 2 0 0 1 0 0 0 2 2 2 1 1 1 2 2
+GiantMoth  0 0 0 0 0 0 0 3 1 0 0 2 1 1 1 0 0 0 3 2 2 1 1 1 3 3
+Droll      0 0 0 0 0 0 1 3 1 1 0 3 0 0 1 0 0 0 3 3 3 1 1 1 2 2
+ArmyCrab   0 0 0 0 0 0 1 3 1 0 0 3 0 0 0 0 0 0 3 3 3 0 0 0 3 3
+MadHornet  1 1 1 0 0 1 0 2 0 0 0 2 1 1 0 0 1 1 2 2 2 1 1 1 3 3
+HornBeet   2 2 2 0 0 2 0 2 1 0 0 2 0 0 1 0 2 2 2 3 2 0 0 0 2 2
+Armorpion  2 2 2 1 1 2 1 3 2 1 1 3 1 1 3 1 2 2 3 3 3 1 1 1 3 3
+Digster    1 1 1 0 0 1 1 2 2 0 0 2 0 0 3 0 1 1 2 2 2 0 0 0 2 2
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+Pixy       2 2 1 1 1 2 1 1 3 2 2 2 1 1 3 1 0 0 0 0 0 0 0 0 0 0
+ArcDemon   2 3 2 2 2 2 0 0 3 0 1 0 0 0 3 0 1 0 0 2 1 0 0 0 0 1
+AgDevil    1 1 2 2 2 2 0 0 2 0 0 0 1 1 2 0 0 0 0 0 0 2 1 1 2 1
+Demonite   1 1 1 3 3 2 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 1 2 2 2 1
+DarkEye    2 2 1 3 3 1 0 0 2 1 1 0 0 0 2 0 0 0 0 0 0 2 2 1 0 0
+EyeBall    2 2 2 2 2 2 0 1 2 0 0 1 0 0 2 0 0 0 1 1 1 0 0 0 1 1
+SkulRider  2 2 2 1 1 2 1 1 3 0 0 1 0 0 3 0 0 0 2 2 1 0 0 0 0 0
+EvilBeast  2 2 1 2 2 3 0 0 3 1 1 1 0 0 3 0 0 1 0 0 0 0 0 0 0 0
+1EyeClown  1 1 1 2 2 2 0 0 3 0 1 0 0 0 3 0 0 0 0 0 0 0 0 0 0 0
+Gremlin    2 2 2 1 1 1 0 0 3 0 0 1 0 0 3 0 0 0 0 0 0 0 0 0 0 0
+MedusaEye  2 2 2 1 1 1 0 1 2 0 0 1 0 0 2 0 0 0 2 2 2 1 1 0 1 1
+Lionex     3 3 2 2 2 2 0 0 3 1 1 1 0 0 3 0 2 2 0 0 2 0 0 0 0 0
+GoatHorn   2 2 2 2 2 2 0 0 3 0 1 1 2 2 3 0 0 0 0 0 0 2 2 2 2 2
+Orc        1 1 1 3 3 2 0 0 2 1 1 0 1 1 2 0 0 0 0 0 0 2 2 2 0 0
+Ogre       1 1 2 2 2 2 0 0 2 0 0 0 1 1 2 0 0 0 0 0 0 2 2 2 2 1
+GateGuard  2 2 2 3 3 2 1 1 3 0 0 0 0 0 3 0 0 0 0 0 0 1 2 2 2 1
+ChopClown  2 2 2 2 2 3 1 0 3 1 1 0 1 1 3 0 0 0 0 0 0 0 0 0 0 0
+Grendal    2 2 2 2 2 1 1 1 3 1 1 1 1 1 3 0 0 0 0 0 0 0 0 0 0 0
+Akubar     2 2 3 2 2 2 1 2 3 1 3 2 1 1 3 0 2 1 0 2 0 1 0 0 0 0
+MadKnight  2 2 1 1 1 2 1 1 3 0 1 1 1 1 3 0 1 1 0 2 0 1 0 0 0 0
+Gigantes   1 1 1 1 1 1 0 1 3 0 0 0 2 2 3 0 0 0 0 2 0 2 1 1 1 1
+Centasaur  3 3 2 1 1 2 0 0 2 0 1 1 1 1 3 0 1 1 0 2 0 1 0 0 0 0
+EvilArmor  2 2 2 2 2 1 0 1 3 0 0 1 0 0 2 0 0 0 1 2 1 1 0 0 1 1
+Jamirus    2 2 2 3 3 1 1 1 3 1 1 1 1 1 3 0 0 0 0 2 0 1 1 1 1 1
+Durran     2 2 3 2 1 3 2 2 3 1 2 2 1 1 3 1 1 1 3 3 2 1 0 0 0 0
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+Spooky     0 0 0 0 0 0 3 3 3 1 1 3 1 1 3 1 0 0 2 2 2 0 0 0 0 0
+Skullgon   1 1 1 0 0 2 2 2 2 0 0 2 0 0 3 0 0 2 2 2 2 0 0 0 0 0
+Putrepup   0 0 0 0 0 0 2 2 2 0 0 2 1 1 2 0 0 0 2 2 2 1 1 1 1 1
+RotRaven   0 0 0 1 1 0 2 2 2 0 0 2 0 0 2 0 0 0 2 2 2 1 1 1 1 1
+Mummy      0 0 0 1 1 0 2 2 2 1 1 2 0 0 2 0 0 0 2 2 2 1 1 1 0 0
+DarkCrab   0 0 0 0 0 0 2 3 2 0 0 3 0 0 2 0 0 0 3 3 3 0 0 0 1 1
+DeadNite   1 1 1 1 1 1 2 2 3 0 0 2 0 0 3 0 0 0 2 2 2 0 0 0 0 0
+Shadow     0 0 0 0 0 1 2 2 3 0 0 2 0 0 3 0 0 1 2 2 2 0 0 0 0 0
+Hork       0 0 0 0 0 0 2 2 2 0 0 2 0 0 2 0 0 0 2 2 2 0 0 0 0 0
+Mudron     0 0 0 0 0 0 2 3 2 0 0 3 1 1 2 0 0 0 3 3 3 0 0 0 1 1
+NiteWhip   0 0 0 2 1 1 2 2 2 0 0 2 0 0 2 0 0 0 2 2 2 1 1 1 1 1
+MadSpirit  0 0 0 1 1 1 2 2 3 1 1 3 0 0 3 0 0 0 2 2 2 1 1 1 0 0
+WindMerge  0 0 0 3 1 0 2 2 2 0 0 2 1 1 2 0 0 0 2 2 2 1 1 1 1 1
+Reaper     0 0 0 1 1 0 2 3 2 1 1 3 0 0 2 0 0 1 3 3 3 1 1 0 1 1
+DeadNoble  1 1 1 2 1 2 2 2 3 1 1 2 0 0 3 0 0 2 2 3 2 1 0 0 0 0
+WhiteKing  1 1 2 3 1 3 2 2 3 1 1 3 1 1 3 1 1 2 3 3 3 1 1 1 1 1
+BoneSlave  0 0 0 1 0 1 2 2 2 1 1 2 0 0 2 0 0 0 2 2 2 0 0 0 0 0
+Skeletor   0 0 1 2 0 2 2 2 3 1 1 2 0 0 3 0 0 1 2 2 2 0 0 0 0 0
+Servant    1 1 3 2 1 2 2 2 3 1 1 3 1 1 3 1 1 2 3 3 3 1 1 1 1 1
+Copycat    0 0 0 0 0 0 2 2 3 0 0 2 0 0 2 0 0 0 2 3 2 1 0 0 0 0
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+JewelBag   0 0 0 0 0 2 1 1 3 1 1 1 1 1 3 1 0 2 0 0 0 0 0 0 0 0
+EvilWand   1 1 1 0 0 2 0 0 3 0 0 0 0 0 3 0 1 2 0 0 0 0 0 0 0 0
+MadCandle  2 2 0 0 0 0 0 0 2 0 0 0 1 1 2 0 2 0 0 0 0 1 1 1 1 1
+CoilBird   0 0 0 1 1 2 0 0 2 0 0 0 0 0 2 0 0 2 0 0 0 1 1 1 1 1
+Facer      0 0 0 1 1 2 0 0 2 1 1 0 0 0 2 0 0 2 0 0 0 1 1 1 0 0
+SpikyBoy   0 0 0 0 0 2 0 1 2 0 0 1 0 0 2 0 0 2 1 1 1 0 0 0 1 1
+MadMirror  1 1 1 1 1 2 0 0 3 0 0 0 0 0 3 0 0 2 0 0 0 0 0 0 0 0
+RogueNite  0 0 0 0 0 2 1 1 3 0 0 1 0 0 3 0 0 2 1 1 1 0 0 0 0 0
+Goopi      0 0 0 0 0 2 0 0 2 0 0 0 0 0 2 0 0 2 0 0 0 0 0 0 0 0
+Voodoll    0 0 0 0 0 2 0 1 2 0 0 1 0 0 2 0 0 2 2 2 1 0 0 0 1 1
+MetalDrak  1 1 1 0 0 2 0 0 2 0 0 0 0 0 3 0 1 3 2 2 0 0 0 0 0 0
+Balzak     0 0 0 0 0 2 1 1 2 1 1 1 1 1 2 1 0 2 0 0 0 1 1 1 1 1
+SabreMan   0 0 1 1 0 2 0 1 2 1 1 1 0 0 2 0 0 2 1 1 1 0 0 0 1 1
+CurseLamp  0 0 0 2 1 2 0 0 2 1 1 0 0 0 2 0 0 2 0 0 0 2 2 2 0 0
+Roboster   1 1 1 1 1 2 1 2 3 0 0 0 0 0 3 0 1 2 2 2 0 0 0 0 0 0
+EvilPot    0 0 0 0 0 2 2 2 3 1 1 1 1 1 3 1 0 2 0 0 0 0 0 0 0 0
+Gismo      0 0 0 2 1 2 0 0 2 0 0 0 0 1 2 0 0 2 0 0 0 0 0 0 0 0
+LavaMan    3 3 1 2 0 1 0 0 3 0 0 1 0 0 3 0 3 1 0 0 0 0 0 0 0 0
+IceMan     1 1 1 2 0 3 0 0 3 0 0 0 1 0 3 0 1 3 0 0 0 0 0 0 0 0
+Mimic      0 0 1 2 1 2 1 1 3 1 1 1 1 1 3 1 0 1 0 0 0 0 0 0 0 0
+MudDoll    0 0 1 1 0 3 1 0 3 0 0 0 0 0 3 0 0 3 0 0 0 0 0 0 0 0
+Golem      0 0 1 1 0 3 1 1 3 0 0 0 0 0 3 0 0 3 0 0 0 1 1 1 1 1
+StoneMan   1 1 1 1 0 3 1 1 3 0 1 0 0 0 3 0 1 3 0 2 1 1 1 1 1 1
+BombCrag   1 1 0 0 0 2 0 1 3 1 1 1 1 1 3 0 1 2 1 1 1 0 0 0 1 1
+GoldGolem  2 2 2 2 1 2 3 3 3 3 3 3 2 2 3 1 2 2 3 3 3 2 2 2 1 1
+
+Name       A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+---------------------------------------------------------------
+DracoLord  1 1 0 0 0 1 3 3 3 2 3 3 3 3 3 0 1 1 3 2 3 3 3 3 0 0
+DracoLord  2 2 1 1 1 2 3 3 3 3 3 3 3 3 3 1 2 2 3 3 3 3 3 3 1 1
+Hargon     1 1 1 1 0 1 3 3 3 2 3 3 3 3 3 1 0 0 3 2 3 3 3 3 2 0
+Sidoh      1 1 1 1 1 1 3 3 3 3 3 3 3 3 3 1 0 0 3 3 3 3 3 3 2 1
+Baramos    1 1 1 2 0 2 3 3 3 2 3 3 2 2 3 1 1 1 3 3 3 3 3 3 0 0
+Zoma       1 2 3 3 1 3 3 3 3 3 3 3 3 3 3 2 2 2 3 3 3 3 3 3 2 1
+Pizzaro    1 1 1 1 0 2 3 3 3 3 3 3 3 3 3 1 0 0 3 3 3 3 3 3 2 1
+Esterk     1 2 2 2 0 1 3 3 3 3 3 3 2 2 3 1 2 1 3 2 3 3 3 3 1 1
+Mirudraas  2 2 2 1 2 2 3 3 3 2 3 3 3 3 3 1 1 2 3 2 3 3 3 3 1 1
+Mirudraas  2 2 2 0 0 0 3 3 3 3 3 3 2 2 3 1 3 1 3 3 3 3 3 3 1 1
+Mudou      1 1 1 3 0 1 3 3 3 2 3 3 2 3 3 0 3 3 3 2 3 3 3 3 0 0
+DeathMore  1 2 2 1 1 2 3 3 3 2 3 3 3 3 3 1 1 2 3 2 3 3 3 3 1 0
+DeathMore  2 2 2 1 1 2 3 3 3 3 3 3 3 3 3 1 1 2 3 2 3 3 3 3 2 1
+DeathMore  2 2 2 2 2 2 3 3 3 3 3 3 2 2 3 1 2 2 3 3 3 3 3 3 3 2
+DarkDrium  2 2 2 2 2 3 3 3 2 2 3 3 2 3 3 2 2 2 3 3 3 3 3 3 3 3
+
+
+ G R O W T H
+-------------
+
+The growth rate of a monster's stats is determined by this
+table.  The columns of the table correspond to the stat
+values (from 0 to 31) in the monster data table, and the rows
+indicate the cumulative points gained up to each level (to
+make it easier to compare monsters' strengths and weaknesses).
+To find the actual number of points gained at a particular
+level, subtract the previous row from the row corresponding
+to the level you're interested in.
+
+Note that growth of HP and ATK (and only those two stats) is
+affected by a monster's "plus".  This is why metal slimes may
+sometimes gain more than 1 HP per level.
+
+The table has been broken up into 16 column by 20 row sections
+in order to be more readable on 80x24 terminals.
+
+     0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15------------------------------------------------------------------
+ 1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+ 2   1   2   5   8   2   5   8   3   3   3   3   3   2   6   5   5
+ 3   2   3   8  14   3   8  14   5   5   4   5   4   3  10   8   8
+ 4   2   6  11  23   6  11  23   8   9   8   9   8   6  14  11  11
+ 5   3   6  14  28   6  14  28   9   9  10  14   8   7  17  14  14
+ 6   4   8  18  35   8  18  35  12  12  12  17  11   9  22  19  18
+ 7   5  10  23  45  10  23  45  15  15  15  20  13  11  28  24  23
+ 8   5  11  27  55  11  27  55  17  17  15  21  15  11  33  28  27
+ 9   5  14  32  63  14  32  63  21  21  19  26  19  14  39  33  32
+10   6  17  36  72  17  36  72  26  26  23  30  23  16  44  37  36
+11   6  20  39  77  20  39  77  30  30  26  30  26  19  47  40  39
+12   7  22  44  82  22  44  82  33  33  29  33  29  21  53  44  44
+13   7  25  48  90  25  48  90  38  38  33  38  33  24  58  48  48
+14   7  26  52  96  26  52  96  39  39  34  39  34  25  63  51  52
+15   8  27  57 105  27  57 105  41  41  36  41  36  27  69  56  57
+16   8  30  60 113  30  60 113  45  45  39  45  39  30  72  60  60
+17   9  32  62 115  35  62 118  48  53  52  48  46  40  75  65  70
+18   9  35  65 118  38  65 121  53  57  63  53  50  48  78  68  78
+19   9  37  67 120  41  67 124  56  62  73  56  54  56  81  71  86
+20   9  38  68 121  44  68 127  57  66  80  57  58  61  82  74  91
+
+     0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+------------------------------------------------------------------
+21  10  38  68 121  48  68 131  57  72  88  57  63  67  82  78  97
+22  11  40  70 123  53  70 136  60  80  98  60  69  75  84  83 105
+23  11  43  73 126  57  73 140  65  86 110  65  75  84  88  87 114
+24  12  46  76 129  62  76 145  69  93 121  69  81  93  92  92 123
+25  12  47  77 130  66  77 149  71  99 128  71  86  98  93  96 128
+26  12  49  79 132  69  79 152  74 104 134  74  90 103  95  99 133
+27  13  49  79 132  74  79 157  74 111 145  74  97 111  95 104 141
+28  14  52  82 135  78  82 161  78 117 155  78 102 119  99 108 149
+29  14  55  85 138  82  85 165  83 123 167  83 107 128 102 112 158
+30  14  58  88 141  87  88 170  87 131 176  87 114 135 106 117 165
+31  15  60  90 143  90  90 173  90 135 185  90 117 142 108 120 172
+32  16  62  92 145  93  92 176  93 140 195  93 121 150 111 123 180
+33  17  64  94 147  96  94 179  96 144 202  96 125 155 113 126 185
+34  17  66  96 149 100  96 183  99 150 215  99 130 165 116 130 195
+35  17  68  98 151 104  98 187 102 156 227 102 136 174 118 134 204
+36  17  71 101 154 109 101 192 107 165 236 112 146 183 127 144 213
+37  17  72 102 155 114 102 197 108 174 246 122 156 192 136 154 222
+38  18  73 103 156 119 103 202 110 184 254 135 169 202 145 164 231
+39  19  75 105 158 122 105 205 113 193 262 146 180 212 154 174 240
+40  20  78 108 161 126 108 209 117 203 273 156 190 222 162 184 249
+
+     0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+------------------------------------------------------------------
+41  20  80 110 163 130 110 213 120 212 284 168 199 232 170 195 258
+42  21  83 111 164 133 113 214 128 222 290 178 208 242 178 206 267
+43  21  86 111 164 136 116 214 132 231 294 188 217 251 186 216 276
+44  22  87 112 165 137 117 215 138 240 299 198 226 260 194 226 285
+45  23  89 113 166 139 119 216 144 249 305 209 237 269 202 236 294
+46  23  90 113 166 140 120 216 150 258 310 222 247 279 209 243 301
+47  23  92 113 166 142 122 216 155 267 314 235 257 289 216 250 308
+48  24  94 114 167 144 124 217 159 276 318 248 268 299 224 257 315
+49  24  96 114 167 146 126 217 167 286 324 261 279 309 232 264 322
+50  25  98 115 168 148 128 218 174 295 331 274 290 319 240 271 329
+51  25 100 115 168 150 130 219 182 304 337 287 302 329 248 279 337
+52  26 103 116 169 153 133 219 186 314 342 301 314 339 257 287 344
+53  27 103 117 170 153 133 220 191 324 349 315 326 348 266 295 351
+54  27 106 117 170 156 136 220 195 334 354 329 339 357 275 303 358
+55  28 106 118 171 156 136 221 201 344 358 343 352 366 284 311 366
+56  29 108 119 172 158 138 222 209 353 364 357 365 375 293 319 374
+57  30 110 120 173 160 140 223 215 363 370 371 375 384 301 327 382
+58  30 111 120 173 161 141 223 222 372 375 385 385 394 309 335 390
+59  30 114 120 173 164 144 223 228 382 381 399 396 404 317 343 398
+60  31 117 121 174 167 147 224 233 392 385 412 407 414 326 350 406
+
+     0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+------------------------------------------------------------------
+61  31 120 121 174 170 150 224 240 398 389 418 418 423 331 355 410
+62  32 122 122 175 172 152 225 246 404 393 424 429 432 336 360 414
+63  32 125 122 175 175 155 225 252 410 398 430 440 441 341 365 418
+64  32 126 122 175 176 156 225 260 416 403 436 451 451 346 370 422
+65  33 127 123 176 177 157 226 264 422 410 442 463 461 351 375 426
+66  33 130 123 176 180 160 226 269 428 416 448 475 471 356 380 430
+67  34 132 124 177 182 162 227 273 434 423 454 487 481 361 386 435
+68  34 135 124 177 185 165 227 279 441 427 460 499 491 365 392 439
+69  35 137 125 178 187 167 228 285 447 432 466 512 501 370 398 444
+70  35 138 125 178 188 168 228 293 453 439 473 525 511 375 404 448
+71  35 138 125 178 188 168 228 300 459 445 480 538 521 380 410 452
+72  36 140 126 179 190 170 228 308 465 452 487 551 532 385 416 456
+73  36 143 126 179 193 173 229 312 472 455 494 563 541 390 422 460
+74  37 146 127 180 196 176 230 318 478 461 501 575 550 395 427 464
+75  37 147 127 180 197 177 230 324 484 466 508 587 559 400 432 468
+76  37 149 127 180 199 179 230 332 489 472 518 591 561 404 435 470
+77  38 149 128 181 199 179 231 336 493 476 528 595 563 410 438 472
+78  39 152 129 182 202 182 232 341 498 480 538 599 565 416 441 474
+79  39 155 129 182 205 184 232 345 502 484 549 603 567 420 444 476
+80  39 158 130 182 208 187 233 350 507 489 560 607 569 424 447 478
+
+     0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
+------------------------------------------------------------------
+81  40 160 130 183 210 189 233 350 512 496 571 611 571 428 451 481
+82  41 162 131 184 212 191 234 350 516 500 582 615 573 433 455 484
+83  42 164 131 185 214 194 234 350 520 504 593 619 575 438 459 487
+84  42 166 132 185 216 196 235 350 524 507 604 623 577 443 463 490
+85  42 168 132 185 218 198 235 350 528 511 616 628 579 448 467 493
+86  42 171 133 185 221 201 236 350 532 518 628 633 581 453 471 497
+87  42 172 133 185 222 202 236 350 536 523 640 638 583 458 475 499
+88  43 173 134 186 222 202 237 350 540 528 652 642 585 460 480 501
+89  44 175 134 187 224 204 237 350 544 535 662 646 587 464 485 503
+90  45 178 135 188 227 207 238 350 548 539 672 650 589 468 489 505
+91  45 180 135 188 229 209 238 350 552 545 683 659 598 473 493 509
+92  46 183 136 189 232 212 239 350 555 550 694 668 607 478 497 513
+93  46 186 136 189 235 215 239 350 559 556 705 677 616 483 501 517
+94  47 187 137 190 236 216 240 350 563 561 716 687 624 488 505 521
+95  48 189 138 191 238 218 241 350 566 565 728 697 632 492 509 524
+96  48 190 138 191 239 219 241 350 570 569 740 707 640 495 513 528
+97  48 192 138 191 241 221 241 350 574 572 752 718 649 499 517 532
+98  48 194 138 191 243 223 241 350 578 578 764 729 658 504 521 536
+99  49 196 139 192 246 226 242 350 582 584 774 740 667 510 524 540
+
+    16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
+------------------------------------------------------------------
+ 1   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+ 2   5   6   5   8   8   8   8   8   8   5   8  15   5   8  15  15
+ 3   8  10   8  14  14  14  14  14  14   8  14  28   8  14  28  28
+ 4  11  14  11  23  23  23  23  23  23  11  23  48  11  23  48  48
+ 5  14  17  14  28  28  28  28  28  28  14  28  59  14  28  59  59
+ 6  18  23  18  35  35  35  35  35  35  19  35  76  19  35  76  76
+ 7  23  29  23  45  45  45  45  45  45  24  45  94  24  45  94  94
+ 8  27  34  27  55  55  55  55  55  55  28  55 113  28  55 113 113
+ 9  32  40  32  63  63  63  63  63  63  33  63 128  33  63 128 128
+10  36  45  36  72  72  72  72  72  72  37  72 138  37  72 138 138
+11  39  48  39  77  77  77  77  77  77  40  77 150  40  77 150 150
+12  44  53  44  82  82  82  82  82  82  44  82 165  44  82 165 165
+13  48  58  48  90  90  90  90  90  90  48  90 181  48  90 181 181
+14  52  62  52  96  96  96  96  96  96  51  96 195  51  96 195 195
+15  57  68  57 105 105 105 105 105 105  56 105 205  56 105 205 205
+16  60  72  60 113 113 113 113 113 113  60 113 225  60 113 225 225
+17  62  78  70 115 118 123 115 118 123  65 118 230  70 123 235 240
+18  65  82  78 118 121 131 118 121 131  68 121 233  78 131 243 253
+19  67  86  86 120 124 139 120 124 139  71 124 236  86 139 251 266
+20  68  89  91 121 127 144 121 127 144  74 127 239  91 144 256 283
+
+    16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
+------------------------------------------------------------------
+21  68  94  97 128 131 150 121 131 150  78 131 242  97 150 261 300
+22  70 100 105 134 136 158 123 136 158  83 136 247 105 158 268 320
+23  73 105 114 140 140 167 126 140 167  87 140 252 114 168 277 340
+24  76 111 123 142 145 176 129 145 176  92 145 257 123 176 285 352
+25  77 116 128 148 149 181 130 149 181  96 149 261 128 181 290 364
+26  79 119 133 155 152 186 132 152 186  99 152 264 133 186 295 377
+27  79 125 141 161 157 194 132 157 194 104 157 269 141 194 301 390
+28  82 130 149 167 161 202 135 161 202 108 160 273 149 203 309 404
+29  85 135 158 173 165 211 138 165 211 112 164 277 158 212 318 420
+30  88 141 165 175 170 218 141 170 218 117 169 282 165 218 328 439
+31  90 144 172 180 173 225 143 173 225 120 173 285 172 225 335 450
+32  92 148 180 183 176 233 145 176 233 123 176 288 180 233 343 468
+33  94 152 185 186 179 238 147 179 238 126 179 291 185 238 348 481
+34  96 156 195 189 183 248 149 183 248 130 183 295 195 248 358 497
+35  98 161 204 191 187 257 151 187 257 134 187 299 204 257 367 512
+36 107 170 214 194 197 265 158 196 266 146 200 309 218 270 374 527
+37 116 179 224 197 207 273 165 205 275 158 213 319 232 284 382 543
+38 125 188 234 200 217 281 172 214 284 170 226 329 246 298 388 557
+39 134 197 244 203 227 289 181 223 293 182 239 339 260 312 394 568
+40 143 206 254 206 237 297 190 232 302 194 252 349 274 326 403 587
+
+    16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
+------------------------------------------------------------------
+41 152 216 264 211 247 305 199 241 311 206 265 359 288 340 411 602
+42 161 226 274 216 257 313 208 249 320 218 278 370 302 354 431 612
+43 170 236 284 221 267 321 217 257 329 230 293 381 317 368 444 623
+44 179 245 294 226 277 329 224 265 338 243 306 391 332 382 461 635
+45 186 254 304 229 289 337 229 274 347 255 319 401 346 396 477 648
+46 196 265 313 239 298 345 239 283 355 269 333 415 360 410 491 663
+47 206 276 322 247 307 351 249 292 363 283 347 429 374 428 508 680
+48 216 287 331 255 313 357 259 301 371 297 361 443 388 444 524 698
+49 226 298 340 263 319 363 269 310 377 311 375 457 402 454 534 717
+50 236 309 349 271 325 369 279 319 383 325 387 473 416 466 546 737
+51 248 320 360 281 332 375 289 329 389 339 399 489 430 486 560 751
+52 260 331 371 291 339 381 299 339 395 353 411 505 444 501 574 765
+53 272 343 382 299 346 387 309 349 403 367 423 521 457 509 589 780
+54 283 355 393 307 353 395 320 359 411 381 435 537 470 517 606 797
+55 294 367 404 311 360 403 331 369 419 395 447 553 483 525 626 817
+56 305 379 413 315 367 411 342 379 427 409 461 569 496 533 638 829
+57 316 391 422 319 373 419 353 389 435 423 475 586 509 545 651 842
+58 327 402 431 327 379 427 364 399 443 436 489 603 522 565 662 853
+59 339 413 440 335 385 435 374 409 453 449 500 618 535 584 673 864
+60 351 424 449 341 391 441 384 419 462 462 512 632 547 602 693 881
+
+    16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
+------------------------------------------------------------------
+61 357 434 458 345 394 446 390 428 470 476 526 646 561 608 710 897
+62 363 444 467 349 397 451 396 437 478 490 540 660 575 622 720 912
+63 369 454 476 353 400 456 402 446 486 504 554 674 589 632 732 923
+64 375 464 485 357 403 461 408 455 494 518 568 688 603 644 750 942
+65 381 476 494 361 406 466 414 464 504 532 582 702 617 662 769 960
+66 387 488 503 365 409 471 423 473 514 546 596 716 631 681 785 973
+67 394 500 512 369 412 477 432 482 524 560 610 732 644 697 805 987
+68 401 512 521 373 415 483 441 491 534 574 624 748 657 717 819 997
+69 408 523 530 377 418 489 450 500 542 588 638 764 671 731 833 999
+70 415 534 539 382 421 495 459 509 550 603 652 780 685 745 848 999
+71 422 544 548 387 424 501 467 518 560 618 666 796 699 759 863 999
+72 428 554 557 391 427 507 475 527 570 633 680 810 713 773 875 999
+73 434 564 566 395 429 513 483 536 580 648 695 824 728 788 885 999
+74 440 573 575 399 431 518 491 545 588 663 709 838 743 805 901 999
+75 446 582 584 403 433 523 499 554 597 677 723 852 758 826 918 999
+76 451 584 587 406 435 524 502 558 601 691 737 866 772 838 934 999
+77 456 586 590 409 437 525 505 562 605 705 751 880 786 851 950 999
+78 461 588 593 412 439 526 508 566 609 721 765 894 800 862 963 999
+79 466 590 596 415 441 527 511 570 613 737 779 908 814 873 980 999
+80 471 592 599 418 443 528 514 574 619 753 793 922 828 890 999 999
+
+    16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
+------------------------------------------------------------------
+81 476 594 602 421 445 529 517 578 625 769 807 936 844 906 999 999
+82 481 596 605 422 447 530 520 582 631 785 821 950 860 921 999 999
+83 487 598 608 423 449 531 524 586 637 801 837 964 876 932 999 999
+84 493 600 611 424 451 532 528 590 643 816 853 978 892 951 999 999
+85 499 600 614 425 453 535 532 594 649 831 869 993 908 969 999 999
+86 505 600 617 428 455 536 536 598 653 845 885 999 924 982 999 999
+87 511 600 620 431 457 537 540 602 657 859 901 999 940 996 999 999
+88 517 600 622 434 459 538 544 606 661 873 917 999 954 999 999 999
+89 523 600 624 437 460 539 547 610 665 887 933 999 968 999 999 999
+90 528 600 626 440 460 540 551 614 669 898 947 999 982 999 999 999
+91 531 600 632 445 464 544 557 622 677 914 964 999 999 999 999 999
+92 534 600 638 450 468 548 563 630 685 929 974 999 999 999 999 999
+93 537 600 644 455 472 552 572 638 693 940 986 999 999 999 999 999
+94 540 600 650 460 476 556 579 644 701 959 999 999 999 999 999 999
+95 544 600 656 465 480 560 587 650 709 977 999 999 999 999 999 999
+96 547 600 663 470 485 563 595 658 716 990 999 999 999 999 999 999
+97 550 600 670 475 492 567 603 666 723 999 999 999 999 999 999 999
+98 553 600 677 480 502 571 611 674 730 999 999 999 999 999 999 999
+99 556 600 684 485 515 575 619 682 737 999 999 999 999 999 999 999
+
+
+ P E R S O N A L I T Y
+-----------------------
+
+A monster's personality is made up of four variables:
+"Bravery", "Caring", "Prudence" and "Motivation".
+These values fluctuate depending on the orders
+you give in combat:
+
+CHARGE:   Bravery up, Prudence slightly down
+MIXED:    Prudence up, Caring slightly down
+CAUTIOUS: Caring up, Bravery slightly down
+
+Motivation increases when you use any strategy except
+COMMAND, and decreases when you use COMMAND.
+Running away from combat decreases all your monsters'
+Bravery and Motivation considerably.
+
+Personality variables only change when you explicitly
+choose a strategy for each monster during combat.
+If you skip this step by choosing FIGHT, or if you use
+an item, none of your monsters' personalities change.
+
+The higher a monster's level, the more slowly its
+personality changes (i.e. fewer points are added or
+subtracted to the variables each time you select a
+strategy)
+
+A monster's personality type is determined by which
+of the first three characteristics are high, low, and
+average, as follows:
+
+Type       Br Ca Pr
+-------------------
+HOTBLOOD   Hi Hi Hi
+DARING     Hi Hi Av
+DAREDEVIL  Hi Hi Lo
+LONE WOLF  Hi Av Hi
+VAIN       Hi Av Av
+EZ GOING   Hi Av Lo
+SMUG       Hi Lo Hi
+SNOBBY     Hi Lo Av
+RECKLESS   Hi Lo Lo
+COOL/CALM  Av Hi Hi
+WHIMSY     Av Hi Av
+NOSY       Av Hi Lo
+WHIZ KID   Av Av Hi
+ORDINARY   Av Av Av
+HASTY      Av Av Lo
+STUBBORN   Av Lo Hi
+REBEL      Av Lo Av
+SPOILED    Av Lo Lo
+HUMANE     Lo Hi Hi
+UNCERTAIN  Lo Hi Av
+CARELESS   Lo Hi Lo
+SHREWED    Lo Av Hi
+CAREFREE   Lo Av Av
+GULLIBLE   Lo Av Lo
+SLY        Lo Lo Hi
+COWARD     Lo Lo Av
+LAZY       Lo Lo Lo
+
+The Motivation parameter cannot be directly observed
+short of using a GameShark.
+
+A monster's personality type and family determine what
+it says when you talk to it in the room to the left of
+the Arena reception.
+
+The first three personality traits determine whether
+or not a monster will obey a command.  In general,
+monsters prefer to obey commands that suit their
+strongest characteristic: Brave monsters prefer CHARGE,
+caring ones CAUTIOUS and prudent ones MIXED.  Note that
+a monster with low WLD (wildness) will usually obey any
+command, and a monster with extremely high WLD won't
+obey even a command suited to its personality.
+
+"Motivation" affects the ease of raising the other three
+personality traits.  High "Motivation" causes traits to
+increase more rapidly and decrease more slowly.
+
+Finally, each personality trait relates to two special
+combat actions.  There are two types of "personal actions":
+positive and negative.  The positive actions occur more
+often the higher a particular trait is, and their effect
+is to enhance the monster's normal action in some way.
+The negative actions occur more often the lower a trait is,
+and replace the monster's intended action with a less
+effective (but free) version of a defensive skill.
+
+High Bravery:    Critical hit with any physical attack
+High Caring:     Use a healing skill without spending MP
+High Prudence:   Status attack ignores the victim's resistance
+High Motivation: 50% additional damage with any attack
+
+Low Bravery:    Like "StrongD", but less powerful
+Low Caring:     Like "Dodge", but an ally always takes the hit
+Low Prudence:   Like "BladeD", but only counters one attack
+Low Motivation: Like "SideStep", but only evades one attack
+
+
+ B R E E D I N G
+-----------------
+
+In the following chart, names in CAPITAL LETTERS in
+square brackets indicate monster families.  You can
+substitute any monster in the appropriate family.
+
+A series of names enclosed in braces means you can sub-
+stitute any of the monsters within that set of braces.
+
+Some monsters have several completely separate breeding
+combinations, some of which may allow alternates for
+one or both parents.  I'll try to explain how to read
+one of the more complex entries:
+
+          /Skullgon \
+          |DeadNoble|
+          |WhiteKing| [DRAGON   ]
+          |BoneSlave|
+          \Skeletor /
+                      /Swordgon \
+                      |Rayburn  |
+                      |Andreal  |
+Skullgon  [ZOMBIE   ] |GreatDrak|
+                      |Orochi   |
+                      |BattleRex|
+                      \Divinegon/
+                      /Skullgon \
+          [DRAGON   ] |DeadNoble|
+                      |WhiteKing|
+                      \Servant  /
+
+This entry shows that there are three different ways to
+breed a Skullgon:  You can breed a Skullgon, DeadNoble,
+WhiteKing, BoneSlave or Skeletor, with a member of the
+Dragon family.  Or you can breed a member of the Zombie
+family with a Swordgon, Rayburn, Andreal, GreatDrak,
+Orochi, BattleRex or Divinegon.  Or as a third method,
+you can breed a member of the Dragon family with a
+Skullgon, DeadNoble, WhiteKing or Servant.  Note where
+each pair of braces begins and ends.  You can't breed
+a DRAGON with a Divinegon to get a Skullgon; those species
+are part of two separate combinations.
+
+If a match of monsters could fall under two or more
+different combinations, the game chooses the combination
+to use in the following order:  First, a species + species
+combo is used if one exists.  Second, a species + family
+combo is selected.  Third, a family + species combo, and
+finally, a family + family combination if no more specific
+combination is found.
+
+For example, a match of an Ogre and a LizardMan could
+result in either an ArcDemon (Ogre + [DRAGON]), a Lionex
+([DEVIL] + LizardMan) or a MedusaEye ([DEVIL] + [DRAGON]).
+In fact, the result of this match will be an ArcDemon
+because the species + family combination has higher
+priority than the family + species or family + family
+combinations.
+
+Parent1 is the "pedigree" parent.  When breeding your own
+monsters, the one you select first determines the pedigree.
+When breeding with another player via Game Link, each
+player's monster determines the pedigree for the egg that
+player recieves (breeding with an NPC works the same way:
+the monster you contribute is the pedigree parent)
+
+When breeding your own monsters, the Plus of an offspring
+is equal to the higher plus of the two parents + 1.
+When breeding with another player or NPC, the plus of your
+egg is equal to the plus of your own monster + 1.
+
+In either case, the sum of the parents' levels increases
+the Plus as follows:
+
+Lv    Bonus
+-----------
+20-39   0
+40-59   1
+60-75   2
+76-99   3
+100+    4
+
+A few specific breeding combinations result in an additional
++2 on the offspring.
+
+Each statistic score of a newly-hatched, level 1 monster,
+including personality characteristics, is equal to one-half
+the mean of its parents' scores.
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+DrakSlime [SLIME    ] [DRAGON   ]
+
+SpotSlime [SLIME    ] [BEAST    ]
+
+WingSlime [SLIME    ] [BIRD     ]
+
+TreeSlime [SLIME    ] [PLANT    ]
+
+Snaily    [SLIME    ] [BUG      ]
+
+SlimeNite [SLIME    ] [DEVIL    ]
+
+                      /Poisongon\
+Babble    [SLIME    ] |GiantMoth|
+                      \[ZOMBIE] /
+
+BoxSlime  [SLIME    ] [MATERIAL ]
+
+Slime      ---------   ---------
+
+                      /PillowRat\
+Healer    [SLIME    ] |FunkyBird|
+                      |MadPlant |
+                      \CopyCat  /
+
+                      /Almiraj  \
+                      |GulpBeast|
+FangSlime [SLIME    ] |Trumpeter|
+                      |KingLeo  |
+                      |DarkHorn |
+                      \MadCat   /
+
+                      /Digster  \
+                      |DeadNite |
+RockSlime [SLIME    ] |Golem    |
+                      |StoneMan |
+                      \BombCrag /
+
+          /DrakSlime\ /Swordgon \
+          |SlimeNite| |Spikerous|
+SlimeBorg |RockSlime| |GreatDrak|
+          \Metabble / |BattleRex|
+                      \SkyDragon/
+          [SLIME    ]  Roboster
+
+Slabbit   [SLIME    ]  Skullroo
+
+                      /GreatDrak\
+                      |BattleRex|
+                      |Divinegon|
+                      |Unicorn  |
+                      |KingLeo  |
+SpotKing  /KingSlime\ |MadCondor|
+          \MetalKing/ |ZapBird  |
+                      |WhipBird |
+                      |Gigantes |
+                      |Centasaur|
+                      |DeadNoble|
+                      \WhiteKing/
+           SpotSlime   SpotSlime  +5 or better required
+
+                      /GreatDrak\
+                      |BattleRex|
+                      |Divinegon|
+                      |Unicorn  |
+                      |KingLeo  |
+KingSlime  SpotKing   |MadCondor|
+                      |ZapBird  |
+                      |WhipBird |
+                      |Gigantes |
+                      |Centasaur|
+                      |DeadNoble|
+                      \WhiteKing/
+           Slime       Slime      +5 or better required
+          [SLIME    ] [BOSS     ]
+
+Metaly    [SLIME    ]  MetalDrak
+
+Metabble   Metaly      Metaly
+
+          /SpotKing \  MetalDrak
+MetalKing \KingSlime/
+           Metabble    Metabble
+
+          /SpotKing \
+GoldSlime |KingSlime|  GoldGolem
+          \MetalKing/
+           MetalKing   MetalKing
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+DragonKid [DRAGON   ] [SLIME    ]
+
+Tortragon [DRAGON   ] [BEAST    ]
+
+Pteranod  [DRAGON   ] [BIRD     ]
+
+Gasgon    [DRAGON   ] [PLANT    ]
+
+FairyDrak [DRAGON   ] [BUG      ]
+
+LizardMan [DRAGON   ] [DEVIL    ]
+
+Poisongon [DRAGON   ] [ZOMBIE   ]
+
+Swordgon  [DRAGON   ] [MATERIAL ]
+
+Dragon     DragonKid   DragonKid
+
+MiniDrak  [DRAGON   ]  Picky
+
+MadDragon  Gasgon     [BEAST    ]
+          [DRAGON   ]  GulpBeast
+
+                      /WingSlime\
+                      |Trumpeter|
+                      |MadCat   |
+Rayburn    LizardMan  |FaceTree |
+                      |Lionex   |
+                      |GoatHorn |
+                      |GateGuard|
+                      \Gigantes /
+          [DRAGON   ]  MadCondor
+
+Chamelgon [DRAGON   ]  Voodoll
+
+LizardFly [DRAGON   ]  GoHopper
+
+                      /Goategon \
+                      |Trumpeter|
+                      |MadCondor|
+                      |WhipBird |
+          /Gasgon   \ |FunkyBird|
+Andreal   |MadDragon| |ArcDemon |
+          |BattleRex| |Lionex   |
+          \SkyDragon/ |GoatHorn |
+                      |Ogre     |
+                      |Akubar   |
+                      |DeadNoble|
+                      \Golem    /
+          [DRAGON   ]  Gulpple
+
+KingCobra [DRAGON   ]  Babble
+
+Spikerous [DRAGON   ] /ArmyCrab \
+                      \Digster  /
+
+                      /SpotKing \
+                      |KingSlime|
+                      |MetalKing|
+                      |BattleRex|
+GreatDrak [DRAGON   ] |Unicorn  |
+                      |ZapBird  |
+                      |WhipBird |
+                      |Gigantes |
+                      \Centasaur/
+           DragonKid   DragonKid  +4 or better required
+           Dragon      Dragon     +4 or better required
+
+Crestpent [DRAGON   ]  BigRoost
+
+WingSnake  Crestpent   Crestpent
+
+          /Pteranod \ /DarkHorn \
+          |Gasgon   | |MadKnight|
+Coatol    |LizardMan| |Copycat  |
+          |BattleRex| \StoneMan /
+          \SkyDragon/
+           WingSnake   WingSnake
+
+          /Andreal  \  MedusaEye
+Orochi    \GreatDrak/
+          [DRAGON   ] [BOSS     ]
+
+                      /KingLeo  \
+                      |Lionex   |
+BattleRex [DRAGON   ] |Ogre     |
+                      |MadKnight|
+                      \EvilArmor/
+
+SkyDragon [DRAGON   ]  Phoenix
+
+Divinegon  SkyDragon   Orochi
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+Tonguella [BEAST    ] [SLIME    ]
+
+Almiraj   [BEAST    ] [DRAGON   ]
+
+CatFly    [BEAST    ] [BIRD     ]
+
+PillowRat [BEAST    ] [PLANT    ]
+
+Saccer    [BEAST    ] [BUG      ]
+
+          /Tonguella\ /Digster  \
+          |Grizzly  | |Skullgon |
+          |Yeti     | |DeadNoble|
+          |Unicorn  | |WhiteKing|
+          |WildApe  | \Skeletor /
+          \Trumpeter/
+          /IronTurt \ /MetalDrak\
+          |Grizzly  | |Roboster |
+GulpBeast |Yeti     | |LavaMan  |
+          |Unicorn  | |IceMan   |
+          |Goategon | |Golem    |
+          \WildApe  / \StoneMan /
+          /Grizzly  \
+          |Yeti     | [DRAGON   ]
+          |Trumpeter|
+          \BigEye   /
+           Grizzly    [DEVIL    ]
+
+Skullroo  [BEAST    ] [ZOMBIE   ]
+
+WindBeast  Catfly     [BIRD     ]
+          [BEAST    ] [MATERIAL ]
+
+Anteater   Saccer     [DRAGON   ]
+
+                      /TreeSlime\
+                      |FangSlime|
+                      |MadDragon|
+                      |FunkyBird|
+                      |MadPlant |
+SuperTen  /Tonguella\ |FaceTree |
+          \GulpBeast/ |Lipsy    |
+                      |Demonite |
+                      |Gremlin  |
+                      |CopyCat  |
+                      |JewelBag |
+                      \Mimic    /
+          [BEAST    ]  Mudron
+
+IronTurt  [BEAST    ]  Tortragon
+
+Mommonja  [BEAST    ]  DuckKite
+
+HammerMan [BEAST    ]  StubSuck
+
+                      /MetalDrak\
+                      |Roboster |
+                      |LavaMan  |
+Grizzly   [BEAST]     |IceMan   |
+                      |Golem    |
+                      |StoneMan |
+                      \[DEVIL]  /
+
+                      /Pteranod \
+          /IronTurt \ |Gasgon   |
+          |Goategon | |Swordgon |
+Yeti      |WildApe  | |MadDragon|
+          \MadCat   / |BattleRex|
+                      \SkyDragon/
+          [BEAST    ]  Orc
+
+MadGopher [BEAST    ]  SabreMan
+
+FairyRat  [BEAST    ]  LizardFly
+
+          /Tonguella\
+          |GulpBeast|
+          |Grizzly  |
+Unicorn   |Yeti     | [SLIME    ]
+          |Goategon |
+          |WildApe  |
+          \Trumpeter/
+          [BEAST    ]  FangSlime
+
+Goategon  [BEAST    ] /DrakSlime\
+                      \LizardMan/
+
+WildApe    Almiraj    [DRAGON   ]
+          [BEAST    ]  MadPecker
+
+          /Tonguella\ /LandOwl  \
+          |GulpBeast| |MadCondor|
+          |Grizzly  | |ZapBird  |
+          \Yeti     / \WhipBird /
+                      /MetalDrak\
+                      |Balzak   |
+                      |Roboster |
+Trumpeter  GulpBeast  |LavaMan  |
+                      |IceMan   |
+                      |Golem    |
+                      \StoneMan /
+           WildApe     WildApe
+           SuperTen   [DRAGON   ]
+
+                      /Trumpeter\
+                      |MetalDrak|
+           Trumpeter  |Balzak   |
+                      \GoldGolem/
+KingLeo               /GulpBeast\
+                      |SuperTen |
+           Roboster   |Unicorn  |
+                      |Trumpeter|
+                      |DarkHorn |
+                      \MadCat   /
+
+DarkHorn  [BEAST    ] [BOSS     ]
+
+MadCat    [BEAST    ]  Dragon
+
+BigEye    [BEAST    ]  EyeBall
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+Picky     [BIRD     ] [SLIME    ]
+
+Wyvern    [BIRD     ] [DRAGON   ]
+
+BullBird  [BIRD     ] [BEAST    ]
+
+FloraJay  [BIRD     ] [PLANT    ]
+
+DuckKite  [BIRD     ] [BUG      ]
+
+MadPecker [BIRD     ] [DEVIL    ]
+
+MadRaven  [BIRD     ] [ZOMBIE   ]
+
+MistyWing [BIRD     ] [MATERIAL ]
+
+Dracky     Picky      [SLIME    ]
+
+BigRoost   ---------   ---------
+
+StubBird  [BIRD     ] [RockSlime]
+
+LandOwl    BullBird   [BEAST    ]
+
+          /Wyvern   \
+          |LandOwl  | /[DRAGON] \
+MadGoose  |MadCondor| \[ZOMBIE] /
+          \Phoenix  /
+          [BIRD     ]  Droll
+
+MadCondor  LandOwl    [DEVIL    ]
+          [BIRD     ]  CoilBird
+
+                      /Metaly   \
+                      |Metabble |
+                      |SuperTen |
+                      |Yeti     |
+                      |Goategon |
+Blizzardy [BIRD     ] |Trumpeter|
+                      |Skullgon |
+                      |DeadNoble|
+                      |WhiteKing|
+                      |Skeletor |
+                      |Servant  |
+                      \IceMan   /
+
+                      /DrakSlime\
+                      |GulpBeast|
+                      |IronTurt |
+Phoenix   [BIRD     ] |Grizzly  |
+                      |ArcDemon |
+                      |CopyCat  |
+                      |Gismo    |
+                      \LavaMan  /
+
+          /MadCondor\
+ZapBird   |Phoenix  |  Gismo
+          \WhipBird /
+          [BIRD     ] [BOSS     ]
+
+          /LandOwl  \ /RockSlime\
+          |MadGoose | |SlimeBorg|
+WhipBird  |MadCondor| |Digster  |
+          |Blizzardy| |MetalDrak|
+          \ZapBird  / |Golem    |
+                      \StoneMan /
+          [BIRD     ]  Rayburn
+
+FunkyBird [BIRD     ]  DanceVegi
+
+RainHawk   Blizzardy   Phoenix
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+MadPlant  [PLANT    ] [SLIME    ]
+
+FireWeed  [PLANT    ] [DRAGON   ]
+
+FloraMan  [PLANT    ] [BEAST    ]
+
+WingTree  [PLANT    ] [BIRD     ]
+
+CactiBall [PLANT    ] [BUG      ]
+
+Gulpple   [PLANT    ] [DEVIL    ]
+
+Toadstool [PLANT    ] [ZOMBIE   ]
+
+AmberWeed [PLANT    ] [MATERIAL ]
+
+StubSuck   AmberWeed  [BEAST    ]
+
+Oniono    [PLANT    ]  Gophecada
+
+DanceVegi  MadPlant   [BEAST    ]
+          [PLANT    ]  Facer
+
+TreeBoy   [PLANT    ]  Pixy
+
+FaceTree   HerbMan    [DRAGON   ]
+          [PLANT    ]  NiteWhip
+
+HerbMan    DanceVegi  [DEVIL    ]
+          [PLANT    ]  FunkyBird
+
+BeanMan   [PLANT    ]  PillowRat
+
+                      /RockSlime\
+                      |BigEye   |
+                      |DuckKite |
+EvilSeed  [PLANT    ] |Butterfly|
+                      |Eyeder   |
+                      |DarkEye  |
+                      |EyeBall  |
+                      \MadMirror/
+
+ManEater   EvilSeed    EvilSeed
+
+Snapper    ManEater    ManEater
+
+Rosevine  [PLANT    ] [BOSS     ]
+
+Watabou    ---------   ---------  Can only get once per game
+                                  You need Watabou to breed DarkDrium
+                                  So don't breed him with anything else!
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+GiantSlug [BUG      ] [SLIME    ]
+
+Catapila  [BUG      ] [DRAGON   ]
+
+Gophecada [BUG      ] [BEAST    ]
+
+Butterfly [BUG      ] [BIRD     ]
+
+WeedBug   [BUG      ] [PLANT    ]
+
+GiantWorm [BUG      ] [DEVIL    ]
+
+Lipsy     [BUG      ] [ZOMBIE   ]
+
+StagBug   [BUG      ] [MATERIAL ]
+
+ArmyAnt    GiantSlug  [SLIME    ]
+
+GoHopper   ---------   ---------
+
+TailEater  WeedBug    [PLANT    ]
+          [BUG      ]  FloraMan
+
+           GiantWorm  [MATERIAL ]
+ArmorPede  Droll      [DRAGON   ]
+          [BUG      ]  IronTurt
+
+Eyeder     Catapila   [BEAST    ]
+          [BUG      ]  AmberWeed
+
+GiantMoth  Butterfly  [DEVIL    ]
+          [BUG      ]  Saccer
+
+          /Butterfly\ /Butterfly\
+Droll     |TailEater| |TailEater|
+          \Eyeder   / \Eyeder   /
+           Lipsy      [SLIME    ]
+          [BUG      ]  Spooky
+
+ArmyCrab  [BUG      ]  DarkCrab
+
+          /Eyeder   \ [ZOMBIE   ]
+MadHornet \Droll    /
+          [BUG      ]  FairyRat
+
+HornBeet   StagBug     StagBug
+           ArmorPede  [DEVIL    ]
+
+Armorpion  HornBeet    HornBeet
+
+Digster   [BUG      ] [BOSS     ]
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+Pixy      [DEVIL    ] [SLIME    ]
+
+                      /SpotKing \
+                      |KingSlime|
+                      |MetalKing|
+                      |Andreal  |
+                      |GreatDrak|
+          /AgDevil  \ |Orochi   |
+ArcDemon  |Grendal  | |Trumpeter|
+          \Gigantes / |KingLeo  |
+                      |ZapBird  |
+                      |WhipBird |
+                      |MetalDrak|
+                      \StoneMan /
+           GateGuard  [ZOMBIE   ]
+           Ogre       [DRAGON   ]
+          [DEVIL    ] [BOSS     ]
+
+          /SkulRider\
+AgDevil   |EvilBeast| [DRAGON   ]
+          |Gremlin  |
+          \MedusaEye/
+
+Demonite  [DEVIL    ] [BIRD     ]
+
+DarkEye   [DEVIL    ] [PLANT    ]
+
+EyeBall   [DEVIL    ] [BUG      ]
+
+SkulRider [DEVIL    ] [ZOMBIE   ]
+
+EvilBeast [DEVIL    ] [MATERIAL ]
+
+          /Pixy     \
+1EyeClown |Demonite | [SLIME    ]
+          \EyeBall  /
+
+Gremlin   [DEVIL    ] [BEAST    ]
+
+          /MedusaEye\
+MedusaEye |1EyeClown| [ZOMBIE   ]
+          \Gremlin  /
+          [DEVIL    ] [DRAGON   ]
+
+Lionex     ArcDemon   [ZOMBIE   ]
+          [DEVIL    ]  LizardMan
+
+GoatHorn   ArcDemon   [BEAST    ]
+          [DEVIL    ]  DarkHorn
+
+Orc       [DEVIL    ]  BeanMan
+
+          /AgDevil  \ /GulpBeast\
+Ogre      |Grendal  | |Unicorn  |
+          \Gigantes / |Digster  |
+                      \Roboster /
+           GateGuard  [DRAGON   ]
+          [DEVIL    ]  HammerMan
+
+                      /SlimeBorg\
+                      |Swordgon |
+                      |Coatol   |
+                      |MistyWing|
+          /AgDevil  \ |MadCondor|
+GateGuard |Grendal  | |Rosevine |
+          \Gigantes / |GiantMoth|
+                      |Skullgon |
+                      |DeadNoble|
+                      \WhiteKing/
+           Demonite    Demonite
+           Ogre       [ZOMBIE   ]
+
+ChopClown  1EyeClown   1EyeClown
+
+          /SkulRider\
+          |EvilBeast|
+Grendal   |Gremlin  | [BEAST    ]
+          \MedusaEye/
+          [DEVIL    ]  MadDragon
+
+Akubar     ArcDemon    GateGuard
+           Grendal     Grendal
+
+MadKnight [DEVIL    ]  RogueNite
+
+          /SkulRider\ [ZOMBIE   ]
+Gigantes  \EvilBeast/
+          [DEVIL    ]  BigEye
+
+           ArcDemon   [DRAGON   ]
+Centasaur /Ogre     \
+          \GateGuard/ [BEAST    ]
+
+          /ArcDemon \
+EvilArmor |Ogre     | [MATERIAL ]
+          \GateGuard/
+          [DEVIL    ]  ArmorPede
+
+Jamirus    Akubar      RainHawk
+           RainHawk    Akubar
+
+Durran     Centasaur   GoldGolem
+           GoldGolem   Centasaur
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+Spooky    [ZOMBIE   ] [SLIME    ]
+
+          /Skullgon \
+          |DeadNoble|
+          |WhiteKing| [DRAGON   ]
+          |BoneSlave|
+          \Skeletor /
+                      /Swordgon \
+                      |Rayburn  |
+                      |Andreal  |
+Skullgon  [ZOMBIE   ] |GreatDrak|
+                      |Orochi   |
+                      |BattleRex|
+                      \Divinegon/
+                      /Skullgon \
+          [DRAGON   ] |DeadNoble|
+                      |WhiteKing|
+                      \Servant  /
+
+Putrepup  [ZOMBIE   ] [BEAST    ]
+
+RotRaven  [ZOMBIE   ] [BIRD     ]
+
+Mummy     [ZOMBIE   ] [PLANT    ]
+
+DarkCrab  [ZOMBIE   ] [BUG      ]
+
+DeadNite  [ZOMBIE   ] [DEVIL    ]
+
+Shadow    [ZOMBIE   ] [MATERIAL ]
+
+Hork       Spooky     [BEAST    ]
+
+                      /BoxSlime \
+                      |FangSlime|
+                      |Tonguella|
+                      |Yeti     |
+Mudron    [ZOMBIE   ] |FunkyBird|
+                      |MadPlant |
+                      |DanceVegi|
+                      |GiantSlug|
+                      |Lipsy    |
+                      \Droll    /
+
+          /DarkCrab \ [DEVIL    ]
+NiteWhip  \MadSpirit/
+          [ZOMBIE   ]  MistyWing
+
+          /Skullgon \
+          |DeadNite |
+          |Mudron   |
+MadSpirit |DeadNoble| [BIRD     ]
+          |BoneSlave|
+          \Skeletor /
+          [ZOMBIE   ] [DRAGON   ]
+
+WindMerge  RotRaven   [BIRD     ]
+          [ZOMBIE   ]  WindBeast
+
+          /Spooky   \ [DEVIL    ]
+Reaper    \Hork     /
+          [ZOMBIE   ]  WeedBug
+
+          /Mudron   \ /ArcDemon \
+          |MadSpirit| |Lionex   |
+          |BoneSlave| |GateGuard|
+          \Skeletor / |MetalDrak|
+                      \Roboster /
+          /Skullgon \
+          |DeadNite |
+DeadNoble |Mudron   |  Copycat
+          |BoneSlave|
+          \Skeletor /
+           DeadNite    DeadNite
+
+                      /SpotKing \
+                      |KingSlime|
+                      |MetalKing|
+          /Skullgon \ |Andreal  |
+          |DeadNoble| |GreatDrak|
+WhiteKing |BoneSlave| |KingLeo  |
+          \Skeletor / |Blizzardy|
+                      |ZapBird  |
+                      |WhipBird |
+                      \GoldGolem/
+          [ZOMBIE   ] [BOSS     ]
+
+                      /RockSlime\
+                      |SlimeBorg|
+          /Mummy    \ |LandOwl  |
+BoneSlave |DeadNite | |MadGoose |
+          \Hork     / |FloraMan |
+                      |HornBeet |
+                      \Gremlin  /
+           Hork        Hork
+
+                      /GulpBeast\
+                      |Grizzly  |
+                      |MadCat   |
+          /Mummy    \ |MadRaven |
+          |DeadNite | |MadCondor|
+Skeletor  |Hork     | |EvilBeast|
+          \Mudron   / |Ogre     |
+                      |Golem    |
+                      \StoneMan /
+           BoneSlave   BoneSlave
+           MadSpirit  [DRAGON   ]
+
+Servant    Skeletor    Skeletor
+           WhiteKing  [DEVIL    ]
+
+Copycat    ---------   ---------
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+JewelBag  [MATERIAL ] [SLIME    ]
+
+EvilWand  [MATERIAL ] [DRAGON   ]
+
+MadCandle [MATERIAL ] [BEAST    ]
+
+CoilBird  [MATERIAL ] [BIRD     ]
+
+Facer     [MATERIAL ] [PLANT    ]
+
+SpikyBoy  [MATERIAL ] [BUG      ]
+
+MadMirror [MATERIAL ] [DEVIL    ]
+
+RogueNite [MATERIAL ] [ZOMBIE   ]
+
+Goopi      JewelBag   [SLIME    ]
+
+                      /DrakSlime\
+          /Golem    \ |Snaily   |
+Voodoll   \StoneMan / |SlimeNite|
+                      \RockSlime/
+          [MATERIAL ]  Lipsy
+
+                      /SlimeBorg\
+                      |KingSlime|
+          /Andreal  \ |Digster  |
+MetalDrak |Spikerous| |Skullgon |
+          \GreatDrak/ |Roboster |
+                      |Golem    |
+                      \StoneMan /
+          /MetalDrak\ [DRAGON   ]
+          \Roboster /
+          [MATERIAL ]  Andreal
+
+          /LavaMan  \
+Balzak    \IceMan   / [DEVIL    ]
+          [MATERIAL ] [BOSS     ]
+
+          /EvilWand \ /LandOwl  \
+          |Voodoll  | |MadGoose |
+SabreMan  |Golem    | |Phoenix  |
+          \StoneMan / \FunkyBird/
+          [MATERIAL ]  GiantWorm
+
+CurseLamp  Roboster   [BIRD     ]
+          [MATERIAL ]  WingTree
+
+                      /SlimeBorg\
+                      |GreatDrak|
+                      |Unicorn  |
+                      |Ogre     |
+           SabreMan   |Grendal  |
+                      |EvilArmor|
+                      |DeadNoble|
+Roboster              \Skeletor /
+                      /GulpBeast\
+                      |Grizzly  |
+          [MATERIAL ] |Trumpeter|
+                      |KingLeo  |
+                      \SkulRider/
+
+EvilPot    Gismo      [DEVIL    ]
+          [MATERIAL ]  Snaily
+
+                      /DrakSlime\
+          /MadCandle\ |Wyvern   |
+Gismo     |MadMirror| |MistyWing|
+          \Goopi    / |Phoenix  |
+                      |FireWeed |
+                      \EvilSeed /
+
+                      /Orochi   \
+                      |KingLeo  |
+LavaMan    MetalDrak  |ZapBird  |
+                      |ArcDemon |
+                      \Centasaur/
+
+                      /Skullgon \
+IceMan     MetalDrak  \WhiteKing/
+           Roboster    KingLeo
+
+Mimic      Roboster   [ZOMBIE   ]
+          [MATERIAL ]  BoxSlime
+
+MudDoll    Goopi       Goopi
+
+Golem      MudDoll     MudDoll
+
+           Golem       Golem
+StoneMan  [MATERIAL ] /HornBeet \
+                      \Digster  /
+
+BombCrag   SpikyBoy    SpikyBoy
+           Roboster   [BUG      ]
+
+GoldGolem  IceMan      LavaMan
+
+Name       Parent1     Parent2    Comments
+-------------------------------------------
+DracoLord1 Servant    /Andreal  \
+                      \GreatDrak/
+
+DracoLord2 DracoLord1  Divinegon
+
+Hargon     WhiteKing   MetalKing
+
+Sidoh      Jamirus     Rosevine
+
+Baramos    Hargon      Orochi
+
+Zoma       DracoLord   Sidoh      Can use either DracoLord
+
+Pizzaro    Durran      Divinegon
+
+Esterk     Pizzaro     KingLeo
+
+Mirudraas1 Esterk      GoldSlime
+
+Mirudraas2 Mirudraas1  Spikerous
+
+Mudou      Baramos     DarkHorn
+
+DeathMore1 Zoma        Mirudraas  Can use either Mirudraas
+
+DeathMore2 DeathMore1  Armorpion
+
+DeathMore3 DeathMore2  Mudou
+
+DarkDrium  DeathMore3  Watabou    Can only make once per game
+                                  Since there's only one Watabou
+
+
+ A C K N O W L E D G E M E N T S
+---------------------------------
+
+Lost Clan of the Ancients
+http://203.96.119.9/~jimeous/dwm/
+
+This is probably the best English-language DWM site
+on the web at the present time.  Lots of information,
+lots of GameShark codes, and he's got Diablo II and
+Azure Dreams GBC stuff too!
+
+Taiju Toshokan Bekkan (GreatTree Library Annexe)
+http://www.geocities.co.jp/Playtown-Dice/6769/dqmon/
+
+I can't believe how much this person (or people?)
+knows about DWM.  Almost every aspect of the game,
+from the battle AI to the random map generation,
+is thoroughly dissected in almost agonizing detail.
+It's pages like this one which make me glad to have
+chosen Japanese as an elective course.
+
+Necrosaro (and his Pokemon page)
+http://members.aol.com/sabindude/pokemon.html
+
+This guy is well-known in the Pokemon community for
+his detailed, technical information on the Pokemon
+games.  He's also famous as a member of J2E
+Translations, the group who brought us the original,
+uncensored Final Fantasy IV in English.  What can
+I say, this guy knows his s*** with a hex editor.
+This guide isn't the first project Necrosaro's
+helped me with, either...
+
+Enix of Japan
+http://www.enix.co.jp
+
+If not for Enix, there wouldn't be a Dragon Warrior
+series to write guides for.  So I suppose they
+deserve an acknowledgement... :)
+
+Enix of America
+http://www.enix.com
+
+Enix of America is BACK!  Yeah, baby, yeah!
+Let's all cross our fingers and hope Dragon Warrior 7
+is a blockbuster on both sides of the Pacific Ocean.
+
+Eidos Interactive
+http://www.eidos.com
+
+Kudos to the folks at Eidos Interactive for not only
+publishing DWM in North America, but doing a pretty
+decent job on the translation.
+
+---AWJ---
+07/27/2000
