@@ -8,3 +8,4 @@ Cargo.lock
 target
 .ipynb_checkpoints
 package-lock.json
+docs
