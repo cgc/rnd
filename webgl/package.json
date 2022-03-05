@@ -1,0 +1,19 @@
+{
+  "name": "webgl",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "npm exec parcel -- serve",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "browserslist": "last 2 Chrome versions",
+  "source": "index.html",
+  "dependencies": {
+    "gl-mat4": "^1.2.0",
+    "gl-matrix": "^3.4.3",
+    "parcel": "^2.3.2",
+    "regl": "^2.1.0"
+  }
+}
