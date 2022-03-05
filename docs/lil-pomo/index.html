@@ -1,0 +1,183 @@
+<html>
+<head>
+  <title>little pomo</title>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <style>
+    .tomato {
+      color: #ff0800; /* https://www.99colors.net/name/candy-apple-red */
+    }
+    #cover {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: black;
+  left:0;
+  top:0;
+  opacity: 0;
+  z-index: -1;
+}
+#cover.active {
+  opacity: 1;
+  z-index: 0;
+}
+#stop {
+  position: fixed;
+  right: 0;
+  top: 0;
+  margin: 1rem;
+}
+.container {
+  margin: 10vw auto;
+  max-width: 40vw;
+  background: white;
+  border-radius: 5px;
+  padding: 1rem;
+}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p>
+      welcome, <span class="tomato">little pomo</span>!
+      </p>
+      <p>
+      this is an app for you to try to manage "time", that slippery construct.
+      </p>
+      <p>
+      you have been a pomo for <span id="time"></span> minutes.
+      </p>
+      <select id="selectTime">
+        <option value="25">25m</option>
+        <option value="5">5m</option>
+        <option value="0.0167">1s</option>
+      </select>
+      <button onclick="start()">be a pomo</button>
+      <button id="notifButton" onclick="requestNotify()">enable notifications</button>
+      <p>
+        <img src="favicon.png" style="margin-bottom:-11px" /> is from <a href="https://openmoji.org/library/#group=food-drink&emoji=1F345">OpenMoji</a>
+        </p>
+    </div>
+  <div id=cover>
+    <button id="stop" onclick="CANCEL()">Stop</button>
+  </div>
+<script>
+function setTimeoutPromise(ms) {
+	return new Promise((res) => {
+  	setTimeout(() => {
+    	res();
+    }, ms);
+  });
+}
+
+var context;
+async function ping() {
+  // https://marcgg.com/blog/2016/11/01/javascript-audio/
+  var o = context.createOscillator();
+  var g = context.createGain();
+  o.connect(g);
+  g.connect(context.destination);
+	o.start(0);
+	var ramp = 1500;
+  var duration = 1000;
+  g.gain.exponentialRampToValueAtTime(
+    0.00001, context.currentTime + ramp/1000
+  );
+	await setTimeoutPromise(duration + ramp);
+  o.stop();
+}
+async function completionSound() {
+	const p = ping();
+  await setTimeoutPromise(150);
+	const p2 = ping();
+}
+function hi(lim) {
+  stop.disabled = false;
+  let cancel = false;
+	const start = Date.now();
+
+  cover.classList.add('active');
+
+  function anim() {
+    const frac = (Date.now() - start) / lim;
+	  cover.style.transform = `translate(-${frac*100}vw, 0)`;
+  	if (cancel || frac > 1) {
+      cover.classList.remove('active');
+      cover.style.transform = `translate(0, 0)`;
+      return;
+    }
+    window.requestAnimationFrame(anim);
+  }
+  anim();
+
+  window.CANCEL = () => {
+    cancel = true;
+    stop.disabled = true;
+  };
+
+  return setTimeoutPromise(lim).then(() => {
+    return cancel;
+  });
+}
+
+function requestNotify() {
+  if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function (permission) {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+        var notification = new Notification("This is a test notification, little pomo!");
+        notifButton.remove();
+      }
+    });
+  }
+}
+
+function notify() {
+  // Let's check whether notification permissions have already been granted
+  if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var notification = new Notification("Good job, little pomo!");
+  }
+}
+
+const DATA_KEY = 'pomo';
+function recordPomo(start) {
+  const ls = window.localStorage;
+  const records = JSON.parse(ls.getItem(DATA_KEY) || "[]");
+  const end = Date.now();
+  records.push({end, duration: end - start});
+  ls.setItem(DATA_KEY, JSON.stringify(records));
+}
+
+function renderTotalTime() {
+  const total = JSON.parse(window.localStorage.getItem(DATA_KEY) || "[]").map(row => row.duration).reduce((acc, val) => acc + val, 0);
+  time.textContent = Math.round(total / (60 * 1000));
+}
+
+async function pomo(minutes) {
+  context = new AudioContext();
+  const start = Date.now();
+	let cancel = await hi(minutes * 60 * 1000);
+  recordPomo(start);
+  renderTotalTime();
+  if (!cancel) {
+    notify();
+  }
+  completionSound();
+}
+
+function start() {
+  return pomo(parseFloat(selectTime.value));
+}
+
+function init() {
+  renderTotalTime();
+  if (Notification.permission === "granted") {
+    notifButton.remove();
+  }
+}
+
+init();
+
+</script>
+</body>
+</html>

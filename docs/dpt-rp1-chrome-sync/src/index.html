@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <script src="lib/base64-arraybuffer.js"></script>
+        <script src="lib/pkcs.js"></script>
+        <script src="main.js"></script>
+        <style>
+        body {
+          min-width: 100px;
+          text-align: center;
+          margin: 1rem;
+        }
+        .hide {
+          display: none;
+        }
+        </style>
+    </head>
+    <body>
+      <div id="credsContainer">
+        <p>
+          This extension uploads PDF files from your browser to the Sony DPT-RP1. To do this
+          it requires credentials for your DPT-RP1.
+        </p>
+        <p>
+          If you've installed and set up the Digital
+          Paper App, you can find the needed files in a folder inside of "$HOME/Library/Application Support/Sony Corporation/Digital Paper App/DigitalPaperApp/"
+        </p>
+        <p><label>deviceid.dat <input type="file" name="id" /><label></p>
+        <p><label>privatekey.dat <input type="file" name="key" /><label></p>
+        <p><button id="credsButton">Add credentials</button></p>
+      </div>
+      <div id="sendContainer">
+        <button id="sendButton">Send!</button>
+      </div>
+      <p id="statusText"></p>
+      <p id="authErrorText"></p>
+    </body>
+</html>

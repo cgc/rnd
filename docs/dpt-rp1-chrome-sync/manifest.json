@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+
+  "name": "Send to DTP-RP1",
+  "description": "This Chrome extension can be used to sync an opened PDF to your Sony DPT-RP1.",
+  "version": "1.0",
+
+  "page_action": {
+    "default_popup": "src/index.html",
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "activeTab",
+    "https://digitalpaper.local/"
+  ],
+  "background": {
+    "scripts": ["src/background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["src/content_script.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    "src/*"
+  ]
+}

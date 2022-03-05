@@ -1,0 +1,244 @@
+#!/Users/carlos/pu/env/bin/python
+
+import os
+import re
+import sys
+import tempfile
+import subprocess
+from datetime import datetime
+import urllib.parse
+import urllib.request, io, string
+
+URL = "https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod"
+
+def zbib_lookup(query):
+    print('Trying zbib')
+    curl = ['curl', '-s', '--fail']
+    search = subprocess.check_output(curl + ['-d', query, '-H', 'Content-Type: text/plain', f'{URL}/web'])
+    bibtex = subprocess.check_output(curl + ['-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
+    return bibtex
+
+# https://grobid.readthedocs.io/en/latest/Install-Grobid/
+GROBID_ROOT = os.getenv('HOME')+'/pu/grobid/grobid-0.6.2'
+GROBID_JAR = GROBID_ROOT+'/grobid-core/build/libs/grobid-core-0.6.2-onejar.jar'
+
+from dataclasses import dataclass
+
+# from https://komax.github.io/blog/text/python/xml/parsing_tei_xml_python/
+@dataclass
+class Person:
+    firstname: str
+    middlename: str
+    surname: str
+def elem_to_text(elem, default=''):
+    if elem:
+        return elem.getText()
+    else:
+        return default
+class TEIFile(object):
+    def __init__(self, filename):
+        from bs4 import BeautifulSoup
+        with open(filename, 'r') as tei:
+            self.soup = BeautifulSoup(tei, 'lxml')
+            self.title = self.soup.title.getText()
+            self.abstract = self.soup.abstract.getText(separator=' ', strip=True)
+
+    @property
+    def doi(self):
+        return elem_to_text(self.soup.find('idno', type='DOI'))
+
+    @property
+    def authors(self):
+        authors_in_header = self.soup.analytic.find_all('author')
+
+        result = []
+        for author in authors_in_header:
+            persname = author.persname
+            if not persname:
+                continue
+            firstname = elem_to_text(persname.find("forename", type="first"))
+            middlename = elem_to_text(persname.find("forename", type="middle"))
+            surname = elem_to_text(persname.surname)
+            person = Person(firstname, middlename, surname)
+            result.append(person)
+        return result
+
+
+def grobid_parse(query):
+    print('Trying GROBID')
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError:
+        return
+
+    try:
+        with urllib.request.urlopen(query) as f:
+            data = f.read()
+    except:
+        import traceback;traceback.print_exc()
+        return
+
+    if not os.path.exists(GROBID_JAR):
+        return
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        with open(tmpdir + '/doc.pdf', 'wb') as f:
+            f.write(data)
+        out = subprocess.check_output([
+            'java', '-jar', GROBID_JAR,
+            '-gH', GROBID_ROOT+'/grobid-home',
+            '-dIn', tmpdir,
+            '-dOut', tmpdir,
+            '-r', '-exe', 'processHeader',
+        ], stderr=subprocess.STDOUT)
+        tei = TEIFile(tmpdir + '/doc.tei.xml')
+        authors = tei.authors
+        ref = '{}{}'.format(authors[0].surname if authors else '', next(iter(tei.title.split()), None))
+        return string.Template('''
+        @misc{$ref,
+         author = {$author},
+         title = {$title},
+         url = {$url},
+         abstract={$abstract}
+        }
+        ''').substitute(
+            lastchecked=datetime.now().isoformat(),
+            url=query,
+            title=tei.title,
+            abstract=tei.abstract,
+            author=' and '.join(f'{a.surname}, {a.firstname} {a.middlename}' for a in authors),
+            ref=ref,
+        ).encode('utf-8')
+
+
+def pdf_parse(query):
+    print('Trying my PDF parser.')
+    '''
+    Error philosophy: fail when this function has an issue that code could fix.
+    So, when a file doesn't parse as a PDF or can't be downloaded, we return None.
+    But when there's an error with data format parsing, we let an error propagate for bugs to get fixed.
+
+    test cases:
+    https://arxiv.org/pdf/1808.00240.pdf
+    https://papers.nips.cc/paper/2016/file/10907813b97e249163587e6246612e21-Paper.pdf
+    http://www.cs.yale.edu/homes/spielman/sgta/SpectTut.pdf
+    '''
+    try:
+        import PyPDF2
+    except ImportError:
+        return
+
+    def parse_date(dt):
+        if not dt:
+            return ''
+        print(dt)
+        # https://stackoverflow.com/questions/16503075/convert-creationtime-of-pdf-to-a-readable-format-in-python
+        import time
+        datestring = dt[2:2+14]
+        ts = time.strptime(datestring, "%Y%m%d%H%M%S")
+        return datetime.fromtimestamp(time.mktime(ts))
+
+    try:
+        with urllib.request.urlopen(query) as f:
+            pdf = PyPDF2.PdfFileReader(io.BytesIO(f.read()))
+    except:
+        return
+
+    info = pdf.documentInfo
+    print('pdf info', info)
+    date = parse_date(info.get('/ModDate', ''))
+    return string.Template('''
+    @misc{$ref,
+     author = {$author},
+     title = {$title},
+     url = {$url},
+     keywords={$keywords},
+     lastchecked = {$lastchecked},
+     originalyear = {$originalyear},
+     abstract={$abstract}
+    }
+    ''').substitute(
+        ref=''.join(info.get('/Author', '').split()[0:1]+info.get('/Title', '').split()[0:1])+str(date.year),
+        author=info.get('/Author', ''),
+        title=info.get('/Title', ''),
+        url=query,
+        lastchecked=datetime.now().isoformat(),
+        originalyear=date and date.isoformat(),
+        keywords=info.get('/Keywords', ''),
+        abstract=info.get('/Description-Abstract', pdf.getPage(0).extractText()[:300]),
+    ).encode('utf-8')
+
+
+def arxiv_pdf_to_abs(query):
+    m = re.match('https://arxiv\.org/pdf/(.*)(?:\.pdf)?', query)
+    if m:
+        return 'https://arxiv.org/abs/{}'.format(m.groups()[0])
+    else:
+        return query
+
+def parse_scholar_redirect(query):
+    '''
+    Extract the URL from a google scholar redirect, handy for saving directly from a scholar notification.
+    '''
+    url = urllib.parse.urlparse(query)
+    if url.hostname == 'scholar.google.com' and url.path == '/scholar_url':
+        q = urllib.parse.parse_qs(url.query)
+        if 'url' in q:
+            return q['url'][0]
+    return query
+
+
+if __name__ == '__main__':
+    if len(sys.argv) not in (3,4):
+        print('Usage: addref REFERENCES_FILE QUERY [--preview]')
+        sys.exit(1)
+
+    # Parse args
+    argv = list(sys.argv)
+    # Parse out preview
+    preview = '--preview' in argv
+    if preview:
+        argv.pop(argv.index('--preview'))
+    destination, query = argv[1:]
+
+    # bibtex pipeline
+    query = parse_scholar_redirect(query)
+    # handle arxiv
+    query = arxiv_pdf_to_abs(query)
+
+    bibtex = None
+    try:
+        # Search zbib
+        bibtex = zbib_lookup(query)
+    except:
+        # first try grobid
+        bibtex = grobid_parse(query)
+        if bibtex is None:
+            # if that fails, try to parse PDF
+            bibtex = pdf_parse(query)
+        if bibtex is None:
+            # if that fails, then throw the original error.
+            raise
+
+    # Exit early if doing a preview.
+    if preview:
+        print('Preview', bibtex.decode('utf-8'))
+        sys.exit(0)
+
+    # Make file if it doesn't exist.
+    subprocess.check_call(['touch', destination])
+
+    # Avoid adding reference if it's already there.
+    with open(destination, 'rb') as f:
+        if bibtex in f.read():
+            print('Already in references.')
+            sys.exit(1)
+
+    print('Adding', bibtex.decode('utf-8'))
+
+    # Adding to file.
+    dt = datetime.now().astimezone().replace(microsecond=0).isoformat()
+    with open(destination, 'ab') as f:
+        # Add header with timestamp and query to each entry
+        f.write(f'% {dt} from {query}\n'.encode("utf-8"))
+        f.write(bibtex.strip() + b'\n\n')

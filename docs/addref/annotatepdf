@@ -1,0 +1,112 @@
+#!/Users/carlos/pu/env/bin/python
+import os
+import re
+import sys
+import tempfile
+import subprocess
+from datetime import datetime
+import urllib.parse
+import urllib.request, io, string
+import shutil
+
+# https://grobid.readthedocs.io/en/latest/Install-Grobid/
+GROBID_ROOT = os.getenv('HOME')+'/pu/grobid/grobid-0.6.2'
+GROBID_JAR = GROBID_ROOT+'/grobid-core/build/libs/grobid-core-0.6.2-onejar.jar'
+
+# from https://komax.github.io/blog/text/python/xml/parsing_tei_xml_python/
+from dataclasses import dataclass
+@dataclass
+class Person:
+    firstname: str
+    middlename: str
+    surname: str
+def elem_to_text(elem, default=''):
+    if elem:
+        return elem.getText()
+    else:
+        return default
+class TEIFile(object):
+    def __init__(self, filename):
+        from bs4 import BeautifulSoup
+        with open(filename, 'r') as tei:
+            self.soup = BeautifulSoup(tei, 'lxml')
+            self.title = self.soup.title.getText()
+            self.abstract = self.soup.abstract.getText(separator=' ', strip=True)
+
+    @property
+    def doi(self):
+        return elem_to_text(self.soup.find('idno', type='DOI'))
+
+    @property
+    def authors(self):
+        authors_in_header = self.soup.analytic.find_all('author')
+
+        result = []
+        for author in authors_in_header:
+            persname = author.persname
+            if not persname:
+                continue
+            firstname = elem_to_text(persname.find("forename", type="first"))
+            middlename = elem_to_text(persname.find("forename", type="middle"))
+            surname = elem_to_text(persname.surname)
+            person = Person(firstname, middlename, surname)
+            result.append(person)
+        return result
+    @property
+    def author_string(self):
+        return ' and '.join(f'{a.surname}, {a.firstname} {a.middlename}' for a in self.authors)
+
+
+def grobid_parse(filename):
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError:
+        return
+
+    if not os.path.exists(GROBID_JAR):
+        return
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmpdst = tmpdir+'/doc.pdf'
+        shutil.copyfile(filename, tmpdst)
+        out = subprocess.check_output([
+            'java', '-jar', GROBID_JAR,
+            '-gH', GROBID_ROOT+'/grobid-home',
+            '-dIn', tmpdir,
+            '-dOut', tmpdir,
+            '-r', '-exe', 'processHeader',
+        ], stderr=subprocess.STDOUT)
+        return TEIFile(tmpdir + '/doc.tei.xml')
+
+def updated_pdf(filename):
+    from pdfrw import PdfReader
+    trailer = PdfReader(filename)
+    print('current info', trailer.Info)
+
+    tei = grobid_parse(filename)
+    trailer.Info.Title = tei.title
+    trailer.Info.Author = tei.author_string
+    trailer.Info.GROBID_update = datetime.now().isoformat()
+    setattr(trailer.Info, 'Description-Abstract', tei.abstract)
+    print('updated info', trailer.Info)
+
+    return trailer
+
+
+if __name__ == '__main__':
+    argv = sys.argv
+
+    if len(argv) not in (2,3):
+        print('Usage: annotatepdf FILE.pdf [--dry-run]')
+        sys.exit(1)
+
+    dry_run = '--dry-run' in argv
+    if dry_run:
+        argv.pop(argv.index('--dry-run'))
+
+    filename = argv[1]
+
+    from pdfrw import PdfWriter
+    trailer = updated_pdf(filename)
+    if not dry_run:
+        PdfWriter(filename, trailer=trailer).write()

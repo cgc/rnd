@@ -1,0 +1,16 @@
+{
+  "name": "addref",
+  "version": "1.0.0",
+  "description": "",
+  "main": "addref.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@citation-js/core": "^0.5.0-alpha.5",
+    "@citation-js/plugin-bibtex": "^0.5.0-alpha.5",
+    "@citation-js/plugin-zotero-translation-server": "0.1.0-alpha.0"
+  }
+}
