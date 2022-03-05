@@ -20,7 +20,7 @@ git ls-files . | while read line; do
 done
 
 # Build all parcel projects
-echo $PARCEL_DIRS | while read line; do
+echo "$PARCEL_DIRS" | while read line; do
     rm -r ./$line/dist/*
     cd $line
     npx parcel build --public-url /rnd/$line
