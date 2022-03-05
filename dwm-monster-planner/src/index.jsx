@@ -86,7 +86,7 @@ function MonsterSelector({monster: monsterProp, expanded}) {
     currMonster = null;
   }
 
-  monster = currMonster || monsterProp;
+  const monster = currMonster || monsterProp;
 
   function formon(m) {
     const cls = expanded ? (currMonster && !familyctx ? 'selected' : 'selectable') : '';
