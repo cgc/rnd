@@ -8,7 +8,7 @@
 
                 --header-height: 1.625in;
 
-                --border-width: 0.03125in;
+                --border-width: calc(1in / 64);
 
                 --row-count: 5;
                 /* Don't subtract one from row count, because we have the header so there are still 5 lines. */
@@ -16,32 +16,24 @@
 
                 --column-count: 7;
                 --cell-width: calc((var(--page-width) - var(--border-width) * (var(--column-count) - 1)) / var(--column-count));
+
+                --border-color: #666666;
             }
 
             @page {
                 size: letter landscape;
                 margin: 0;
-                /* xx */
-                background: white;
-                box-shadow: none;
-                padding: 0;
-                border: 0;
             }
 
             body {
                 margin: 0;
                 height: var(--page-height);
                 width: var(--page-width);
-                /* xx */
-                background: white;
-                box-shadow: none;
-                padding: 0;
-                border: 0;
             }
 
             .row {
                 display: flex;
-                border-bottom: var(--border-width) solid black;
+                border-bottom: var(--border-width) solid var(--border-color);
                 height: var(--row-height);
             }
 
@@ -54,7 +46,7 @@
             }
 
             .cell {
-                border-right: var(--border-width) solid black;
+                border-right: var(--border-width) solid var(--border-color);
                 width: var(--cell-width);
             }
 
