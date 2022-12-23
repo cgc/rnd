@@ -2,13 +2,11 @@
 name = "radio-shack-scale"
 version = "0.1.0"
 authors = ["Carlos Correa <cgc@stanford.edu>"]
+edition = "2021"
+rust-version = "1.65"
 
 [dependencies]
-conrod = "0.61.1"
+egui = "0.20.1"
+eframe = "0.20.1"
 hidapi = "1.1.0"
-conrod_core = "0.68"
-conrod_glium = "0.68"
-conrod_winit = "0.68"
-glium = "0.24"
-winit = "0.19"
-
+tracing-subscriber = "0.3"

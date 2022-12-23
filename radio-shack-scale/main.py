@@ -58,7 +58,7 @@ with usb_scale() as read:
     conv, unit_string, places = units[defval]
     shutdown = False
 
-    counter = 0 
+    counter = 0
     def counter_label(label):
       def count():
         if shutdown:
