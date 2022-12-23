@@ -2,7 +2,7 @@
 futures==3.0.5
 ipython==7.16.3
 matplotlib==1.5.3
-numpy==1.21.0
+numpy==1.22.0
 scipy==0.18.1
 tensorflow==2.5.3
 tqdm==4.8.4
