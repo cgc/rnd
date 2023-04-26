@@ -18,9 +18,10 @@ def zbib_lookup(query):
     bibtex = subprocess.check_output(curl + ['-d', search, '-H', 'Content-Type: application/json', f'{URL}/export?format=bibtex'])
     return bibtex
 
+GROBID_VERSION = '0.7.0'
 # https://grobid.readthedocs.io/en/latest/Install-Grobid/
-GROBID_ROOT = os.getenv('HOME')+'/pu/grobid/grobid-0.6.2'
-GROBID_JAR = GROBID_ROOT+'/grobid-core/build/libs/grobid-core-0.6.2-onejar.jar'
+GROBID_ROOT = os.getenv('HOME')+f'/pu/grobid/grobid-{GROBID_VERSION}'
+GROBID_JAR = GROBID_ROOT+f'/grobid-core/build/libs/grobid-core-{GROBID_VERSION}-onejar.jar'
 
 from dataclasses import dataclass
 
@@ -79,6 +80,7 @@ def grobid_parse(query):
         return
 
     if not os.path.exists(GROBID_JAR):
+        print('warning: could not find grobid')
         return
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -169,8 +171,20 @@ def pdf_parse(query):
     ).encode('utf-8')
 
 
+def arxiv_lookup(query):
+    print('Trying arxiv')
+    prefix = 'https://arxiv.org/abs/'
+    if not query.startswith(prefix):
+        return
+    arxiv_id = query[len(prefix):]
+    url = f'https://data.crosscite.org/10.48550%2FarXiv.{arxiv_id}'
+    search = subprocess.check_output([
+        'curl', '-s', '--fail', '-H', 'accept: application/x-bibtex', url])
+    return search
+
+
 def arxiv_pdf_to_abs(query):
-    m = re.match('https://arxiv\.org/pdf/(.*)(?:\.pdf)?', query)
+    m = re.match('^https://arxiv\.org/pdf/(.*?)(?:\.pdf)?$', query)
     if m:
         return 'https://arxiv.org/abs/{}'.format(m.groups()[0])
     else:
@@ -186,6 +200,19 @@ def parse_scholar_redirect(query):
         if 'url' in q:
             return q['url'][0]
     return query
+
+
+def attempt_with_fallbacks(fns, query):
+    error = None
+    for fn in fns:
+        try:
+            res = fn(query)
+            if res is not None:
+                return res
+        except Exception as e:
+            error = e
+            print(str(e))
+    raise error
 
 
 if __name__ == '__main__':
@@ -206,19 +233,25 @@ if __name__ == '__main__':
     # handle arxiv
     query = arxiv_pdf_to_abs(query)
 
-    bibtex = None
-    try:
-        # Search zbib
-        bibtex = zbib_lookup(query)
-    except:
-        # first try grobid
-        bibtex = grobid_parse(query)
-        if bibtex is None:
-            # if that fails, try to parse PDF
-            bibtex = pdf_parse(query)
-        if bibtex is None:
-            # if that fails, then throw the original error.
-            raise
+    # bibtex = None
+    # try:
+    #     # Search zbib
+    #     bibtex = zbib_lookup(query)
+    # except:
+    #     # first try grobid
+    #     bibtex = grobid_parse(query)
+    #     if bibtex is None:
+    #         # if that fails, try to parse PDF
+    #         bibtex = pdf_parse(query)
+    #     if bibtex is None:
+    #         # if that fails, then throw the original error.
+    #         raise
+    bibtex = attempt_with_fallbacks([
+        arxiv_lookup,
+        zbib_lookup,
+        grobid_parse,
+        pdf_parse,
+    ], query)
 
     # Exit early if doing a preview.
     if preview:

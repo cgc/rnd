@@ -20,6 +20,7 @@ def sorted_entries(path):
         for title, url, p in sorted(
             list(cur.execute('select title,url,position from cloud_tabs;')),
             key=lambda things: json.loads(zlib.decompress(things[-1]))['sortValues'][0]['sortValue'],
+            reverse=True,
         ):
             yield title, url
 
@@ -101,6 +102,6 @@ def html(path):
     return TEMPLATE % ('\n'.join(rows))
 
 if __name__ == '__main__':
-    path = os.getenv('HOME') + '/Library/Safari/CloudTabs.db'
+    path = os.getenv('HOME') + '/Library/Containers/com.apple.Safari/Data/Library/Safari/CloudTabs.db'
     with open('target/BOOKMARK_CACHE.HTML', 'w') as f:
         f.write(html(path))
