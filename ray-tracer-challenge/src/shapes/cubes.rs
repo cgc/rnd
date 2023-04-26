@@ -1,4 +1,4 @@
-use std::{vec, f64::INFINITY};
+use std::{f64::INFINITY};
 
 use crate::{Shape, ShapeType, test_shape, Tuple, Ray, EPSILON, vector, LocalShape, point, BoundingBox, BaseBoundingBox};
 

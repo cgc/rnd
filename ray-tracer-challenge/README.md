@@ -1,18 +1,18 @@
-# "The Ray Tracer Challenge" in Rust
+# _The Ray Tracer Challenge_ in Rust
 
-This repo contains my code to implement the ray tracer described in The Ray Tracer Challenge by Jamis Buck.
+This repo contains my code to implement the ray tracer described in _The Ray Tracer Challenge_ by Jamis Buck.
 
 Run tests with
 ```
 cargo test
 ```
 
-Generate some images (into `output`) with
+Generate some images (into `output`) with the following command. Some images require downloaded `*.obj` files, links in `src/main.rs`.
 ```
 cargo run --release
 ```
 
-To profile, I used `flamegraph`:
+To profile, I used `flamegraph`. The `--reverse` option was sometimes more useful because of the recursion when shading.
 ```
 cargo install flamegraph
 cargo run --release

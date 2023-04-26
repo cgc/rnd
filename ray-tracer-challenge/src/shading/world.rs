@@ -1,4 +1,4 @@
-use crate::{Light, Intersections, Ray, Shape, Color, C, Tuple, point_light, point, sphere, color, scaling, Intersection, intersections, BLACK, magnitude, normalize, ray, intersect, lighting7, dot, schlick, prepare_computations3};
+use crate::{Light, Intersections, Ray, Shape, Color, C, Tuple, point_light, point, sphere, color, scaling, intersections, BLACK, magnitude, normalize, ray, lighting7, dot, schlick, prepare_computations3};
 
 pub struct World {
     pub count: usize,
@@ -20,6 +20,22 @@ impl World {
     }
     pub fn set_light(&mut self, light: &Light) {
         self.lights = vec![*light];
+    }
+
+    pub fn intersect(&self, ray: &Ray) -> Intersections {
+        let mut v = vec![];
+        for o in &self.objects {
+            v.append(&mut o.intersect(ray));
+        }
+        intersections(v)
+    }
+
+    pub fn intersect_closest_hit(&self, ray: &Ray) -> Intersections {
+        let mut v = vec![];
+        for o in &self.objects {
+            v.append(&mut o.intersect_closest_hit(ray));
+        }
+        intersections(v)
     }
 }
 
@@ -47,17 +63,7 @@ pub fn default_world() -> World {
 }
 
 pub fn intersect_world<'a>(world: &'a World, ray: &Ray) -> Intersections<'a> {
-    let mut v: Vec<Intersection> = vec![];
-    for o in &world.objects {
-        let is = intersect(o, ray);
-        for i in is.data {
-            v.push(i);
-        }
-    }
-    // v.sort_by_key(|i| i.t);
-    // v.sort_by(|a, b|
-    //     a.t.partial_cmp(&b.t).unwrap_or(cmp::Ordering::Equal));
-    intersections(v)
+    world.intersect(ray)
 }
 
 pub const DEFAULT_REMAINING: usize = 5;
@@ -88,6 +94,9 @@ pub fn color_at(world: &World, ray: &Ray) -> Color {
 }
 
 pub fn color_at3(world: &World, ray: &Ray, remaining: usize) -> Color {
+    // TODO Optimize this by first looking for the closest hit, and
+    // only getting all hits if the closest hit requires them.
+    // i.e., the closest hit is transparent or a CSG
     let is = intersect_world(world, ray);
     if let Some(i) = is.hit() {
         let comps = prepare_computations3(&i, ray, &is);
@@ -106,7 +115,9 @@ pub fn is_shadowed3(world: &World, point: &Tuple, light: &Light) -> bool {
     let to_light = light.position - *point;
     let distance = magnitude(&to_light);
     let ray = ray(point, &normalize(&to_light));
-    let xs = intersect_world(world, &ray);
+    // We look for closest hit here, instead of looking for all hits.
+    // TODO Optimize this to look for any hit closer than `distance`
+    let xs = world.intersect_closest_hit(&ray);
     if let Some(i) = xs.hit_for_shadow() {
         i.t < distance
     } else {

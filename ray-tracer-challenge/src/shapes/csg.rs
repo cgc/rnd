@@ -64,7 +64,7 @@ impl LocalShape for CSG {
         let mut xs = vec![];
         for child in &self.children {
             // HACK: this loop is basically copy/pasted from group's intersect.
-            let t = child.inverse() * shape.transform();
+            let t = child.local_inverse();
             let object_ray = transform(object_ray, &t);
             let mut ts = child.local_intersect(&object_ray);
             xs.append(&mut ts);

@@ -56,7 +56,7 @@ impl LocalShape for Group {
         panic!("Should not be called")
     }
 
-    fn local_intersect(&self, group: &Shape, object_ray: &Ray) -> Vec<Intersection> {
+    fn local_intersect(&self, _group: &Shape, object_ray: &Ray) -> Vec<Intersection> {
         if let Some(bvh) = &self.bvh {
             return bvh.intersect(object_ray);
         }
@@ -67,7 +67,7 @@ impl LocalShape for Group {
 
         let mut xs = vec![];
         for child in &self.children {
-            let t = child.inverse() * group.transform();
+            let t = child.local_inverse();
             let object_ray = transform(object_ray, &t);
             let mut ts = child.local_intersect(&object_ray);
             xs.append(&mut ts);
@@ -77,15 +77,19 @@ impl LocalShape for Group {
 
     fn local_bounding_box(&self) -> BoundingBox {
         self.bb
-        // let mut gbb = BoundingBox::new_empty();
-        // for c in &self.children {
-        //     let bb = c.as_local_shape().local_bounding_box();
-        //     for p in bb.corners() {
-        //         let p2 = c.original_transform * p;
-        //         gbb.add_point(&p2);
-        //     }
-        // }
-        // gbb
+    }
+
+    fn local_intersect_closest_hit<'a>(&'a self, shape: &'a Shape, ray: &Ray) -> Vec<Intersection> {
+        if let Some(bvh) = &self.bvh {
+            return bvh.intersect_closest(&ray);
+        }
+        LocalShape::local_intersect_closest_hit(self, shape, ray)
+    }
+    fn local_intersect_any_hit<'a>(&'a self, shape: &'a Shape, ray: &Ray) -> Vec<Intersection> {
+        if let Some(bvh) = &self.bvh {
+            return bvh.intersect_any(&ray);
+        }
+        LocalShape::local_intersect_any_hit(self, shape, ray)
     }
 }
 
@@ -105,7 +109,7 @@ pub fn add_child(shape: &mut Shape, s: &Shape) {
     let mut s = s.clone();
 
     // Set parent transform and recompute transform
-    s.parent_transform = t;
+    s.parent_to_global_transform = t;
     s.recompute_transform();
 
     // Add to group's bounding box. We keep the bounding box in the local space of the group.

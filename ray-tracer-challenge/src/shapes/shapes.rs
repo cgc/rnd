@@ -13,6 +13,11 @@ pub trait LocalShape {
         ts.into_iter().map(|t| intersection(t, shape)).collect()
     }
     fn local_bounding_box(&self) -> BoundingBox;
+
+    // These are special cases, meant to make it easy to use different BVH traversal.
+    // Only implemented by group, which manages BVH
+    fn local_intersect_closest_hit<'a>(&'a self, shape: &'a Shape, ray: &Ray) -> Vec<Intersection> { self.local_intersect(shape, ray) }
+    fn local_intersect_any_hit<'a>(&'a self, shape: &'a Shape, ray: &Ray) -> Vec<Intersection> { self.local_intersect(shape, ray) }
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -77,33 +82,59 @@ pub struct Shape {
     pub material: Material,
     pub shape_type: ShapeType,
     pub shadow: bool,
-    pub original_transform: Matrix,
-    pub parent_transform: Matrix,
+    pub local_to_parent_transform: Matrix,
+    pub parent_to_global_transform: Matrix,
     // These values are cached / recomputed
     cached_transform: Matrix,
     cached_inverse: Matrix,
+    cached_local_inverse: Matrix,
 }
 
 impl Shape {
     pub fn transform(&self) -> Matrix { self.cached_transform }
     pub fn inverse(&self) -> Matrix { self.cached_inverse }
+    pub fn local_transform(&self) -> Matrix { self.local_to_parent_transform }
+    pub fn local_inverse(&self) -> Matrix { self.cached_local_inverse }
+
     pub fn set_transform(&mut self, m: &Matrix) {
-        self.original_transform = *m;
+        self.local_to_parent_transform = *m;
         self.recompute_transform();
     }
     pub fn recompute_transform(&mut self) {
-        self.cached_transform = self.parent_transform * self.original_transform;
+        self.cached_local_inverse = inverse(&self.local_to_parent_transform);
+        self.cached_transform = self.parent_to_global_transform * self.local_to_parent_transform;
         self.cached_inverse = inverse(&self.cached_transform);
         if let ShapeType::Group(group) = &mut self.shape_type {
             for mut c in &mut group.children {
-                c.parent_transform = self.cached_transform;
+                c.parent_to_global_transform = self.cached_transform;
                 c.recompute_transform();
             }
         }
     }
 
+    pub fn local_from_parent_ray(&self, parent_ray: &Ray) -> Ray {
+        transform(parent_ray, &self.local_inverse())
+    }
+
     pub fn local_intersect(&self, object_ray: &Ray) -> Vec<Intersection> {
         self.shape_type.as_local_shape().local_intersect(self, object_ray)
+    }
+    pub fn intersect(&self, parent_ray: &Ray) -> Vec<Intersection> {
+        self.local_intersect(&self.local_from_parent_ray(parent_ray))
+    }
+
+    pub fn local_intersect_closest_hit(&self, object_ray: &Ray) -> Vec<Intersection> {
+        self.shape_type.as_local_shape().local_intersect_closest_hit(self, object_ray)
+    }
+    pub fn intersect_closest_hit(&self, parent_ray: &Ray) -> Vec<Intersection> {
+        self.local_intersect_closest_hit(&self.local_from_parent_ray(parent_ray))
+    }
+
+    pub fn local_intersect_any_hit(&self, object_ray: &Ray) -> Vec<Intersection> {
+        self.shape_type.as_local_shape().local_intersect_any_hit(self, object_ray)
+    }
+    pub fn intersect_any_hit(&self, parent_ray: &Ray) -> Vec<Intersection> {
+        self.local_intersect_any_hit(&self.local_from_parent_ray(parent_ray))
     }
 
     pub fn as_local_shape(&self) -> &dyn LocalShape {
@@ -146,7 +177,7 @@ impl PartialEq for Shape {
         // NOTE We avoid checking transform or inverse, since those might be updated by a parent.
         self.material == other.material &&
         self.shape_type == other.shape_type &&
-        self.original_transform == other.original_transform
+        self.local_to_parent_transform == other.local_to_parent_transform
     }
 }
 
@@ -160,12 +191,12 @@ pub fn normal_to_world(shape: &Shape, vector: &Tuple) -> Tuple {
 }
 
 pub fn test_shape() -> Shape {
-    // let s = TestShape { saved_ray: None };
     Shape {
-        parent_transform: identity_matrix,
-        original_transform: identity_matrix,
+        parent_to_global_transform: identity_matrix,
+        local_to_parent_transform: identity_matrix,
         cached_transform: identity_matrix,
         cached_inverse: identity_matrix,
+        cached_local_inverse: identity_matrix,
         shadow: true,
         material: material(),
         shape_type: ShapeType::TestShape(TestShape { }),
@@ -201,8 +232,7 @@ pub fn normal_at3(shape: &Shape, world_point: &Tuple, intersection: &Intersectio
 }
 
 pub fn intersect<'a>(shape: &'a Shape, world_ray: &Ray) -> Intersections<'a> {
-    let object_ray = &transform(world_ray, &shape.inverse());
-    let xs = shape.local_intersect(object_ray);
+    let xs = shape.intersect(world_ray);
     // NOTE We construct explicitly here to avoid a needless sort.
     Intersections { count: xs.len(), data: xs }
 }

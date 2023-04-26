@@ -15,6 +15,81 @@ pub fn f64_for_bound(a: f64) -> f64 {
     }
 }
 
+pub enum BVHTraversalPolicy<'i> {
+    ClosestHit { x: Option<Intersection<'i>> },
+    // TODO to make this useful for shadowing, we need to take a maximum value here.
+    AnyHit { x: Option<Intersection<'i>> },
+    AllHits { xs: Vec<Intersection<'i>> },
+}
+
+impl<'i> BVHTraversalPolicy<'i> {
+    pub fn new_any_hit() -> BVHTraversalPolicy<'i> {
+        BVHTraversalPolicy::AnyHit { x: None }
+    }
+    pub fn new_all_hits() -> BVHTraversalPolicy<'i> {
+        BVHTraversalPolicy::AllHits { xs: vec![] }
+    }
+    pub fn new_closest_hit() -> BVHTraversalPolicy<'i> {
+        BVHTraversalPolicy::ClosestHit { x: None }
+    }
+
+    pub fn should_traverse(&self, bb: &BoundingBox, ray: &Ray) -> (bool, f64) {
+        match self {
+            BVHTraversalPolicy::ClosestHit { x } => {
+                let (bbhit, tmin, tmax) = bb.local_intersect_tmin_tmax(ray);
+                let current_t = x.map_or(INFINITY, |x| x.t);
+                return (bbhit && tmin <= current_t && 0. <= tmax, tmin);
+            },
+            BVHTraversalPolicy::AnyHit { x } => {
+                if x.is_some() {
+                    return (false, NEG_INFINITY);
+                }
+            },
+            BVHTraversalPolicy::AllHits { xs: _ } => {},
+        }
+        let (bbhit, tmin, _tmax) = bb.local_intersect_tmin_tmax(ray);
+        (bbhit, tmin)
+    }
+
+    pub fn add_intersections<'a>(&'a mut self, new_xs: &mut Vec<Intersection<'i>>) {
+        match self {
+            BVHTraversalPolicy::ClosestHit { x } => {
+                let mut current_t = x.map_or(INFINITY, |x| x.t);
+                for new_x in new_xs {
+                    if 0. <= new_x.t && new_x.t < current_t {
+                        *x = Some(*new_x);
+                        current_t = new_x.t;
+                    }
+                }
+            },
+            BVHTraversalPolicy::AnyHit { x } => {
+                for new_x in new_xs {
+                    if 0. <= new_x.t {
+                        *x = Some(*new_x);
+                    }
+                }
+            }
+            BVHTraversalPolicy::AllHits { xs } => {
+                xs.append(new_xs);
+            }
+        }
+    }
+
+    pub fn intersections<'a>(&'a self) -> Vec<Intersection<'i>> {
+        match self {
+            BVHTraversalPolicy::ClosestHit { x } => {
+                if let Some(i) = x { vec![*i] } else { vec![] }
+            }
+            BVHTraversalPolicy::AnyHit { x } => {
+                if let Some(i) = x { vec![*i] } else { vec![] }
+            }
+            BVHTraversalPolicy::AllHits { xs } => {
+                xs.clone()
+            }
+        }
+    }
+}
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum BVHNodeType {
     Leaf(Vec<Shape>),
@@ -51,32 +126,78 @@ impl BVHNode {
         }
     }
 
-    pub fn intersect(&self, ray: &Ray) -> Vec<Intersection> {
-        let mut rv = vec![];
-        self._intersect(ray, &mut rv);
-        rv
+    pub fn intersect<'a>(&'a self, ray: &Ray) -> Vec<Intersection<'a>> {
+        let mut p = BVHTraversalPolicy::new_all_hits();
+        self._do_intersect(ray, &mut p)
     }
 
-    pub fn _intersect<'a>(&'a self, ray: &Ray, xs: &mut Vec<Intersection<'a>>) {
-        // TODO Implement early exit; inspect ts to see if we can rule this out.
-        // NOTE Need to be careful with refraction / CSG with early exit, ensuring it's under a flag.
-        if self.bb.local_intersect_ts(ray).len() == 0 {
-            return;
+    pub fn intersect_closest<'a>(&'a self, ray: &Ray) -> Vec<Intersection<'a>> {
+        let mut p = BVHTraversalPolicy::new_closest_hit();
+        self._do_intersect(ray, &mut p)
+    }
+
+    pub fn intersect_any<'a>(&'a self, ray: &Ray) -> Vec<Intersection<'a>> {
+        let mut p = BVHTraversalPolicy::new_any_hit();
+        self._do_intersect(ray, &mut p)
+    }
+
+    pub fn _do_intersect<'a>(&'a self, ray: &Ray, p: &mut BVHTraversalPolicy<'a>) -> Vec<Intersection<'a>> {
+        // Since we check node bbox right before recursive traversal in _intersect, we have this special
+        // case for the root node, to make sure we check the root node's bbox before starting traversal.
+        // We check node bbox in the Internal arm because it lets us reorder arms for ClosestHit
+        if p.should_traverse(&self.bb, ray).0 {
+            self._intersect(ray, p);
         }
+        p.intersections()
+    }
+
+    pub fn _intersect<'a>(&'a self, ray: &Ray, p: &mut BVHTraversalPolicy<'a>) {
         match &self.ntype {
             BVHNodeType::Leaf(shapes) => {
                 for child in shapes {
-                    // HACK: this loop is basically copy/pasted from group's intersect.
-                    let t = child.inverse() * child.parent_transform;
+                    // HACK: this loop was originally copy/pasted from group's intersect.
+                    let t = child.local_inverse();
                     let object_ray = transform(ray, &t);
-                    let mut ts = child.local_intersect(&object_ray);
-                    xs.append(&mut ts);
+                    // TODO Can optimize this further for AnyHit by bailing out if there's a match here. Potentially via should_traverse
+                    let mut ts = match p {
+                        BVHTraversalPolicy::ClosestHit { x: _ } => child.local_intersect_closest_hit(&object_ray),
+                        BVHTraversalPolicy::AnyHit { x: _ } => child.local_intersect_any_hit(&object_ray),
+                        BVHTraversalPolicy::AllHits { xs: _ } => child.local_intersect(&object_ray),
+                    };
+                    p.add_intersections(&mut ts);
                 }
             }
             BVHNodeType::Internal(left, right) => {
-                // TODO early exit; Order based on closest, only recurse in each if viable intersection with bound
-                left._intersect(ray, xs);
-                right._intersect(ray, xs);
+                let (l_bbhit, l_tmin) = p.should_traverse(&left.bb, ray);
+                let (r_bbhit, r_tmin) = p.should_traverse(&right.bb, ray);
+
+                // We handle this case separately for simplicity. If we want all hits,
+                // then we should recurse into all viable subtrees.
+                if let BVHTraversalPolicy::AllHits { xs: _ } = p {
+                    if l_bbhit { left._intersect(ray, p) }
+                    if r_bbhit { right._intersect(ray, p) }
+                    return
+                }
+
+                // We try to optimize the order we visit nodes here.
+                if l_bbhit && r_bbhit {
+                    let (mut left, mut right) = (left, right);
+                    // Reorder to traverse closer box first.
+                    if l_tmin > r_tmin {
+                        (left, right) = (right, left)
+                    }
+                    left._intersect(ray, p);
+                    // Now that we've checked the left tree, we double check to make sure the right tree is still relevant.
+                    // If we had a collision in the closer tree, that may rule out the need to check the other.
+                    if p.should_traverse(&right.bb, ray).0 {
+                        right._intersect(ray, p);
+                    }
+                } else if l_bbhit {
+                    // If we only have a bbox hit on one side or the other, we just visit those here.
+                    left._intersect(ray, p);
+                } else if r_bbhit {
+                    right._intersect(ray, p);
+                }
             }
         }
     }
@@ -110,7 +231,7 @@ impl BVHNode {
             for s in shapes {
                 let centroid = s.as_local_shape().local_bounding_box().centroid();
                 // This is ok b/c of linearity?
-                let c = s.original_transform * centroid;
+                let c = s.local_to_parent_transform * centroid;
                 let idx = ((c[dim] - min) / extent * DIVISIONS as f64).floor() as usize;
                 let (bb, v) = &mut buckets[idx];
                 v.push(s);
@@ -182,7 +303,7 @@ impl BVHNode {
 pub trait BaseBoundingBox {
     fn bounds(&self) -> (Tuple, Tuple);
 
-    fn local_intersect_ts(&self, ray: &Ray) -> Vec<f64> {
+    fn local_intersect_tmin_tmax(&self, ray: &Ray) -> (bool, f64, f64) {
         let (bmin, bmax) = self.bounds();
         let (xtmin, xtmax) = check_axis(ray.origin.x, ray.direction.x, (bmin.x, bmax.x));
         let (ytmin, ytmax) = check_axis(ray.origin.y, ray.direction.y, (bmin.y, bmax.y));
@@ -191,10 +312,15 @@ pub trait BaseBoundingBox {
         let tmin = xtmin.max(ytmin).max(ztmin);
         let tmax = xtmax.min(ytmax).min(ztmax);
 
-        if tmin > tmax {
-            vec![]
-        } else {
+        (!(tmin > tmax), tmin, tmax)
+    }
+
+    fn local_intersect_ts(&self, ray: &Ray) -> Vec<f64> {
+        let (hit, tmin, tmax) = self.local_intersect_tmin_tmax(ray);
+        if hit {
             vec![tmin, tmax]
+        } else {
+            vec![]
         }
     }
 }
@@ -261,7 +387,7 @@ impl BoundingBox {
 
     pub fn include_transformed_shape(&mut self, s: &Shape) {
         let bb = s.as_local_shape().local_bounding_box();
-        let transform = &s.original_transform;
+        let transform = &s.local_to_parent_transform;
         for p in bb.corners() {
             let p2 = *transform * p;
             self.add_point(&p2);

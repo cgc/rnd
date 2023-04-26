@@ -40,11 +40,11 @@ pub struct Intersections<'a> {
 }
 
 impl Intersections<'_> {
-    pub fn hit(&self) -> Option<Intersection> {
-        self.data.iter().find(|i| i.t > 0.).cloned()
+    pub fn hit(&self) -> Option<&Intersection> {
+        self.data.iter().find(|i| i.t > 0.)
     }
-    pub fn hit_for_shadow(&self) -> Option<Intersection> {
-        self.data.iter().find(|i| i.t > 0. && i.object.shadow).cloned()
+    pub fn hit_for_shadow(&self) -> Option<&Intersection> {
+        self.data.iter().find(|i| i.t > 0. && i.object.shadow)
     }
     pub fn is_empty(&self) -> bool {
         self.count == 0
@@ -86,7 +86,7 @@ pub fn intersections6<'a>(i1: Intersection<'a>, i2: Intersection<'a>, i3: Inters
 }
 
 pub fn hit<'a>(is: &'a Intersections) -> Option<Intersection<'a>> {
-    is.hit()
+    is.hit().cloned()
 }
 
 #[derive(Debug)]
@@ -130,17 +130,16 @@ pub fn prepare_computations3<'a>(intersection: &'a Intersection, ray: &Ray, inte
 
     let mut n1 = 1.;
     let mut n2 = 1.;
-    let mut containers: Vec<Shape> = Vec::new();
+    let mut containers: Vec<&Shape> = Vec::new();
     for i in &intersections.data {
-        // Optimization: First check t as a quick test.
-        let matching = i.t == intersection.t && i == intersection;
+        let matching = std::ptr::eq(intersection, i);
         if matching {
             if let Some(last) = containers.last() {
                 n1 = last.material.refractive_index;
             }
         }
-        let o = i.object.clone();
-        if let Some(index) = containers.iter().position(|value| *value == o) {
+        let o = i.object;
+        if let Some(index) = containers.iter().position(|value| std::ptr::eq(o, *value)) {
             containers.swap_remove(index);
         } else {
             containers.push(o);

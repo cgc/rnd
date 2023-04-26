@@ -1,6 +1,10 @@
-use std::f64::{INFINITY, consts::PI};
+use std::{f64::{INFINITY, consts::PI, NEG_INFINITY}};
 
 use ray_tracer_challenge::*;
+
+fn times_from_intersections(xs: &Vec<Intersection>) -> Vec<f64> {
+    xs.iter().map(|i| i.t).collect::<Vec<f64>>()
+}
 
 #[test]
 fn test_sphere() {
@@ -219,7 +223,187 @@ fn test_bvh_intersect() {
     assert_eq!(xs.count, 6);
     let offset_circle_diff = 0.75_f64.sqrt();
     assert_eq!(
-        xs.data.iter().map(|i| i.t).collect::<Vec<f64>>(),
+        times_from_intersections(&xs.data),
         vec![1., 2.-offset_circle_diff, 2.-offset_circle_diff, 2.+offset_circle_diff, 2.+offset_circle_diff, 3.],
     );
+}
+
+#[test]
+fn test_bvh_traversal_policies() {
+    let mut p_all = BVHTraversalPolicy::new_all_hits();
+    let mut p_closest = BVHTraversalPolicy::new_closest_hit();
+    let mut p_any = BVHTraversalPolicy::new_any_hit();
+
+    let s = cube();
+    let bb = s.as_local_shape().local_bounding_box();
+    let r = ray(&point(0., 0., -10.), &vector(0., 0., 1.));
+
+    // Testing hits behind.
+    let xs = vec![intersection(-1., &s)];
+    for _ in 0..2 {
+        p_all.add_intersections(&mut xs.clone());
+        p_closest.add_intersections(&mut xs.clone());
+        p_any.add_intersections(&mut xs.clone());
+    }
+
+    assert_eq!(times_from_intersections(&p_all.intersections()), [-1., -1.]);
+    assert_eq!(times_from_intersections(&p_closest.intersections()), []);
+    assert_eq!(times_from_intersections(&p_any.intersections()), []);
+
+    assert_eq!(p_all.should_traverse(&bb, &r), (true, 9.));
+    assert_eq!(p_closest.should_traverse(&bb, &r), (true, 9.));
+    assert_eq!(p_any.should_traverse(&bb, &r), (true, 9.));
+
+    // Testing hit after cube.
+
+    let xs = vec![intersection(20., &s)];
+    p_all.add_intersections(&mut xs.clone());
+    p_closest.add_intersections(&mut xs.clone());
+    p_any.add_intersections(&mut xs.clone());
+
+    assert_eq!(times_from_intersections(&p_all.intersections()), [-1., -1., 20.]);
+    assert_eq!(times_from_intersections(&p_closest.intersections()), [20.]);
+    assert_eq!(times_from_intersections(&p_any.intersections()), [20.]);
+
+    assert_eq!(p_all.should_traverse(&bb, &r), (true, 9.));
+    assert_eq!(p_closest.should_traverse(&bb, &r), (true, 9.));
+    assert_eq!(p_any.should_traverse(&bb, &r), (false, NEG_INFINITY)); // This blocks future hits, since it has had one.
+
+    // Testing hit inside cube.
+
+    let xs = vec![intersection(10., &s)];
+    p_all.add_intersections(&mut xs.clone());
+    p_closest.add_intersections(&mut xs.clone());
+    p_any.add_intersections(&mut xs.clone());
+
+    assert_eq!(times_from_intersections(&p_all.intersections()), [-1., -1., 20., 10.]);
+    assert_eq!(times_from_intersections(&p_closest.intersections()), [10.]);
+    assert_eq!(times_from_intersections(&p_any.intersections()), [10.]);
+
+    assert_eq!(p_all.should_traverse(&bb, &r), (true, 9.));
+    assert_eq!(p_closest.should_traverse(&bb, &r), (true, 9.));
+    assert_eq!(p_any.should_traverse(&bb, &r), (false, NEG_INFINITY));
+
+    // Testing hits in front, but before cube.
+
+    let xs = vec![intersection(1., &s)];
+    p_all.add_intersections(&mut xs.clone());
+    p_closest.add_intersections(&mut xs.clone());
+    p_any.add_intersections(&mut xs.clone());
+
+    assert_eq!(times_from_intersections(&p_all.intersections()), [-1., -1., 20., 10., 1.]);
+    assert_eq!(times_from_intersections(&p_closest.intersections()), [1.]);
+    assert_eq!(times_from_intersections(&p_any.intersections()), [1.]);
+
+    assert_eq!(p_all.should_traverse(&bb, &r), (true, 9.));
+    assert_eq!(p_closest.should_traverse(&bb, &r), (false, 9.)); // Once we have a hit in front of cube, it's blocked.
+    assert_eq!(p_any.should_traverse(&bb, &r), (false, NEG_INFINITY));
+
+    // Testing that extra hits from behind don't influence things
+    let xs = vec![intersection(-1., &s)];
+    p_all.add_intersections(&mut xs.clone());
+    p_closest.add_intersections(&mut xs.clone());
+    p_any.add_intersections(&mut xs.clone());
+    assert_eq!(times_from_intersections(&p_all.intersections()), [-1., -1., 20., 10., 1., -1.]);
+    assert_eq!(times_from_intersections(&p_closest.intersections()), [1.]);
+    assert_eq!(times_from_intersections(&p_any.intersections()), [1.]);
+
+    // And that extra hits after also don't.
+    let xs = vec![intersection(10., &s)];
+    p_all.add_intersections(&mut xs.clone());
+    p_closest.add_intersections(&mut xs.clone());
+    p_any.add_intersections(&mut xs.clone());
+    assert_eq!(times_from_intersections(&p_all.intersections()), [-1., -1., 20., 10., 1., -1., 10.]);
+    assert_eq!(times_from_intersections(&p_closest.intersections()), [1.]);
+    assert_eq!(times_from_intersections(&p_any.intersections()), [10.]);
+
+}
+
+#[test]
+fn test_bvh_traversal_policies_closest() {
+    let mut s = cube();
+    s.set_transform(&translation(0., 0., 5.));
+    let bb_front = BoundingBox::from_transformed_shapes(&[&s]);
+    s.set_transform(&translation(0., 0., 0.));
+    let bb_middle = BoundingBox::from_transformed_shapes(&[&s]);
+    s.set_transform(&translation(0., 0., -5.));
+    let bb_back = BoundingBox::from_transformed_shapes(&[&s]);
+    s.set_transform(&translation(0., 5., 0.));
+    let bb_side = BoundingBox::from_transformed_shapes(&[&s]);
+
+    for (bb, exp_trav, hits) in [
+        (bb_side, (false, INFINITY), vec![]),
+        (bb_back, (false, -6.), vec![]),
+
+        (bb_front, (true, 4.), vec![]),
+        (bb_front, (false, 4.), vec![1.]),
+        (bb_front, (true, 4.), vec![5.]),
+        (bb_front, (true, 4.), vec![10.]),
+        // Testing that order of observations doesn't matter
+        (bb_front, (false, 4.), vec![1., 10.]),
+        (bb_front, (false, 4.), vec![10., 1.]),
+
+        (bb_middle, (true, -1.), vec![]),
+        (bb_middle, (true, -1.), vec![0.5]),
+        (bb_middle, (true, -1.), vec![1.5]),
+    ] {
+        let r = ray(&point(0., 0., 0.), &vector(0., 0., 1.));
+        let mut p_closest = BVHTraversalPolicy::new_closest_hit();
+        p_closest.add_intersections(&mut hits.into_iter().map(|h| intersection(h, &s)).collect::<Vec<Intersection>>());
+        assert_eq!(p_closest.should_traverse(&bb, &r), exp_trav);
+    }
+}
+
+#[test]
+fn test_bvh_intersect_policies() {
+    let cnear = cube();
+    let mut cfar = cube();
+    // Slightly up to make this bounding box larger.
+    cfar.set_transform(&translation(0., 0.1, 5.));
+    let mut clong = cube();
+    clong.set_transform(&scaling(1., 1., 5.).translate(0., -2., 0.));
+
+    let b = BVHNode {
+        bb: BoundingBox::from_transformed_shapes(&[&cnear, &cfar, &clong]),
+        ntype: BVHNodeType::Internal(
+            Box::new(BVHNode {
+                bb: BoundingBox::from_transformed_shapes(&[&cfar, &clong]),
+                ntype: BVHNodeType::Leaf(vec![cfar, clong]),
+            }),
+            Box::new(BVHNode {
+                bb: BoundingBox::from_transformed_shapes(&[&cnear]),
+                ntype: BVHNodeType::Leaf(vec![cnear]),
+            }),
+        ),
+    };
+
+    for (r, all_hits, closest_hit, any_hit) in [
+        (
+            ray(&point(0., 0., -10.), &vector(0., 0., 1.)),
+            vec![14., 16., 9., 11.], vec![9.], vec![16.]),
+        // Facing the other direction
+        (
+            ray(&point(0., 0., -10.), &vector(0., 0., -1.)),
+            vec![-16., -14., -11., -9.], vec![], vec![]),
+        // Complete miss
+        (
+            ray(&point(0., 10., -10.), &vector(0., 0., 1.)),
+            vec![], vec![], vec![]),
+        // From inside
+        (
+            ray(&point(0., 0., 0.), &vector(0., 0., 1.)),
+            vec![4., 6., -1., 1.], vec![1.], vec![6.]),
+        // From inside, looking down
+        (
+            ray(&point(0., 0., 0.), &vector(0., -1., 0.)),
+            vec![1., 3., -1., 1.], vec![1.], vec![3.]),
+    ] {
+        let xs = b.intersect(&r);
+        assert_eq!(times_from_intersections(&xs), all_hits);
+        let xs = b.intersect_closest(&r);
+        assert_eq!(times_from_intersections(&xs), closest_hit);
+        let xs = b.intersect_any(&r);
+        assert_eq!(times_from_intersections(&xs), any_hit);
+    }
+
 }
