@@ -28,8 +28,7 @@ echo "$PARCEL_DIRS" | while read line; do
     cd -
 
     rm -r ./$OUT/$line/*
-    cp -r $line/dist/ $OUT/$line
-    echo $line $OUT/$line
+    cp -r $line/dist/* $OUT/$line
 done
 
 ls -lahR $OUT
