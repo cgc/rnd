@@ -30,6 +30,11 @@ this repo has the code for some random projects and investigations
 
 [autostereogram](autostereogram) - Tiny notebook that generates an autostereogram of an ellipsoid.
 
+[html-calendar](html-calendar) - Making a household calendar template using HTML.
+
+[ray-tracer-challenge](ray-tracer-challenge) - An implementation of the ray tracer described in _The Ray Tracer Challenge_ by Jamis Buck
+
+[old-home-page](old-home-page) - My old home page. Generative art of roaming pixels that wind up looking a bit like road networks.
 
 Projects in other repos:
 

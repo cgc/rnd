@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>My old home page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<style>
+body {
+    /* make page fit to the window */
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+}
+</style>
+<script>
+function main() {
+    var canvas = document.createElement('canvas');
+    var windowHeight = window.innerHeight;
+    var windowWidth = window.innerWidth;
+    canvas.setAttribute('height', windowHeight);
+    canvas.setAttribute('width', windowWidth);
+    document.body.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+    const color = getComputedStyle(document.body).getPropertyValue('--color-text');
+
+    function newPoint(x, y) {
+        return {
+            x: x,
+            y: y,
+            left: .25,
+            up: .25,
+            right: .25,
+            down: .25,
+        };
+    }
+    function tweak(value) {
+        value += .05 * (Math.random() - .5);
+        return Math.min(3, Math.max(0, value));
+    }
+    function isOut(point) {
+        return (
+        point.x < 0 ||
+        point.x >= windowWidth ||
+        point.y < 0 ||
+        point.y >= windowHeight
+        );
+    }
+    var capacity = Math.round(windowWidth * windowHeight / 1e4);
+    var pts = [];
+    for (var i = 0; i < capacity / 2; i++) {
+        pts.push(newPoint(Math.floor(windowWidth * Math.random()), Math.floor(windowHeight * Math.random())));
+    }
+
+    function draw() {
+        // sometimes we have new points!
+        if (Math.random() < .03) {
+            // there's a limit too, new ones remove old ones at some point
+            var toCopy = pts[Math.floor(Math.random() * pts.length)];
+            if (pts.length > capacity) {
+                pts.splice(Math.floor(Math.random() * pts.length), 0, newPoint(toCopy.x, toCopy.y));
+            } else {
+                pts.push(newPoint(toCopy.x, toCopy.y));
+            }
+        }
+        for (var idx = 0; idx < pts.length; idx++) {
+            // HACK if out of bounds, get zapped back
+            var pt = pts[idx];
+            // advance to next time step
+            // adjust preference
+            pt.left = tweak(pt.left);
+            pt.up = tweak(pt.up);
+            pt.right = tweak(pt.right);
+            pt.down = tweak(pt.down);
+            // move to new position
+            var rnd = Math.random();
+            var total = pt.left + pt.up + pt.right + pt.down;
+            if (rnd < (pt.left / total)) { pt.x += 1; }
+            else if (rnd < (pt.left + pt.up) / total) { pt.y += 1; }
+            else if (rnd < (pt.left + pt.up + pt.right) / total) { pt.x -= 1; }
+            else { pt.y -= 1; }
+            // draw our new point
+            ctx.fillStyle = color;
+            ctx.fillRect(windowWidth - pt.x - 1, windowHeight - pt.y - 1, 1, 1);
+        }
+        setTimeout(draw, 1000/60);
+    }
+
+    draw();
+}
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    main();
+});
+
+</script>
+</body>
+</html>

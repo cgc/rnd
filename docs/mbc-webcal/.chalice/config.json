@@ -1,7 +1,0 @@
-{
-  "manage_iam_role": false, 
-  "iam_role_arn": "arn:aws:iam::038518750611:role/chalice-lambda", 
-  "lambda_arn": "arn:aws:lambda:us-west-2:038518750611:function:mbc-webcal", 
-  "app_name": "mbc-webcal", 
-  "stage": "dev"
-}

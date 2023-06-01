@@ -1,0 +1,2 @@
+[alias]
+testx = "test --no-fail-fast -q"

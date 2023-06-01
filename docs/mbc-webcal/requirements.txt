@@ -1,5 +1,0 @@
-beautifulsoup4==4.5.3
-icalendar==3.11.3
-requests==2.20.0
-chalice==0.6.0
-python-dateutil==2.6.0

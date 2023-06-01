@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            :root {
+                --page-height: 8.5in;
+                --page-width: 11in;
+
+                --header-height: 1.625in;
+
+                --border-width: calc(1in / 64);
+
+                --row-count: 5;
+                /* Don't subtract one from row count, because we have the header so there are still 5 lines. */
+                --row-height: calc((var(--page-height) - var(--header-height) - var(--border-width) * var(--row-count)) / var(--row-count));
+
+                --column-count: 7;
+                --cell-width: calc((var(--page-width) - var(--border-width) * (var(--column-count) - 1)) / var(--column-count));
+
+                --border-color: #666666;
+            }
+
+            @page {
+                size: letter landscape;
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                height: var(--page-height);
+                width: var(--page-width);
+            }
+
+            .row {
+                display: flex;
+                border-bottom: var(--border-width) solid var(--border-color);
+                height: var(--row-height);
+            }
+
+            .row:last-child {
+                border-bottom: none;
+            }
+
+            .header {
+                height: var(--header-height);
+            }
+
+            .cell {
+                border-right: var(--border-width) solid var(--border-color);
+                width: var(--cell-width);
+            }
+
+            .cell:last-child {
+                border-right: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="calendar">
+            <div class="row header">
+                <div class="cell"></div>
+            </div>
+        </div>
+        <script>
+            function parseHTML(html) {
+                const parser = new DOMParser();
+                return parser.parseFromString(html, "text/html").body.childNodes[0];
+            }
+            const calendar = document.querySelector(".calendar");
+            for (let i = 0; i < 5; i++) {
+                const row = parseHTML(`<div class="row"></div>`);
+                for (let i = 0; i < 7; i++) {
+                    const cell = parseHTML(`<div class="cell"></div>`);
+                    row.appendChild(cell);
+                }
+                calendar.append(row);
+            }
+        </script>
+    </body>
+</html>

@@ -8,10 +8,12 @@ from datetime import datetime
 import urllib.parse
 import urllib.request, io, string
 import shutil
+import pathlib
 
 # https://grobid.readthedocs.io/en/latest/Install-Grobid/
-GROBID_ROOT = os.getenv('HOME')+'/pu/grobid/grobid-0.6.2'
-GROBID_JAR = GROBID_ROOT+'/grobid-core/build/libs/grobid-core-0.6.2-onejar.jar'
+GROBID_VERSION = '0.7.0'
+GROBID_ROOT = pathlib.Path(os.getenv('HOME')) / f'pu/grobid/grobid-{GROBID_VERSION}'
+GROBID_JAR = GROBID_ROOT / f'grobid-core/build/libs/grobid-core-{GROBID_VERSION}-onejar.jar'
 
 # from https://komax.github.io/blog/text/python/xml/parsing_tei_xml_python/
 from dataclasses import dataclass
@@ -63,15 +65,14 @@ def grobid_parse(filename):
     except ImportError:
         return
 
-    if not os.path.exists(GROBID_JAR):
-        return
+    assert os.path.exists(GROBID_JAR), GROBID_JAR
 
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdst = tmpdir+'/doc.pdf'
         shutil.copyfile(filename, tmpdst)
         out = subprocess.check_output([
             'java', '-jar', GROBID_JAR,
-            '-gH', GROBID_ROOT+'/grobid-home',
+            '-gH', GROBID_ROOT / 'grobid-home',
             '-dIn', tmpdir,
             '-dOut', tmpdir,
             '-r', '-exe', 'processHeader',
