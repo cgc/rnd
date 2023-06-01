@@ -23,6 +23,7 @@ done
 echo "$PARCEL_DIRS" | while read line; do
     rm -r ./$line/dist/*
     cd $line
+    npm ci
     npx parcel build --public-url /rnd/$line
     cd -
 
