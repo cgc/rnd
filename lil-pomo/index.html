@@ -2,38 +2,34 @@
 <head>
   <title>little pomo</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
-  <style>
-    .tomato {
-      color: #ff0800; /* https://www.99colors.net/name/candy-apple-red */
-    }
-    #cover {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  background: black;
-  left:0;
-  top:0;
-  opacity: 0;
-  z-index: -1;
+<style>
+:root {
+  --background: #333;
+  --font-color: white;
 }
-#cover.active {
-  opacity: 1;
-  z-index: 0;
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: white;
+    --font-color: #333;
+  }
 }
-#stop {
-  position: fixed;
-  right: 0;
-  top: 0;
-  margin: 1rem;
+.tomato, a {
+  color: #ff0800; /* https://www.99colors.net/name/candy-apple-red */
+}
+body {
+  background: var(--background);
+  color: var(--font-color);
 }
 .container {
   margin: 10vw auto;
   max-width: 40vw;
-  background: white;
   border-radius: 5px;
   padding: 1rem;
 }
-    </style>
+.hide {
+  display: none;
+}
+</style>
   </head>
   <body>
     <div class="container">
@@ -46,27 +42,34 @@
       <p>
       you have been a pomo for <span id="time"></span> minutes.
       </p>
-      <select id="selectTime">
-        <option value="25">25m</option>
-        <option value="5">5m</option>
-        <option value="0.0167">1s</option>
-      </select>
-      <button onclick="start()">be a pomo</button>
-      <button id="notifButton" onclick="requestNotify()">enable notifications</button>
+      <p>
+        <select id="selectTime">
+          <option value="25">25m</option>
+          <option value="5">5m</option>
+          <option value="0.0167">1s</option>
+        </select>
+        <button id="startButton" onclick="app.click()">be a pomo</button>
+        <span id="remainingText"></span>
+      </p>
+      <p>
+        <button id="notifButton" onclick="requestNotify()">enable notifications</button>
+      </p>
       <p>
         <img src="favicon.png" style="margin-bottom:-11px" /> is from <a href="https://openmoji.org/library/#group=food-drink&emoji=1F345">OpenMoji</a>
         </p>
     </div>
-  <div id=cover>
-    <button id="stop" onclick="CANCEL()">Stop</button>
-  </div>
 <script>
+
 function setTimeoutPromise(ms) {
-	return new Promise((res) => {
+  let resolve;
+	const p = new Promise((r) => {
+    resolve = r;
   	setTimeout(() => {
-    	res();
+    	resolve(true);
     }, ms);
   });
+  p.cancel = () => resolve(false);
+  return p;
 }
 
 var context;
@@ -86,37 +89,73 @@ async function ping() {
   o.stop();
 }
 async function completionSound() {
+  context = new AudioContext();
 	const p = ping();
   await setTimeoutPromise(150);
 	const p2 = ping();
 }
-function hi(lim) {
-  stop.disabled = false;
-  let cancel = false;
-	const start = Date.now();
 
-  cover.classList.add('active');
-
-  function anim() {
-    const frac = (Date.now() - start) / lim;
-	  cover.style.transform = `translate(-${frac*100}vw, 0)`;
-  	if (cancel || frac > 1) {
-      cover.classList.remove('active');
-      cover.style.transform = `translate(0, 0)`;
+class App {
+  constructor() {
+    this.state = {};
+  }
+  setState(update) {
+    Object.assign(this.state, update);
+    this.render();
+  }
+  async click() {
+    if (this.state.promise) {
+      this.state.promise.cancel();
       return;
     }
-    window.requestAnimationFrame(anim);
+    let completed;
+    const minutes = parseFloat(selectTime.value);
+    const start = Date.now();
+    while ((Date.now() - start) < minutes * 60 * 1000) {
+      this.setState({
+        start,
+        minutes,
+        promise: setTimeoutPromise(1000),
+      });
+      completed = await this.state.promise;
+      if (!completed) {
+        break;
+      }
+    }
+    data.recordPomo(start);
+    app.setState({
+      time: data.renderTotalTime(),
+      start: null,
+      minutes: null,
+      promise: null,
+    });
+    if (completed) {
+      notify();
+      completionSound();
+    }
   }
-  anim();
+  render() {
+    time.textContent = this.state.time;
+    if (this.state.notifyEnabled) {
+      notifButton.classList.add('hide');
+    }
+    if (this.state.promise) {
+      const remaining = Math.ceil(this.state.minutes - (Date.now() - this.state.start) / 60 / 1000)
+      startButton.textContent = `stop`;
+      remainingText.textContent = `${remaining} ${pluralize(remaining, 'minute')} left`;
+    } else {
+      startButton.textContent = 'be a pomo';
+      remainingText.textContent = '';
+    }
+  }
+}
 
-  window.CANCEL = () => {
-    cancel = true;
-    stop.disabled = true;
-  };
-
-  return setTimeoutPromise(lim).then(() => {
-    return cancel;
-  });
+function pluralize(count, text) {
+  if (count == 1) {
+    return text;
+  } else {
+    return text + 's';
+  }
 }
 
 function requestNotify() {
@@ -125,7 +164,7 @@ function requestNotify() {
       // If the user accepts, let's create a notification
       if (permission === "granted") {
         var notification = new Notification("This is a test notification, little pomo!");
-        notifButton.remove();
+        app.setState({notifyEnabled: true});
       }
     });
   }
@@ -140,43 +179,25 @@ function notify() {
 }
 
 const DATA_KEY = 'pomo';
-function recordPomo(start) {
-  const ls = window.localStorage;
-  const records = JSON.parse(ls.getItem(DATA_KEY) || "[]");
-  const end = Date.now();
-  records.push({end, duration: end - start});
-  ls.setItem(DATA_KEY, JSON.stringify(records));
-}
-
-function renderTotalTime() {
-  const total = JSON.parse(window.localStorage.getItem(DATA_KEY) || "[]").map(row => row.duration).reduce((acc, val) => acc + val, 0);
-  time.textContent = Math.round(total / (60 * 1000));
-}
-
-async function pomo(minutes) {
-  context = new AudioContext();
-  const start = Date.now();
-	let cancel = await hi(minutes * 60 * 1000);
-  recordPomo(start);
-  renderTotalTime();
-  if (!cancel) {
-    notify();
+const data = {
+  recordPomo(start) {
+    const ls = window.localStorage;
+    const records = JSON.parse(ls.getItem(DATA_KEY) || "[]");
+    const end = Date.now();
+    records.push({end, duration: end - start});
+    ls.setItem(DATA_KEY, JSON.stringify(records));
+  },
+  renderTotalTime() {
+    const total = JSON.parse(window.localStorage.getItem(DATA_KEY) || "[]").map(row => row.duration).reduce((acc, val) => acc + val, 0);
+    return Math.round(total / (60 * 1000));
   }
-  completionSound();
-}
+};
 
-function start() {
-  return pomo(parseFloat(selectTime.value));
-}
-
-function init() {
-  renderTotalTime();
-  if (Notification.permission === "granted") {
-    notifButton.remove();
-  }
-}
-
-init();
+const app = new App();
+app.setState({
+  notifyEnabled: Notification.permission === "granted",
+  time: data.renderTotalTime(),
+});
 
 </script>
 </body>
