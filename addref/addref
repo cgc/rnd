@@ -8,6 +8,7 @@ import subprocess
 from datetime import datetime
 import urllib.parse
 import urllib.request, io, string
+import json
 
 URL = "https://t0guvf0w17.execute-api.us-east-1.amazonaws.com/Prod"
 
@@ -171,6 +172,17 @@ def pdf_parse(query):
     ).encode('utf-8')
 
 
+def osf_lookup(query):
+    print('Trying arxiv')
+    prefix = 'https://osf.io/preprints/psyarxiv/'
+    if not query.startswith(prefix):
+        return
+    osf_id = query[len(prefix):].split('/')[0]
+    url = f'https://api.osf.io/v2/preprints/{osf_id}/citation/bibtex/'
+    search = json.loads(subprocess.check_output(['curl', '-s', '--fail', url]))
+    return search['data']['attributes']['citation'].encode('utf-8')
+
+
 def arxiv_lookup(query):
     print('Trying arxiv')
     prefix = 'https://arxiv.org/abs/'
@@ -247,6 +259,7 @@ if __name__ == '__main__':
     #         # if that fails, then throw the original error.
     #         raise
     bibtex = attempt_with_fallbacks([
+        osf_lookup,
         arxiv_lookup,
         zbib_lookup,
         grobid_parse,
