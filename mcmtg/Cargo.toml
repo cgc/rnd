@@ -1,0 +1,13 @@
+[package]
+name = "mcmtg"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.5.29", features = ["derive"] }
+counter = "0.6.0"
+itertools = "0.14.0"
+json = "0.12.4"
+meansd = "2.1.0"
+rand = "0.8.5"
+statrs = "0.18.0"
