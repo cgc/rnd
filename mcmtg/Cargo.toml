@@ -9,5 +9,8 @@ counter = "0.6.0"
 itertools = "0.14.0"
 json = "0.12.4"
 meansd = "2.1.0"
+ordered-float = "5.0.0"
+pathfinding = "4.14.0"
+# pathfinding = { path = "./pathfinding" }
 rand = "0.8.5"
 statrs = "0.18.0"

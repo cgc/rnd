@@ -1,5 +1,6 @@
-use std::collections::{BinaryHeap, HashMap};
+use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
 use std::fs;
+use std::ops::RangeInclusive;
 use std::time::Instant;
 
 use counter::Counter;
@@ -7,6 +8,8 @@ use json::object;
 use meansd::MeanSD;
 use rand::SeedableRng;
 use statrs::distribution::{Bernoulli, Categorical};
+use pathfinding::prelude::astar;
+use ordered_float::OrderedFloat;
 use rand::distributions::Distribution;
 use rand::rngs::StdRng;
 use itertools::Itertools;
@@ -25,6 +28,22 @@ pub enum Card {
     Land,
     Other,
     Summon { cost: usize, power: usize, toughness: usize },
+}
+
+impl Card {
+    pub fn cost(&self) -> Option<usize> {
+        match self {
+            Card::Summon { cost, power: _, toughness: _ } => Some(*cost),
+            _ => None,
+        }
+    }
+
+    pub fn power(&self) -> Option<usize> {
+        match self {
+            Card::Summon { cost: _, power, toughness: _ } => Some(*power),
+            _ => None,
+        }
+    }
 }
 
 fn print_deck(deck: &Counter<Card>) {
@@ -48,6 +67,232 @@ pub fn sample_card(deck: &Counter<Card>, r: &mut Rng) -> Card {
     let s: usize = n.sample(r);
     return *cards[s];
 }
+
+#[derive(Hash, PartialEq, Eq, Clone, Debug)]
+// struct ManaSpend<'a> {
+struct ManaSpend {
+    // green: usize, // hack....
+    // red: usize,
+    // white: usize,
+    // total: usize, // sum of above
+    // color_specific_spend: ?,
+    spend: usize,
+    curr_idx: usize,
+}
+
+// impl<'a> ManaSpend<'_> {
+//     fn new(cards: &'a [Card], counts: &'a [usize], total: usize) -> ManaSpend<'a> {
+//         // HACK: assert same length
+//         ManaSpend {
+//             cards,
+//             counts,
+//             total,
+//             spend: 0,
+//             curr_idx: 0,
+//         }
+//     }
+
+//     fn actions(&self) -> RangeInclusive<usize> {
+//         if self.curr_idx == self.cards.len() || self.spend == self.total {
+//             return 1..=0
+//         }
+//         let card = self.cards[self.curr_idx];
+//         let cost = card.cost().unwrap_or(0);
+//         if cost == 0 {
+//             return 0..=0
+//         }
+//         // must be under total afterward
+//         // and under # of cards beforehand
+//         let left = self.total - self.spend;
+//         let max_before_goal = left / cost;
+//         let max_available = self.counts[self.curr_idx];
+//         let limit = usize::min(max_available, max_before_goal);
+//         0..=limit
+//     }
+
+//     fn next_state(&'a self, action: usize) -> ManaSpend<'a> {
+//         let card = self.cards[self.curr_idx];
+//         let cost = card.cost().unwrap_or(0);
+//         ManaSpend {
+//             cards: self.cards,
+//             counts: self.counts,
+//             total: self.total,
+//             spend: self.spend + cost * action,
+//             curr_idx: self.curr_idx + 1,
+//         }
+//     }
+
+//     // fn next_states(&'a self) -> impl Iterator<Item = ManaSpend<'a>> {
+//     // // fn next_state(&'a self, action: usize) -> ManaSpend<'a> {
+//     // // the impl of `let rng` is definitely wrong. was trying to play with signatures here. but leaning against it b/c
+//     // // it makes reconstructing path tricky
+//     //     let card = self.cards[self.curr_idx];
+//     //     let cost = card.cost().unwrap_or(0);
+//     //     let rng = 0..=cost; // hack this is very wrong. just testing it out
+
+//     //     rng.into_iter().map(move |action| {
+//     //         ManaSpend {
+//     //             cards: self.cards,
+//     //             counts: self.counts,
+//     //             total: self.total,
+//     //             spend: self.spend + cost * action,
+//     //             curr_idx: self.curr_idx + 1,
+//     //         }
+//     //     })
+//     // }
+// }
+
+struct Problem<'a> {
+    cards: &'a [Card],
+    counts: &'a [usize],
+    total: usize,
+}
+
+impl<'a> Problem<'_> {
+    fn new(cards: &'a [Card], counts: &'a [usize], total: usize) -> Problem<'a> {
+        assert_eq!(cards.len(), counts.len());
+        Problem {
+            cards,
+            counts,
+            total,
+        }
+    }
+
+    fn initial_state(&self) -> ManaSpend {
+        ManaSpend {
+            spend: 0,
+            curr_idx: 0,
+        }
+    }
+
+    fn is_terminal(&self, state: &ManaSpend) -> bool {
+        state.curr_idx == self.cards.len()
+    }
+
+    fn actions(&self, state: &ManaSpend) -> RangeInclusive<usize> {
+        if self.is_terminal(state) {
+            return 1..=0
+        }
+        if state.spend == self.total {
+            return 0..=0
+        }
+        let card = self.cards[state.curr_idx];
+        let cost = card.cost().unwrap_or(0);
+        if cost == 0 {
+            return 0..=0
+        }
+        // must be under total afterward
+        // and under # of cards beforehand
+        let left = self.total - state.spend;
+        let max_before_goal = left / cost;
+        let max_available = self.counts[state.curr_idx];
+        let limit = usize::min(max_available, max_before_goal);
+        0..=limit
+    }
+
+    fn next_state(&self, state: &ManaSpend, action: usize) -> (ManaSpend, usize) {
+        let card = self.cards[state.curr_idx];
+        let cost = card.cost().unwrap_or(0);
+        (
+            ManaSpend {
+                spend: state.spend + cost * action,
+                curr_idx: state.curr_idx + 1,
+            },
+            card.power().unwrap_or(0) * action,
+        )
+    }
+
+    // fn next_states(&'a self) -> impl Iterator<Item = ManaSpend<'a>> {
+    // // fn next_state(&'a self, action: usize) -> ManaSpend<'a> {
+    // // the impl of `let rng` is definitely wrong. was trying to play with signatures here. but leaning against it b/c
+    // // it makes reconstructing path tricky
+    //     let card = self.cards[self.curr_idx];
+    //     let cost = card.cost().unwrap_or(0);
+    //     let rng = 0..=cost; // hack this is very wrong. just testing it out
+
+    //     rng.into_iter().map(move |action| {
+    //         ManaSpend {
+    //             cards: self.cards,
+    //             counts: self.counts,
+    //             total: self.total,
+    //             spend: self.spend + cost * action,
+    //             curr_idx: self.curr_idx + 1,
+    //         }
+    //     })
+    // }
+}
+
+fn opti_mana_spend(p: Problem<'_>) -> Vec<usize> {
+    let best_power_per_cost = p.cards.iter().filter_map(|c| {
+        if let (Some(p), Some(cost)) = (c.power(), c.cost()) {
+            Some(OrderedFloat(p as f64 / cost as f64))
+        } else {
+            None
+        }
+    }).max().unwrap();
+
+    let result = astar(
+        &p.initial_state(),
+        |s| {
+            let s = s.clone();
+            let p_ref = &p;
+            p.actions(&s).map(move |a| {
+                let (ns, r) = p_ref.next_state(&s, a);
+                (ns, -OrderedFloat(r as f64))
+            })
+        },
+        |s| {
+            if p.is_terminal(s) {
+                OrderedFloat(0.)
+            } else {
+                let left = p.total - s.spend;
+                -OrderedFloat(left as f64) * best_power_per_cost
+            }
+        },
+        |s| p.is_terminal(s),
+    );
+    let (plan, _cost) = result.unwrap();
+    plan.iter().tuple_windows().map(|(curr, next)| {
+        let change = next.spend - curr.spend;
+        if change == 0 {
+            return 0
+        }
+        let card = p.cards[curr.curr_idx];
+        let cost = card.cost().unwrap();
+        assert_eq!(change % cost, 0);
+        change / cost
+    }).collect()
+}
+
+// fn bfs(problem: Problem) {
+// need astar proper?
+//     let mut queue = VecDeque::from([problem.initial_state()]);
+//     let mut seen = HashSet::new();
+//     while let Some(s) = queue.pop_front() {
+//         seen.insert(s.clone());
+//         for a in problem.actions(&s) {
+//             let (ns, r) = problem.next_state(&s, a);
+//             if !seen.contains(&ns) {
+//                 queue.push_back(ns);
+//             }
+//         }
+//     }
+// }
+
+// struct FixedCounter<T: 'static> {
+//     items: &'static Vec<T>,
+//     counter: Vec<usize>,
+// }
+
+// impl<T> FixedCounter<T> {
+//     fn new(items: &'static Vec<T>) -> FixedCounter<T> {
+//         let counter = (0..items.len()).map(|_x| 0).collect();
+//         FixedCounter {
+//             items,
+//             counter,
+//         }
+//     }
+// }
 
 pub struct FieldStats {
     lands: usize,
@@ -166,6 +411,24 @@ impl Field {
         }
     }
 
+    pub fn play_opti(&mut self) {
+        let mut cards = vec![];
+        let mut counts = vec![];
+        // NOTE: Need to sort to ensure consistent ordering.
+        for (key, count) in self.hand.iter().sorted() {
+            cards.push(*key);
+            counts.push(*count);
+        }
+        let total = self.untapped[&Card::Land];
+        let p = Problem::new(&cards, &counts, total);
+        let actions = opti_mana_spend(p);
+        for (card, ct) in cards.iter().zip(actions) {
+            for _ in 0..ct {
+                self.play(*card).unwrap();
+            }
+        }
+    }
+
     pub fn show(&self) {
         println!("hand:");
         print_deck(&self.hand);
@@ -253,23 +516,107 @@ mod tests {
     }
 
     #[test]
-    fn test_smallest_k() {
-        let mut s = SmallestK::new(3);
-        s.push(3);
-        s.push(-1);
-        assert_eq!(s.max_heap.iter().cloned().sorted().collect::<Vec<i32>>(), vec![-1, 3]);
+    fn test_mana_spend() {
+        let cards = [
+            Card::Summon { cost: 1, power: 1, toughness: 1 },
+            Card::Summon { cost: 1, power: 1, toughness: 1 },
+            Card::Land,
+            Card::Summon { cost: 2, power: 2, toughness: 2 },
+            Card::Summon { cost: 3, power: 3, toughness: 3 },
+        ];
+        let counts = [2, 6, 1, 2, 2];
+        let p = Problem::new(&cards, &counts, 4);
 
-        s.push(2);
-        assert_eq!(s.max_heap.iter().cloned().sorted().collect::<Vec<i32>>(), vec![-1, 2, 3]);
+        // Listens to counts
+        let s0: ManaSpend = p.initial_state();
+        assert_eq!(p.actions(&s0), 0..=2);
+        // assert_eq!(&s0.next_states().map(|x| x.spend).collect::<Vec<usize>>(), vec![0, 1, 2]);
 
-        // ejects non-smallest, maintains size
-        s.push(1);
-        assert_eq!(s.max_heap.iter().cloned().sorted().collect::<Vec<i32>>(), vec![-1, 1, 2]);
+        // Listens to total
+        let (s1, _) = p.next_state(&s0, 0);
+        assert_eq!(p.actions(&s1), 0..=4);
 
-        // ignores if not smaller, maintains size
-        s.push(10);
-        assert_eq!(s.max_heap.iter().cloned().sorted().collect::<Vec<i32>>(), vec![-1, 1, 2]);
+        // Ignore lands
+        let (s2, _) = p.next_state(&s1, 0);
+        assert_eq!(p.actions(&s2), 0..=0);
+
+        let (s3, _) = p.next_state(&s2, 0);
+        assert_eq!(p.actions(&s3), 0..=2);
+
+        // not evenly divisible
+        let (s4, _) = p.next_state(&s3, 0);
+        assert_eq!(p.actions(&s4), 0..=1);
+
+        // end
+        let (s5, _) = p.next_state(&s4, 0);
+        assert_eq!(p.actions(&s5), 1..=0);
+        assert!(p.actions(&s5).is_empty());
+
+        // rewinding. actions should depend on what's left to fill
+        let (s1, _) = p.next_state(&s0, 2);
+        assert_eq!(s1.spend, 2);
+        assert_eq!(p.actions(&s1), 0..=2);
+
+        // If all spent, automatic 0
+        let (s2, _) = p.next_state(&s1, 2);
+        assert_eq!(s2.spend, 4);
+        assert_eq!(p.actions(&s2), 0..=0);
     }
+
+    #[test]
+    fn test_opti_mana_spend() {
+        // Making sure we get 2x of a 2 instead of 1x of a 3
+        let cards = [
+            Card::Summon { cost: 5, power: 5, toughness: 5 },
+            Card::Summon { cost: 3, power: 3, toughness: 3 },
+            Card::Summon { cost: 2, power: 2, toughness: 2 },
+            Card::Land,
+        ];
+        assert_eq!(opti_mana_spend(Problem::new(&cards, &[1, 2, 2, 0], 4)), vec![0, 0, 2, 0]);
+
+        let cards = [
+            // Including this b/c it throws off the power/cost ratio.
+            Card::Summon { cost: 5, power: 10, toughness: 10 },
+            Card::Summon { cost: 3, power: 3, toughness: 3 },
+            Card::Summon { cost: 2, power: 2, toughness: 2 },
+            Card::Land,
+        ];
+        assert_eq!(opti_mana_spend(Problem::new(&cards, &[1, 2, 2, 0], 4)), vec![0, 0, 2, 0]);
+
+        // Making sure we keep considering better options
+        let cards = [
+            Card::Summon { cost: 2, power: 2, toughness: 2 },
+            Card::Summon { cost: 3, power: 4, toughness: 4 },
+            Card::Summon { cost: 1, power: 1, toughness: 1 },
+        ];
+        assert_eq!(opti_mana_spend(Problem::new(&cards, &[2, 1, 1], 4)), vec![0, 1, 1]);
+
+        // Finding examples that don't fully spend but are better
+        let cards = [
+            Card::Summon { cost: 5, power: 7, toughness: 7 },
+            Card::Summon { cost: 2, power: 2, toughness: 2 },
+        ];
+        assert_eq!(opti_mana_spend(Problem::new(&cards, &[1, 3], 6)), vec![1, 0]);
+    }
+
+    // #[test]
+    // fn test_smallest_k() {
+    //     let mut s = SmallestK::new(3);
+    //     s.push(3);
+    //     s.push(-1);
+    //     assert_eq!(s.max_heap.iter().cloned().sorted().collect::<Vec<i32>>(), vec![-1, 3]);
+
+    //     s.push(2);
+    //     assert_eq!(s.max_heap.iter().cloned().sorted().collect::<Vec<i32>>(), vec![-1, 2, 3]);
+
+    //     // ejects non-smallest, maintains size
+    //     s.push(1);
+    //     assert_eq!(s.max_heap.iter().cloned().sorted().collect::<Vec<i32>>(), vec![-1, 1, 2]);
+
+    //     // ignores if not smaller, maintains size
+    //     s.push(10);
+    //     assert_eq!(s.max_heap.iter().cloned().sorted().collect::<Vec<i32>>(), vec![-1, 1, 2]);
+    // }
 }
 
 
@@ -280,10 +627,13 @@ fn sim(deck: Counter<Card>, r: &mut Rng, turns: usize, log: bool) -> (Field, Vec
     for t in 0..turns {
         field.begin(r);
         field.play(Card::Land);
+
         for n in (0..10).rev() {
             let c = Card::Summon { cost: n, power: n, toughness: n };
             field.play_while_possible(c);
         }
+        // field.play_opti();
+
         field.end();
         stats.push(field.played_stats());
         if log {
