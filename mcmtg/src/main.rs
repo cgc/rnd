@@ -163,22 +163,14 @@ impl<T: Eq + Hash + Copy> IndexMut<&FixedCounterEntry<T>> for FixedCounter<T> {
     }
 }
 
-impl<T> AddAssign for FixedCounter<T> {
-    fn add_assign(&mut self, rhs: Self) {
+impl<'a, T> AddAssign<&'a FixedCounter<T>> for FixedCounter<T> {
+    fn add_assign(&mut self, rhs: &'a Self) {
         // TODO TODO HACK check if matched cards
         // TODO TODO HACK check if matched cards
         // TODO TODO HACK check if matched cards
         for (lhs, rhs) in self.counter.iter_mut().zip(rhs.counter.iter()) {
             *lhs += *rhs;
         }
-    }
-}
-impl<T: Clone> Add for FixedCounter<T> {
-    type Output = Self;
-    fn add(self, rhs: Self) -> Self::Output {
-        let mut rv = self.clone();
-        rv += rhs;
-        rv
     }
 }
 
@@ -425,25 +417,26 @@ impl Field {
     }
 
     pub fn untap(&mut self) {
-        self.untapped += self.tapped.clone();
+        self.untapped += &self.tapped;
         self.tapped.clear();
     }
 
     pub fn played_stats(&self) -> FieldStats {
-        let played = self.untapped.clone() + self.tapped.clone();
         let mut lands = 0;
         let mut power = 0;
         let mut toughness = 0;
         let mut summons = 0;
-        for (key, count) in played.iter() {
-            match key {
-                Card::Land => lands += count,
-                Card::Summon { cost: _, power: p, toughness: t} => {
-                    summons += count;
-                    power += p * count;
-                    toughness += t * count;
-                },
-                Card::Other => {},
+        for played in [&self.untapped, &self.tapped] {
+            for (key, count) in played.iter() {
+                match key {
+                    Card::Land => lands += count,
+                    Card::Summon { cost: _, power: p, toughness: t} => {
+                        summons += count;
+                        power += p * count;
+                        toughness += t * count;
+                    },
+                    Card::Other => {},
+                }
             }
         }
         let hand = self.hand.total();
@@ -717,7 +710,7 @@ fn sim(deck: Cards, r: &mut Rng, turns: usize, log: bool) -> (Field, Vec<FieldSt
         deck.get_entry(&Card::Summon { cost: n, power: n, toughness: n })
     ).collect();
     let mut field = Field::new(deck);
-    let mut stats = vec![];
+    let mut stats = Vec::with_capacity(turns);
     field.init(r);
     for t in 0..turns {
         field.begin(r);
