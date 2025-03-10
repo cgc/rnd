@@ -1,12 +1,14 @@
+use std::num::NonZeroUsize;
 use std::ops::IndexMut;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::fs;
 use std::hash::Hash;
-use std::ops::{Add, AddAssign, Index, RangeInclusive};
+use std::ops::{AddAssign, Index, RangeInclusive};
 use std::time::Instant;
 
 use derivative::Derivative;
 use json::object;
+use lru::LruCache;
 use meansd::MeanSD;
 use rand::{Rng as Rng_, SeedableRng};
 use statrs::distribution::{Bernoulli, Categorical};
@@ -27,22 +29,34 @@ type Rng = StdRng;
 pub enum Card {
     Land,
     Other,
-    Summon { cost: usize, power: usize, toughness: usize },
+    Summon { cost: usize, power: usize, toughness: usize, ability_tap_mana: bool },
 }
 
 impl Card {
     pub fn cost(&self) -> Option<usize> {
         match self {
-            Card::Summon { cost, power: _, toughness: _ } => Some(*cost),
+            Card::Summon { cost, .. } => Some(*cost),
             _ => None,
         }
     }
 
     pub fn power(&self) -> Option<usize> {
         match self {
-            Card::Summon { cost: _, power, toughness: _ } => Some(*power),
+            Card::Summon { power, .. } => Some(*power),
             _ => None,
         }
+    }
+
+    pub fn taps_for_mana(&self) -> bool {
+        match self {
+            Card::Land => true,
+            Card::Summon { ability_tap_mana, .. } => *ability_tap_mana,
+            _ => false,
+        }
+    }
+
+    pub fn simple_summon(cost: usize, power: usize) -> Card {
+        Card::Summon { cost, power, toughness: power, ability_tap_mana: false }
     }
 }
 
@@ -69,10 +83,11 @@ pub fn sample_categorical(r: &mut Rng, weights: &[usize]) -> usize {
 
 #[derive(Derivative)]
 #[derivative(Hash)]
+#[derivative(PartialEq, Eq)]
 #[derive(Clone)]
 pub struct FixedCounter<T> {
     items: Vec<T>,
-    #[derivative(Hash="ignore")]
+    #[derivative(Hash="ignore", PartialEq="ignore")]
     index_map: HashMap<T, usize>,
     counter: Vec<usize>,
 }
@@ -373,12 +388,14 @@ fn opti_mana_spend(p: Problem<'_>) -> Vec<usize> {
     }).collect()
 }
 
+#[derive(Debug)]
 pub struct FieldStats {
     lands: usize,
     power: usize,
     toughness: usize,
     summons: usize,
     hand: usize,
+    damage: usize,
 }
 
 pub struct Field {
@@ -386,6 +403,8 @@ pub struct Field {
     pub hand: Cards,
     pub tapped: Cards,
     pub untapped: Cards,
+    pub damage: usize,
+    pub turn: usize,
 }
 
 impl Field {
@@ -395,6 +414,8 @@ impl Field {
             tapped: deck.empty_clone(),
             untapped: deck.empty_clone(),
             deck,
+            damage: 0,
+            turn: 0,
         }
     }
 
@@ -421,6 +442,20 @@ impl Field {
         self.tapped.clear();
     }
 
+    pub fn combat(&mut self) {
+        // TODO: Consider tapping them?
+        for (key, count) in self.untapped.iter() {
+            match key {
+                Card::Summon { power, .. } => self.damage += power * count,
+                _ => (),
+            }
+        }
+    }
+
+    pub fn end(&mut self) {
+        self.turn += 1;
+    }
+
     pub fn played_stats(&self) -> FieldStats {
         let mut lands = 0;
         let mut power = 0;
@@ -430,7 +465,7 @@ impl Field {
             for (key, count) in played.iter() {
                 match key {
                     Card::Land => lands += count,
-                    Card::Summon { cost: _, power: p, toughness: t} => {
+                    Card::Summon { power: p, toughness: t, .. } => {
                         summons += count;
                         power += p * count;
                         toughness += t * count;
@@ -440,23 +475,40 @@ impl Field {
             }
         }
         let hand = self.hand.total();
-        FieldStats { lands, power, toughness, summons, hand }
+        let damage = self.damage;
+        FieldStats { lands, power, toughness, summons, hand, damage }
     }
 
-    pub fn end(&mut self) {}
-
-    pub fn play_card(&mut self, card: Card) -> Option<()> {
+    pub fn play_card(&mut self, card: Card) -> bool {
         let land = self.deck.get_entry(&Card::Land).unwrap();
         if let Some(card) = self.deck.get_entry(&card) {
-            self.play(&card, &land)
+            self.play(&card, &[&land])
         } else {
-            None
+            false
         }
     }
 
-    pub fn play(&mut self, card: &CardEntry, mana_source: &CardEntry) -> Option<()> {
+    pub fn tap_for_mana(&mut self, mana_sources: &[&CardEntry], cost: usize) -> bool {
+        let total: usize = mana_sources.iter().map(|&c| self.untapped[c]).sum();
+        if total < cost {
+            return false
+        }
+        let mut sum = 0;
+        for &m in mana_sources {
+            let available = self.untapped[m];
+            let needed = cost - sum;
+            let to_spend = usize::min(needed, available);
+            self.untapped[m] -= to_spend;
+            self.tapped[m] += to_spend;
+            sum += to_spend;
+        }
+        assert_eq!(sum, cost);
+        true
+    }
+
+    pub fn play(&mut self, card: &CardEntry, mana_sources: &[&CardEntry]) -> bool {
         if self.hand[card] == 0 {
-            return None
+            return false
         }
         match card.item {
             Card::Land => {
@@ -464,32 +516,30 @@ impl Field {
                 self.hand[card] -= 1;
                 self.untapped[card] += 1;
             },
-            Card::Summon { cost, power: _, toughness: _ } => {
-                if self.untapped[mana_source] < cost {
-                    return None
+            Card::Summon { cost, .. } => {
+                if self.tap_for_mana(mana_sources, cost) {
+                    // Move card
+                    self.hand[card] -= 1;
+                    self.tapped[card] += 1;
+                } else {
+                    return false
                 }
-                // Move card
-                self.hand[card] -= 1;
-                self.tapped[card] += 1;
-                // Pay cost
-                self.untapped[mana_source] -= cost;
-                self.tapped[mana_source] += cost;
             }
             Card::Other => unreachable!("should not play Card::Other"),
         }
-        Some(())
+        true
     }
 
     pub fn play_card_while_possible(&mut self, card: Card) {
         let land = self.deck.get_entry(&Card::Land).unwrap();
         if let Some(card) = self.deck.get_entry(&card) {
-            self.play_while_possible(&card, &land)
+            self.play_while_possible(&card, &[&land])
         }
     }
-    pub fn play_while_possible(&mut self, card: &CardEntry, mana_source: &CardEntry) {
-        let mut res = self.play(card, mana_source);
-        while res.is_some() {
-            res = self.play(card, mana_source);
+    pub fn play_while_possible(&mut self, card: &CardEntry, mana_sources: &[&CardEntry]) {
+        let mut res = self.play(card, mana_sources);
+        while res {
+            res = self.play(card, mana_sources);
         }
     }
 
@@ -501,7 +551,7 @@ impl Field {
         let actions = opti_mana_spend(p);
         for (card, ct) in cards.iter().zip(actions) {
             for _ in 0..ct {
-                self.play_card(*card).unwrap();
+                assert!(self.play_card(*card));
             }
         }
     }
@@ -530,8 +580,8 @@ mod tests {
 
     #[test]
     fn test_field() {
-        let c1 = Card::Summon { cost: 1, power: 1, toughness: 1 };
-        let c2 = Card::Summon { cost: 2, power: 2, toughness: 2 };
+        let c1 = Card::simple_summon(1, 1);
+        let c2 = Card::simple_summon(2, 2);
         let l = Card::Land;
         let deck: Cards = Cards::from(&[
             (l, 40),
@@ -592,11 +642,11 @@ mod tests {
     #[test]
     fn test_mana_spend() {
         let cards = [
-            Card::Summon { cost: 1, power: 1, toughness: 1 },
-            Card::Summon { cost: 1, power: 1, toughness: 1 },
+            Card::simple_summon(1, 1),
+            Card::simple_summon(1, 1),
             Card::Land,
-            Card::Summon { cost: 2, power: 2, toughness: 2 },
-            Card::Summon { cost: 3, power: 3, toughness: 3 },
+            Card::simple_summon(2, 2),
+            Card::simple_summon(3, 3),
         ];
         let counts = [2, 6, 1, 2, 2];
         let p = Problem::new(&cards, &counts, 4);
@@ -641,34 +691,34 @@ mod tests {
     fn test_opti_mana_spend() {
         // Making sure we get 2x of a 2 instead of 1x of a 3
         let cards = [
-            Card::Summon { cost: 5, power: 5, toughness: 5 },
-            Card::Summon { cost: 3, power: 3, toughness: 3 },
-            Card::Summon { cost: 2, power: 2, toughness: 2 },
+            Card::simple_summon(5, 5),
+            Card::simple_summon(3, 3),
+            Card::simple_summon(2, 2),
             Card::Land,
         ];
         assert_eq!(opti_mana_spend(Problem::new(&cards, &[1, 2, 2, 0], 4)), vec![0, 0, 2, 0]);
 
         let cards = [
             // Including this b/c it throws off the power/cost ratio.
-            Card::Summon { cost: 5, power: 10, toughness: 10 },
-            Card::Summon { cost: 3, power: 3, toughness: 3 },
-            Card::Summon { cost: 2, power: 2, toughness: 2 },
+            Card::simple_summon(5, 10),
+            Card::simple_summon(3, 3),
+            Card::simple_summon(2, 2),
             Card::Land,
         ];
         assert_eq!(opti_mana_spend(Problem::new(&cards, &[1, 2, 2, 0], 4)), vec![0, 0, 2, 0]);
 
         // Making sure we keep considering better options
         let cards = [
-            Card::Summon { cost: 2, power: 2, toughness: 2 },
-            Card::Summon { cost: 3, power: 4, toughness: 4 },
-            Card::Summon { cost: 1, power: 1, toughness: 1 },
+            Card::simple_summon(2, 2),
+            Card::simple_summon(3, 4),
+            Card::simple_summon(1, 1),
         ];
         assert_eq!(opti_mana_spend(Problem::new(&cards, &[2, 1, 1], 4)), vec![0, 1, 1]);
 
         // Finding examples that don't fully spend but are better
         let cards = [
-            Card::Summon { cost: 5, power: 7, toughness: 7 },
-            Card::Summon { cost: 2, power: 2, toughness: 2 },
+            Card::simple_summon(5, 7),
+            Card::simple_summon(2, 2),
         ];
         assert_eq!(opti_mana_spend(Problem::new(&cards, &[1, 3], 6)), vec![1, 0]);
     }
@@ -703,29 +753,69 @@ mod tests {
     }
 }
 
+pub enum Termination {
+    Damage(usize),
+    Turns(usize),
+}
 
-fn sim(deck: Cards, r: &mut Rng, turns: usize, log: bool) -> (Field, Vec<FieldStats>) {
-    let mana_source = deck.get_entry(&Card::Land).unwrap();
-    let summons: Vec<CardEntry> = (0..10).rev().filter_map(|n|
-        deck.get_entry(&Card::Summon { cost: n, power: n, toughness: n })
-    ).collect();
+impl Termination {
+    fn is_done(&self, field: &Field) -> bool {
+        match self {
+            Termination::Damage(damage) => field.damage >= *damage,
+            Termination::Turns(turns) => field.turn >= *turns,
+        }
+    }
+
+    fn energy(&self, rv: &HashMap<&str, MeanSD>) -> f64 {
+        match self {
+            Termination::Damage(_) => rv["turns"].mean(),
+            Termination::Turns(_) => -rv["damage"].mean(),
+        }
+    }
+}
+
+
+fn sim(deck: Cards, r: &mut Rng, termination: &Termination, log: bool) -> (Field, Vec<FieldStats>) {
+    let land = deck.get_entry(&Card::Land).unwrap();
+    // Priority order for summons:
+    // 1. Prefer mana tap ability
+    // 2. Prefer greater power
+    let summons: Vec<CardEntry> = deck.items.iter().filter_map(|c| {
+        if c.power().is_some() { deck.get_entry(c) } else { None }
+    }).sorted_by_key(|c| {
+        (
+            if c.item.taps_for_mana() { 0 } else { 1 },
+            -(c.item.power().unwrap() as i64),
+        )
+    }).collect();
+    // Our first mana source is always land
+    let mut mana_sources = vec![
+        &land,
+    ];
+    // Add creatures that can tap for mana.
+    mana_sources.extend(summons.iter().filter(|c| c.item.taps_for_mana()));
     let mut field = Field::new(deck);
-    let mut stats = Vec::with_capacity(turns);
+    let mut stats = vec![]; // TODO preallocate??
     field.init(r);
-    for t in 0..turns {
+    while !termination.is_done(&field) {
         field.begin(r);
-        field.play(&mana_source, &mana_source);
+        field.play(&land, &mana_sources);
 
         for c in &summons {
-            field.play_while_possible(c, &mana_source);
+            field.play_while_possible(c, &mana_sources);
         }
         // field.play_opti();
+
+        field.combat();
 
         field.end();
         stats.push(field.played_stats());
         if log {
+            let t = field.turn;
             println!("End of turn {t}");
             field.show();
+            let stats_ = field.played_stats();
+            println!("{stats_:?}");
             println!("");
         }
     }
@@ -733,19 +823,24 @@ fn sim(deck: Cards, r: &mut Rng, turns: usize, log: bool) -> (Field, Vec<FieldSt
 }
 
 fn update_meansds(meansds: &mut Vec<MeanSD>, value: &Vec<usize>) {
+    if meansds.len() < value.len() {
+        meansds.extend(vec![MeanSD::default(); value.len() - meansds.len()]);
+    }
     for (meansd, value) in meansds.iter_mut().zip(value.iter()) {
         meansd.update(*value as f64)
     }
 }
 
-fn sims(deck: Cards, r: &mut Rng, trials: usize, turns: usize) -> HashMap<&'static str, Vec<MeanSD>> {
+fn sims(deck: Cards, r: &mut Rng, trials: usize, termination: &Termination) -> (HashMap<&'static str, Vec<MeanSD>>, HashMap<&'static str, MeanSD>) {
     let mut rv = HashMap::new();
-    for key in ["lands", "power", "cumu_lands", "cumu_power", "hand"] {
-        rv.insert(key, vec![MeanSD::default(); turns]);
+    let mut rv_final = HashMap::new();
+    for key in ["lands", "power", "cumu_lands", "cumu_power", "hand", "damage", "turns"] {
+        rv.insert(key, vec![]);
+        rv_final.insert(key, MeanSD::default());
     }
 
     for _ in 0..trials {
-        let (_f, stats) = sim(deck.clone(), r, turns, false);
+        let (f, stats) = sim(deck.clone(), r, termination, false);
 
         let lands = stats.iter().map(|s| s.lands).collect();
         update_meansds(rv.get_mut("lands").unwrap(), &lands);
@@ -758,8 +853,18 @@ fn sims(deck: Cards, r: &mut Rng, trials: usize, turns: usize) -> HashMap<&'stat
         update_meansds(rv.get_mut("cumu_power").unwrap(), &cumu_power);
 
         update_meansds(rv.get_mut("hand").unwrap(), &stats.iter().map(|s| s.hand).collect());
+        update_meansds(rv.get_mut("damage").unwrap(), &stats.iter().map(|s| s.damage).collect());
+
+        let last_stats = stats.last().unwrap();
+        rv_final.get_mut("lands").unwrap().update(last_stats.lands as f64);
+        rv_final.get_mut("cumu_lands").unwrap().update(*cumu_lands.last().unwrap() as f64);
+        rv_final.get_mut("power").unwrap().update(last_stats.power as f64);
+        rv_final.get_mut("cumu_power").unwrap().update(*cumu_power.last().unwrap() as f64);
+        rv_final.get_mut("hand").unwrap().update(last_stats.hand as f64);
+        rv_final.get_mut("damage").unwrap().update(last_stats.damage as f64);
+        rv_final.get_mut("turns").unwrap().update(f.turn as f64);
     }
-    rv
+    (rv, rv_final)
 }
 
 // https://rust-lang-nursery.github.io/rust-cookbook/science/mathematics/statistics.html
@@ -789,12 +894,12 @@ pub fn cumulative_sum(data: &Vec<usize>) -> Vec<usize> {
 }
 
 pub fn make_deck(name: &str, n_lands: usize) -> Cards {
-    let c1 = Card::Summon { cost: 1, power: 1, toughness: 1 };
-    let c2 = Card::Summon { cost: 2, power: 2, toughness: 2 };
-    let c3 = Card::Summon { cost: 3, power: 3, toughness: 3 };
-    let c4 = Card::Summon { cost: 4, power: 4, toughness: 4 };
-    let c5 = Card::Summon { cost: 5, power: 5, toughness: 5 };
-    let c6 = Card::Summon { cost: 6, power: 6, toughness: 6 };
+    let c1 = Card::simple_summon(1, 1);
+    let c2 = Card::simple_summon(2, 2);
+    let c3 = Card::simple_summon(3, 3);
+    let c4 = Card::simple_summon(4, 4);
+    let c5 = Card::simple_summon(5, 5);
+    let c6 = Card::simple_summon(6, 6);
 
     let deck = match name {
         "mono" => {
@@ -838,6 +943,23 @@ pub fn make_deck(name: &str, n_lands: usize) -> Cards {
                 (c1, 60 - n_lands),
             ])
         },
+        "ramp" => {
+            let r1 = Card::Summon { cost: 1, power: 1, toughness: 1, ability_tap_mana: true };
+            let r2 = Card::Summon { cost: 2, power: 2, toughness: 2, ability_tap_mana: true };
+            let mut deck = Cards::from(&[
+                (Card::Land, 0),
+                (r1, 4),
+                (r2, 4),
+                (c1, 4),
+                (c2, 4),
+                (c3, 4),
+                (c4, 4),
+                (c5, 4),
+                (c6, 4),
+            ]);
+            deck[&Card::Land] += 60 - deck.total();
+            deck
+        },
         // "fk_aggro" => {
         //     // Would be nice to replicate this: https://www.peasant-magic.com/articles/magic-deckbuilding/finding-the-optimal-aggro-deck-via-computer
         //     let c1 = Card::Summon { cost: 1, power: 2, toughness: 2 };
@@ -854,7 +976,7 @@ pub fn make_deck(name: &str, n_lands: usize) -> Cards {
     deck
 }
 
-fn eval(deck: &str, trials: usize, turns: usize) {
+fn eval(deck: &str, trials: usize, termination: &Termination) {
     let mut r = StdRng::seed_from_u64(3663);
 
     let mut n_lands_ = vec![];
@@ -880,18 +1002,19 @@ fn eval(deck: &str, trials: usize, turns: usize) {
         assert_eq!(deck.total(), 60);
 
         let now = Instant::now();
-        let rv = sims(deck, &mut r, trials, turns);
+        let (rv, rv_final) = sims(deck, &mut r, trials, termination);
         let elapsed = now.elapsed();
         let ms = (elapsed.as_micros() as f64) / 1000.;
         let ms_per_trial = ms / trials as f64;
         println!("{trials} simulations, elapsed {ms:.3} ms, {ms_per_trial:.3} ms/trial");
 
-        for (key, counts) in rv.iter().sorted_by(|a, b| Ord::cmp(&a.0, &b.0)) {
-            let mean = counts[counts.len() - 1].mean();
-            let sem = counts[counts.len() - 1].ssem();
+        for (key, counts) in rv_final.iter().sorted_by(|a, b| Ord::cmp(&a.0, &b.0)) {
+            let mean = counts.mean();
+            let sem = counts.ssem();
             println!("{key} {mean:.2} {sem:.2}")
         }
         println!("---\n");
+        let turns = rv["lands"].len();
         for i in 0..turns {
             n_lands_.push(n_lands);
             turn.push(i + 1); // making it 1-indexed for presentation
@@ -1043,32 +1166,35 @@ fn accept(r: &mut Rng, old_energy: f64, new_energy: f64, temperature: f64) -> bo
     }
 }
 
-fn energy(r: &mut Rng, deck: Cards, trials: usize, turns: usize) -> (f64, Cards) {
-    let rv = sims(deck.clone(), r, trials, turns);
-    let energy = -rv["cumu_power"].last().unwrap().mean();
+fn energy(r: &mut Rng, deck: Cards, trials: usize, termination: &Termination, cache: &mut LruCache<Cards, f64>) -> (f64, Cards) {
+    if let Some(energy) = cache.get(&deck) {
+        return (*energy, deck)
+    }
+    let (rv, rv_final) = sims(deck.clone(), r, trials, termination);
+    let energy = termination.energy(&rv_final);
+    cache.put(deck.clone(), energy);
     (energy, deck)
 }
 
-fn print_deck_stats(r: &mut Rng, deck: &Cards, turns: usize) {
+fn print_deck_stats(r: &mut Rng, deck: &Cards, termination: &Termination) {
     print_deck(deck);
-    let rv = sims(deck.clone(), r, 10_000, turns);
-    for (k, vec) in rv.iter().sorted_by(|a, b| Ord::cmp(&a.0, &b.0)) {
-        let last = vec.last().unwrap();
+    let (rv, rv_final) = sims(deck.clone(), r, 10_000, termination);
+    for (k, last) in rv_final.iter().sorted_by(|a, b| Ord::cmp(&a.0, &b.0)) {
         let mean = last.mean();
         let sem = last.ssem();
         println!("{k} {mean:.3} {sem:.3}");
     }
 }
 
-fn opti(deck: &str, chains: usize, log_every: usize, samples: usize, trials: usize, turns: usize) {
+fn opti(deck: &str, chains: usize, log_every: usize, samples: usize, trials: usize, temperature: f64, termination: &Termination) {
     // Keeping this immutable to reduce variance.
     let energy_rng = StdRng::seed_from_u64(9629878374);
 
     let mut r = StdRng::seed_from_u64(2347823);
 
-    let start = energy(&mut energy_rng.clone(), make_deck(deck, 24), trials, turns);
-    print_deck_stats(&mut energy_rng.clone(), &start.1, turns);
-    let mut best = start.clone();
+    let mut cache = LruCache::new(NonZeroUsize::new(100).unwrap());
+    let start = energy(&mut energy_rng.clone(), make_deck(deck, 24), trials, termination, &mut cache);
+    print_deck_stats(&mut energy_rng.clone(), &start.1, termination);
     let mut s = SmallestK::new(3);
     let now = Instant::now();
 
@@ -1078,8 +1204,9 @@ fn opti(deck: &str, chains: usize, log_every: usize, samples: usize, trials: usi
         println!("-- Chain {c} --");
         for iter in 0..samples {
             let deck = propose(&mut r, &x.1);
-            let new_x = energy(&mut energy_rng.clone(), deck, trials, turns);
-            let accept = accept(&mut r, x.0, new_x.0, 0.1);
+
+            let new_x = energy(&mut energy_rng.clone(), deck, trials, termination, &mut cache);
+            let accept = accept(&mut r, x.0, new_x.0, temperature);
             if accept {
                 x = new_x;
                 accept_count += 1;
@@ -1089,9 +1216,6 @@ fn opti(deck: &str, chains: usize, log_every: usize, samples: usize, trials: usi
                 println!("{iter} accepted={accept} energy={energy}")
             }
             s.push(x.1.clone(), OrderedFloat(x.0));
-            if x.0 < best.0 {
-                best = x.clone();
-            }
         }
         println!("---");
         let ratio = accept_count as f64 / samples as f64;
@@ -1104,15 +1228,16 @@ fn opti(deck: &str, chains: usize, log_every: usize, samples: usize, trials: usi
     let ms_per_trial = ms / total_samples as f64;
     println!("{total_samples} samples, elapsed {ms:.3} ms, {ms_per_trial:.3} ms/sample");
 
-    print_deck_stats(&mut energy_rng.clone(), &best.1, turns);
     for best in s.items() {
-        print_deck_stats(&mut energy_rng.clone(), &best, turns);
+        println!("---");
+        print_deck_stats(&mut energy_rng.clone(), &best, termination);
+        // sim(best, &mut r, termination, true);
     }
 }
 
-fn log_sim(deck: &str, turns: usize) {
+fn log_sim(deck: &str, termination: &Termination) {
     let mut r = Rng::seed_from_u64(38278347);
-    sim(make_deck(deck, 24), &mut r, turns, true);
+    sim(make_deck(deck, 24), &mut r, termination, true);
 }
 
 // ---
@@ -1147,15 +1272,28 @@ struct Args {
     #[arg(long, default_value_t=1_000)]
     trials: usize,
 
-    #[arg(long, default_value_t=10)]
-    turns: usize,
+    #[arg(long)]
+    turns: Option<usize>,
+
+    #[arg(long)]
+    damage: Option<usize>,
+
+    #[arg(long, default_value_t=0.1)]
+    temperature: f64,
 }
 
 fn main() {
     let args = Args::parse();
+    let termination = if let Some(damage) = args.damage {
+        Termination::Damage(damage)
+    } else if let Some(turns) = args.turns {
+        Termination::Turns(turns)
+    } else {
+        Termination::Turns(8)
+    };
     match args.mode {
-        Mode::LogSim => log_sim(&args.deck, args.turns),
-        Mode::Eval => eval(&args.deck, args.trials, args.turns),
-        Mode::Opti => opti(&args.deck, args.chains, args.log_every, args.samples, args.trials, args.turns),
+        Mode::LogSim => log_sim(&args.deck, &termination),
+        Mode::Eval => eval(&args.deck, args.trials, &termination),
+        Mode::Opti => opti(&args.deck, args.chains, args.log_every, args.samples, args.trials, args.temperature, &termination),
     }
 }
