@@ -1,6 +1,6 @@
 -e git+https://github.com/LowinData/pyautodiff.git@python2-ast#egg=autodiff
 futures==3.0.5
-ipython==7.16.3
+ipython==8.10.0
 matplotlib==1.5.3
 numpy==1.21.0
 scipy==0.18.1
